@@ -27,12 +27,12 @@ void BTFactory::Release() {
 	_instance = nullptr;
 }
 
-UBTTask_BlackboardBase* BTFactory::GetTask(std::string ID) {
+UBTTaskNode* BTFactory::GetTask(std::string ID) {
 	auto it = _currentTasks.find(ID);
 
 	if (it == _currentTasks.end()) return nullptr;
 
-	return it->second();
+	return static_cast<UBTTaskNode*>(it->second());
 }
 
 UBTDecorator* BTFactory::GetDecorator(std::string ID)
@@ -41,7 +41,7 @@ UBTDecorator* BTFactory::GetDecorator(std::string ID)
 
 	if (it == _currentDecorators.end()) return nullptr;
 
-	return it->second();
+	return static_cast<UBTDecorator*>(it->second());
 }
 
 bool BTFactory::init() {

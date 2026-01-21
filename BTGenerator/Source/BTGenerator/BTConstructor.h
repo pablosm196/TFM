@@ -5,10 +5,8 @@
 using json = nlohmann::json;
 
 #include "BehaviorTree/BehaviorTree.h"
-
+#include "BehaviorTree/BTCompositeNode.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
-#include "UObject/Object.h"
 
 #include "CoreMinimal.h"
 
@@ -32,4 +30,5 @@ private:
 
 	static bool init();
 	UBlackboardData* CreateBlackboardAsset(json data, UBlackboardComponent* blackboard);
+	FBTCompositeChild CreateNode(json data, UBlackboardData* BBAsset);
 };

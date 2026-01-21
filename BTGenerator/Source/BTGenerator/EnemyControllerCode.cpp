@@ -24,6 +24,7 @@
 #include "HasLineOfSight_Decorator.h"
 
 #include "BTConstructor.h"
+#include "BTFactory.h"
 
 AEnemyControllerCode::AEnemyControllerCode()
 {
@@ -55,8 +56,21 @@ void AEnemyControllerCode::BeginPlay()
 		_perception->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyControllerCode::OnPerceptionUpdated);
 	}
 
+	BTFactory::Init();
+	BTFactory* f = BTFactory::Instance();
+
+	f->RegisterTask<UMyBTTask_RotateToFaceBBEntry>("RotateToFaceBBEntry");
+	f->RegisterTask<UBTTask_ChasePlayer>("ChasePlayer");
+	f->RegisterTask<UMyBTTask_MoveTo>("MoveTo");
+	f->RegisterTask<UBTTask_FindRandomPatrol>("FindRandomPatrol");
+	f->RegisterTask<UBTTask_Wait>("Wait");
+
+	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?");
+
 	BTConstructor::Init();
-	BTConstructor::Instance()->CreateBT("Ejemplo1.json", _blackBoard);
+	UBehaviorTree* Root = BTConstructor::Instance()->CreateBT("Ejemplo1.json", _blackBoard);
+	UseBlackboard(Root->BlackboardAsset, _blackBoard);
+	RunBehaviorTree(Root);
 //
 //#pragma region BLACKBOARD
 //	UBlackboardData* BBAsset = NewObject<UBlackboardData>(this);

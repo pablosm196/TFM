@@ -4,22 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
+#include "BaseDecorator.h"
 #include "HasLineOfSight_Decorator.generated.h"
-
 /**
  * 
  */
 UCLASS()
-class BTGENERATOR_API UHasLineOfSight_Decorator : public UBTDecorator
+class BTGENERATOR_API UHasLineOfSight_Decorator : public UBaseDecorator
 {
 	GENERATED_BODY()
 public:
 	UHasLineOfSight_Decorator();
-	inline void SetKeyName(FName name) { _blackboardKey.SelectedKeyName = name; };
-	inline void ResolveKey(UBlackboardData* BBAsset) { _blackboardKey.ResolveSelectedKey(*BBAsset); };
+	inline void SetKeyName(FName name) { BlackboardKey.SelectedKeyName = name; };
+	inline void ResolveKey(UBlackboardData* BBAsset) { BlackboardKey.ResolveSelectedKey(*BBAsset); };
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
-
-	UPROPERTY(EditAnywhere)
-	FBlackboardKeySelector _blackboardKey;
 };

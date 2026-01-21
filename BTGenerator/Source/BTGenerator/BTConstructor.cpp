@@ -5,14 +5,20 @@
 
 #include <fstream>
 
-#include "BehaviorTree/BlackboardComponent.h"
-
 #include <BehaviorTree/Blackboard/BlackboardKeyType_Object.h>
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Float.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_String.h"
+
+#include "BehaviorTree/Composites/BTComposite_Sequence.h"
+#include "BehaviorTree/Composites/BTComposite_Selector.h"
+#include "BehaviorTree/Composites/BTComposite_SimpleParallel.h"
+
+#include "BTFactory.h"
+#include "BaseTask.h"
+#include "BaseDecorator.h"
 
 
 
@@ -50,8 +56,15 @@ UBehaviorTree* BTConstructor::CreateBT(std::string file, UBlackboardComponent* b
 	json data = json::parse(f);
 	
 	UBlackboardData* BBAsset = CreateBlackboardAsset(data["Blackboard"], blackboard);
+	if (BBAsset == nullptr)
+		return nullptr;
 
-	return nullptr;
+	FBTCompositeChild RootNode = CreateNode(data["Node"], BBAsset);
+	UBehaviorTree* Root = NewObject<UBehaviorTree>();
+
+	Root->RootNode = RootNode.ChildComposite;
+	Root->BlackboardAsset = BBAsset;
+	return Root;
 }
 
 bool BTConstructor::init() {
@@ -93,4 +106,61 @@ UBlackboardData* BTConstructor::CreateBlackboardAsset(json data, UBlackboardComp
 		return nullptr;
 
 	return BBAsset;
+}
+
+FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset)
+{
+	FBTCompositeChild composite;
+
+	if (data["Type"] != "Task") {
+		UBTCompositeNode* compositeNode = nullptr;
+		if (data["Type"] == "Selector")
+			compositeNode = NewObject<UBTComposite_Selector>();
+		else if (data["Type"] == "Sequence")
+			compositeNode = NewObject<UBTComposite_Sequence>();
+		else if (data["Type"] == "Parallel")
+			compositeNode = NewObject<UBTComposite_SimpleParallel>();
+		else FBTCompositeChild();
+
+		for (auto it : data["Nodes"]) {
+			FBTCompositeChild child = CreateNode(it["Node"], BBAsset);
+			compositeNode->Children.Add(child);
+		}
+
+		composite = FBTCompositeChild(compositeNode);
+	}
+	else {
+		UBTTaskNode* task = BTFactory::Instance()->GetTask(data["Task"]);
+
+		if(task == nullptr)
+			return FBTCompositeChild();
+
+		composite.ChildTask = task;
+
+		if (data.contains("BlackboardEntries")) {
+			for (auto& it : data["BlackboardEntries"]) {
+				dynamic_cast<IBaseTask*>(task)->SetKeyName(FName(std::string(it).c_str()));
+				dynamic_cast<IBaseTask*>(task)->ResolveKey(BBAsset);
+			}
+		}
+	}
+
+	for (auto& it : data["Decorators"]) {
+		for (auto& ot : it.items()) {
+
+			std::string key = ot.key();
+			std::string value = ot.value();
+
+			UBTDecorator* decorator = BTFactory::Instance()->GetDecorator(key);
+			if (value != "") {
+				if (dynamic_cast<UBaseDecorator*>(decorator) != nullptr) {
+					dynamic_cast<UBaseDecorator*>(decorator)->SetKeyName(FName(std::string(value).c_str()));
+					dynamic_cast<UBaseDecorator*>(decorator)->ResolveKey(BBAsset);
+				}
+			}
+			composite.Decorators.Add(decorator);
+		}
+	}
+
+	return composite;
 }

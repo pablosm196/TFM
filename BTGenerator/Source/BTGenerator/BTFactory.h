@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
+#include "BehaviorTree/BTTaskNode.h"
 #include "BehaviorTree/BTDecorator.h"
 
 #include "CoreMinimal.h"
@@ -25,21 +25,21 @@ public:
 	template<typename T>
 	void RegisterTask(std::string ID) {
 		if (!TaskExists(ID))
-			_currentTasks.emplace(ID, &BTFactory::CreateObject<T>);
+			_currentTasks.emplace(ID, &BTFactory::CreateTask<T>);
 	}
 
 	template <typename T>
 	void RegisterDecorator(std::string ID) {
 		if (!DecoratorExists(ID))
-			_currentDecorators.emplace(ID, &BTFactory::CreateObject<T>);
+			_currentDecorators.emplace(ID, &BTFactory::CreateDecorator<T>);
 	}
 
-	UBTTask_BlackboardBase* GetTask(std::string ID);
+	UBTTaskNode* GetTask(std::string ID);
 	UBTDecorator* GetDecorator(std::string ID);
 private:
 	static BTFactory* _instance;
 
-	std::unordered_map<std::string, UBTTask_BlackboardBase* (*)()> _currentTasks;
+	std::unordered_map<std::string, UBTTaskNode* (*)()> _currentTasks;
 	std::unordered_map<std::string, UBTDecorator* (*)()> _currentDecorators;
 
 	static bool init();
@@ -48,7 +48,11 @@ private:
 	bool DecoratorExists(std::string ID);
 
 	template <typename T>
-	static UBTTask_BlackboardBase* CreateObject() {
+	static UBTTaskNode* CreateTask() {
+		return NewObject<T>();
+	}
+	template <typename T>
+	static UBTDecorator* CreateDecorator() {
 		return NewObject<T>();
 	}
 };

@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_MoveTo.h"
+#include "BaseTask.h"
 #include "MyBTTask_MoveTo.generated.h"
-
 /**
  * 
  */
 UCLASS()
-class BTGENERATOR_API UMyBTTask_MoveTo : public UBTTask_MoveTo
+class BTGENERATOR_API UMyBTTask_MoveTo : public UBTTask_MoveTo, public IBaseTask
 {
 	GENERATED_BODY()
 public:
-	inline void SetKeyName(FName name) { BlackboardKey.SelectedKeyName = name; };
-	inline void ResolveKey(UBlackboardData* BBAsset) { BlackboardKey.ResolveSelectedKey(*BBAsset); };
+	inline void SetKeyName(FName name) override { BlackboardKey.SelectedKeyName = name; } ;
+	inline void ResolveKey(UBlackboardData* BBAsset) override { BlackboardKey.ResolveSelectedKey(*BBAsset); } ;
 };
