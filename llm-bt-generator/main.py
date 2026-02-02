@@ -7,6 +7,7 @@ from guidance.models import Transformers
 
 def main():
     tasks = sys.argv[1]
+    decorators = sys.argv[2]
 
     ROUTE = 'C:/Users/pablo/Desktop/Uni/Master/TFM/BTGenerator/Content/TFM/JSONs/BTschema.json'
 
@@ -21,13 +22,19 @@ def main():
 
     with system():
         lm += f'''
-You are an expert in Unreal Engine 5 and Behavior Trees (BTs).
+You are an expert in Unreal Engine 5 and designing behaviors in videogames using Behavior Trees ( BT ).
 
-You have to create a BT and the Blackboard (BB) from the user's description following the format given by the JSON schema.
+You have to create a BT and the Blackboard ( BB ) from the user's description following the format given by the JSON schema.
+In order to create de BB, use carefuly the info given by the user prompt (for example, if the user need a NPC that has to go to a random point, is very needed an entry in the blackboard for store that point, like "Point" : "Vector3").
 
-In order to create de BB, use carefuly the info given by the user prompt (for example, if the user need a NPC that need to go to a random point, is very needed an entry in the blackboard for store that point, like "Point" : "Vector3").
+The type of the nodes can ONLY be: Sequence, Selector, Parallel or Task.
+They can have one Decorator in the "Decorators" list. The Decorators are objects with the form "Decorators' ID" : "BB Entry".
+If the node's type is "Sequence", "Selector" or "Parallel" it MUST have Child Nodes (it CAN'T be a leaf node), and they HAVE to be defined in the "Nodes" list.
+If the node's type is "Task" it CAN'T have child nodes (it SHOULD be a leaf node). If the task need to use an entry from the BB, it SHOULD be referencered in the "BlackboardEntries" list.
 
-You can ONLY use the following list of Tasks: {tasks}
+You can ONLY use the following list of Tasks' IDs: {tasks}
+
+You can ONLY use the following list of Decorators' IDs: {decorators}
         '''
 
     with user():
