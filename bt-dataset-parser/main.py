@@ -1,22 +1,168 @@
 from datasets import load_dataset
-import json
+import os
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
+import re
 
-def parseBT(bt : str) -> str:
-    tree = ET.parse(bt)
-    root = tree.getroot()
+NODE_TYPE_MAP = {
+    "Fallback": "Selector",
+    "Sequence": "Sequence",
+    "Action": "Task",
+    "SubTree": "Task"
+}
+
+def parse_node(xml_node: str, conditions: str) -> str:
+    tag = xml_node.tag
+
+    if tag == "Condition":
+        return None 
+    json_type = NODE_TYPE_MAP.get(tag)
+    if json_type is None:
+        raise ValueError(f"Tipo de nodo XML no reconocido: {tag}")
+
+    node_obj = {
+        "Type": json_type,
+        "Decorators": [],
+        "Nodes": []
+    }
+    if json_type == "Task":
+        node_obj["Task"] = xml_node.attrib.get("ID", tag)
+
+    if "ID" in xml_node.attrib:
+        node_obj["Name"] = xml_node.attrib["ID"]
+
+    cond = None
+    for child in xml_node:
+        if child.tag == "Condition":
+            cond_id = child.attrib.get("ID", "UnnamedCondition")
+            conditions.add(cond_id)
+            cond = {f"{cond_id}?": cond_id}
+            #node_obj["Decorators"].append({f"{cond_id}?": cond_id})
+        else:
+            child_obj = parse_node_wrapper(child, conditions)
+            if cond is not None:
+                child_obj["Decorators"].append(cond)
+                cond = None
+            node_obj["Nodes"].append(child_obj)
+
+    return node_obj
+
+def parse_node_wrapper(xml_node: str, conditions: set) -> str:
+    key = xml_node.tag
+    parsed = parse_node(xml_node, conditions)
+
+    if parsed is None:
+        raise RuntimeError("Condition no debería envolverse como nodo")
+
+    return parsed
+
+def preprocess_xml(s: str) -> str:
+    s = clean_xml(s)
+    s = re.sub(r'\bDescendingPriority\b', "Sequence", s)
+    s = re.sub(r'\bConditional\b', "Condition", s)
+    s = re.sub(r'\bSubtree\b', "SubTree", s)
+    s = re.sub(r"<\s*Variation\b[^>]*/>", "", s)
+    s = re.sub('<<', '<', s)
+    s = re.sub('>>', '>', s)
+    s = re.sub(r"<\s*FallBack\b", "<Fallback", s)
+    s = re.sub(r"</\s*FallBack\s*>", "</Fallback>", s)
+
+
+    pattern = r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\s*>"
+    replacement = r"<\1>"
+    s = re.sub(pattern, replacement, s)
+
+    pattern = r'(\b\w+\b)\s*=\s*([A-Za-z0-9_][A-Za-z0-9_ ]*[A-Za-z0-9_])'
+    replacement = r'\1="\2"'
+    s = re.sub(pattern, replacement, s)
+
+    s = re.sub(r"<\s*SubTree\b[^>/]*>", "", s)
+    s = re.sub(r"</\s*SubTree\s*>", "", s)
+
+    s = re.sub(r'\s+=\s+', '="', s)
+    s = re.sub(r'\s{2,}', ' ', s)
+
+
+    empty_tags = ["Action", "Condition", "SubTree"]
+
+    for tag in empty_tags:
+        pattern = fr"<{tag}\b([^>/]*)>"
+        replacement = fr"<{tag}\1 />"
+        s = re.sub(pattern, replacement, s)
+
+    lines = s.splitlines()
+    cleaned = []
+    for line in lines:
+        # Elimina espacios invisibles
+        line = line.replace("\xa0", " ")
+        # Elimina tabs invisibles
+        line = line.replace("\t", "    ")
+        cleaned.append(line)
+    s =  "\n".join(cleaned)
+
+    try:
+        ET.fromstring(s)
+    except Exception:
+        print(s) 
+
+    return s
+
+def clean_xml(s: str) -> str:
+    # Elimina BOM, zero-width spaces y caracteres no imprimibles
+    s = s.replace("\ufeff", "")  # BOM
+    s = s.replace("\x00", "")    # Null byte
+    s = s.replace("\u200b", "")  # Zero-width space
+    s = s.replace("\u200c", "")
+    s = s.replace("\u200d", "")
+    s = s.replace("\u202c", "")
+    s = s.replace("\u202d", "")
+    return re.sub(
+        r"[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD]",
+        "",
+        s
+    )
+
+
+
+def parseBT(xml_string: str) -> str:
+    conditions = set()
+
+    xml_string = preprocess_xml(xml_string)
+
+    root = ET.fromstring(xml_string)
+
+    first_child = list(root)[0]
+
+    json_tree = {
+        "Blackboard": [],
+        "Node": parse_node_wrapper(first_child, conditions)
+    }
+
+    for cond in conditions:
+        json_tree["Blackboard"].append({cond : "Boolean"})
+
+    return json_tree
 
 def main():
+    os.mkdir('./JSONs')
     path = './JSONs/Example_'
 
     ds = load_dataset("ArtemLykov/LLM_BRAIn_dataset")
 
     i = 0
     for bt in tqdm(ds['train']['output']):
-        s = parseBT(bt)
+        try:
+            s = parseBT(bt)
 
+            f = open(f'{path}{i}.json', 'w')
+            f.write(str(s))
+            f.close()
 
+            i += 1
+        except Exception as e:
+            print(f'Error: {e} in bt: {i}\n')
+            print(f'BT: {bt}')
+            pass
 
 if __name__ == "__main__":
     main()
