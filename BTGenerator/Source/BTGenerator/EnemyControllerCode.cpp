@@ -26,6 +26,10 @@
 #include "BTConstructor.h"
 #include "BTFactory.h"
 
+#include <string>
+#include <cstdlib>
+
+
 AEnemyControllerCode::AEnemyControllerCode()
 {
 	_blackBoard = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard")); //Crea el componente de pizarra
@@ -68,6 +72,51 @@ void AEnemyControllerCode::BeginPlay()
 	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?");
 
 	BTConstructor::Init();
+
+	/*std::string command = "uv run C:/Users/pablo/Desktop/Uni/Master/TFM/llm-bt-generator/main.py ";
+	command += f->getAllTasks();
+	command += " ";
+	command += f->getAllDecorators();
+	command += " ";
+	command += "\"NPC that, constantly, select a random point from the map, goes to the point and waits a time.\"";
+	command += " ";
+	command += "Ejemplo_1";*/
+
+	FString t = f->getAllTasks().c_str();
+	FString d = f->getAllTasks().c_str();
+	FString prompt = TEXT("NPC that, constantly, select a random point from the map, goes to the point and waits a time.");
+	FString p = TEXT("Ejemplo_1");
+
+	FString UVExe = TEXT("C:/Users/pablo/Desktop/Uni/Master/TFM/llm-bt-generator/.venv/Scripts/uv.exe");
+
+	FString ScriptPath = TEXT("C:/Users/pablo/Desktop/Uni/Master/TFM/llm-bt-generator/main.py");
+	FString Args = FString::Printf(
+		TEXT("run \"%s\" %s %s \"%s\" %s"),
+		*ScriptPath,
+		*t,
+		*d,
+		*prompt,
+		*p
+	);
+
+	int32 ReturnCode = 0;
+	FString StdOut;
+	FString StdErr;
+
+	FPlatformProcess::ExecProcess(
+		*UVExe,
+		*Args,
+		&ReturnCode,
+		&StdOut,
+		&StdErr
+	);
+
+	UE_LOG(LogTemp, Warning, TEXT("Salida: %s"), *StdOut);
+	UE_LOG(LogTemp, Error, TEXT("Errores: %s"), *StdErr);
+	UE_LOG(LogTemp, Warning, TEXT("Código retorno: %d"), ReturnCode);
+
+
+
 	UBehaviorTree* Root = BTConstructor::Instance()->CreateBT("Ejemplo1.json", _blackBoard);
 	UseBlackboard(Root->BlackboardAsset, _blackBoard);
 	RunBehaviorTree(Root);

@@ -36,6 +36,9 @@ public:
 
 	UBTTaskNode* GetTask(std::string ID);
 	UBTDecorator* GetDecorator(std::string ID);
+
+	std::string getAllTasks();
+	std::string getAllDecorators();
 private:
 	static BTFactory* _instance;
 

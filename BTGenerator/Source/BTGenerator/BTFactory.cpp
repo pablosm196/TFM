@@ -1,4 +1,5 @@
 #include "BTFactory.h"
+#include <string>
 
 BTFactory* BTFactory::_instance = nullptr;
 
@@ -42,6 +43,34 @@ UBTDecorator* BTFactory::GetDecorator(std::string ID)
 	if (it == _currentDecorators.end()) return nullptr;
 
 	return static_cast<UBTDecorator*>(it->second());
+}
+
+std::string BTFactory::getAllTasks()
+{
+	std::string tasks = "";
+
+	for (auto it = _currentTasks.begin(); it != _currentTasks.end(); it++) {
+		tasks += it->first + ",";
+	}
+
+	if (!tasks.empty())
+		tasks.pop_back();
+
+	return tasks;
+}
+
+std::string BTFactory::getAllDecorators()
+{
+	std::string decorators = "";
+
+	for (auto it = _currentDecorators.begin(); it != _currentDecorators.end(); it++) {
+		decorators += it->first + ",";
+	}
+
+	if (!decorators.empty())
+		decorators.pop_back();
+
+	return decorators;
 }
 
 bool BTFactory::init() {
