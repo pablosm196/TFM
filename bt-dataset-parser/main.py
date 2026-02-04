@@ -3,6 +3,7 @@ import os
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
 import re
+import json
 
 NODE_TYPE_MAP = {
     "Fallback": "Selector",
@@ -144,24 +145,38 @@ def parseBT(xml_string: str) -> str:
     return json_tree
 
 def main():
-    os.mkdir('./JSONs')
+    if not os.path.exists('JSONs'):
+        os.mkdir('./JSONs')
     path = './JSONs/Example_'
 
     ds = load_dataset("ArtemLykov/LLM_BRAIn_dataset")
 
     i = 0
-    for bt in tqdm(ds['train']['output']):
+    for bt in tqdm(ds['train']):
         try:
-            s = parseBT(bt)
+            s = f'''{{
+                "prompt" : \"{" ".join(str(bt['instruction']).splitlines())}\",
+                "BT" : '''
+            p = parseBT(bt['output'])
+            p = str(p)
+            p = p.replace('\'', '\"')
+            j = json.loads(str(p))
+            s += json.dumps(j, indent = 4)
+
+            s += "\n}"
+
+            s = json.loads(s)
 
             f = open(f'{path}{i}.json', 'w')
-            f.write(str(s))
+            f.write(json.dumps(s, indent = 4))
             f.close()
 
             i += 1
         except Exception as e:
             print(f'Error: {e} in bt: {i}\n')
-            print(f'BT: {bt}')
+            print(f'BT: {bt}\n\n\n')
+            print(f'{str(s)}\n\n\n')
+            print(p)
             pass
 
 if __name__ == "__main__":
