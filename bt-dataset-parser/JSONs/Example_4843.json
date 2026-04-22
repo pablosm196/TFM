@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan area for object. If visible, approach it. Then take it, move to storage, check properties and do task. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectApproached    /> <Action ID = MoveToObjectStorage    /> <Condition ID = IsObjectInStorage    /> <Action ID = CheckObjectProperties    /> <SubTree ID = SpecificTaskSubtree    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Sequence>     <Condition ID = IsObjectHeavy    />     <Action ID = CallAssistance    /> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectInStorage": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CallAssistance",
+                            "Name": "CallAssistance"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToObjectStorage",
+                    "Name": "MoveToObjectStorage"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInStorage?": "IsObjectInStorage"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTaskSubtree",
+                            "Name": "SpecificTaskSubtree"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

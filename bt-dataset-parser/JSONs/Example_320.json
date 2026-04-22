@@ -1,0 +1,91 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible then approach it. If object approachable then take and process it. Otherwise scan. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveTowardsObject    /> <Action ID = Idle    /> <SubTree ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "Idle",
+                            "Name": "Idle"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,100 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, pick up and move it unless heavy. Inspect or avoid obstacle, then perform task. list of available nodes: <Action ID = PickUpObject    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectFound    /> <Action ID = MoveObjectToLocation    /> <Sequence ID = MoveOrAvoid></Sequence> <Action ID = InspectObject    /> <SubTree ID = MobileRobotTask    /> <Condition ID = IsObstacleInPath    /> <Action ID = AvoidObstacle    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectShiny": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObstacleInPath": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToLocation",
+                            "Name": "MoveObjectToLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectShiny?": "IsObjectShiny"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "InspectObject",
+                                    "Name": "InspectObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleInPath?": "IsObstacleInPath"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AvoidObstacle",
+                                    "Name": "AvoidObstacle"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformTask",
+                    "Name": "PerformTask"
+                }
+            ]
+        }
+    }
+}

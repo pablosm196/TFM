@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object, approach and manipulate it, repair or clean if needed, perform specific task.     list of available nodes: <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Action ID = MoveObjectToLocation    /> <Condition ID = IsObjectHeavy    /> <Action ID = PutObjectOnGround    /> <Condition ID = IsObjectDamaged    /> <Action ID = RepairObject    /> <Condition ID = IsObjectDirty    /> <Action ID = CleanObject    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectDamaged": "Boolean"
+            },
+            {
+                "IsObjectGrabbed": "Boolean"
+            },
+            {
+                "IsObjectDirty": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectGrabbed?": "IsObjectGrabbed"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToLocation",
+                            "Name": "MoveObjectToLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PutObjectOnGround",
+                            "Name": "PutObjectOnGround"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectDamaged?": "IsObjectDamaged"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "RepairObject",
+                                    "Name": "RepairObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectDirty?": "IsObjectDirty"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CleanObject",
+                                    "Name": "CleanObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

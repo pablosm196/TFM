@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, process it if clean. Avoid obstacles if detected, explore if not. list of available nodes: <Action ID = AvoidObstacle    /> <Action ID = IsObjectClean    /> <Action ID = IsObjectFound    /> <Action ID = IsObstacleDetected    /> <Action ID = MoveToObjectLocation    /> <Action ID = PlaceObjectInDesignatedArea    /> <Action ID = ProcessObject    /> <Action ID = RandomlyExploreArea    /> <Action ID = TakeObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjectClean": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectFound?": "IsObjectFound"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveToObjectLocation",
+                                    "Name": "MoveToObjectLocation"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectClean?": "IsObjectClean"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PlaceObjectInDesignatedArea",
+                                    "Name": "PlaceObjectInDesignatedArea"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleDetected?": "IsObstacleDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "RandomlyExploreArea",
+                    "Name": "RandomlyExploreArea"
+                }
+            ]
+        }
+    }
+}

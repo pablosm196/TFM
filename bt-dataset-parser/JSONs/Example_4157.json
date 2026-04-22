@@ -1,0 +1,73 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, approach it, grab it, process it. Otherwise, move to the next area. list of available nodes: <Action ID = ScanArea    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectNearby    /> <Sequence>     <Condition ID = IsObjectHeld    />     <SubTree ID = ProcessObject    /> </Sequence> <Action ID = MoveToNextArea    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectHeld": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanArea",
+                    "Name": "ScanArea"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectNearby?": "IsObjectNearby"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeld?": "IsObjectHeld"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "ProcessObject",
+                                            "Name": "ProcessObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToNextArea",
+                            "Name": "MoveToNextArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

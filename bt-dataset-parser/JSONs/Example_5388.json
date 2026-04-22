@@ -1,0 +1,77 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then approach, retrieve and check it. If not, then scan again. list of available nodes: <Action ID = ScanAreaForObjects     /> <Action ID = MoveTowardsObject     /> <Action ID = RetrieveObject     /> <Condition ID = IsObjectWithinReach     /> <Condition ID = IsObjectDetected     /> <SubTree ID = CheckObjectProperties     />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "RetrieveObject",
+                                    "Name": "RetrieveObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

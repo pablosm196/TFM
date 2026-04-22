@@ -1,0 +1,119 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and approach object. Grab object and process it. Perform task. If object is heavy then use process for heavy, else use process for light. list of available nodes: <Action ID = GrabObject    /> <SubTree ID = ProcessObjectForHeavy    /> <SubTree ID = ProcessObjectForLight    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Action ID = PerformTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectApproached?": "IsObjectApproached"
+                                        }
+                                    ],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "TakeObject",
+                                                    "Name": "TakeObject"
+                                                },
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [],
+                                                    "Nodes": [],
+                                                    "Task": "ProcessObjectForHeavy",
+                                                    "Name": "ProcessObjectForHeavy"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectLight?": "IsObjectLight"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "TakeObject",
+                                                    "Name": "TakeObject"
+                                                },
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [],
+                                                    "Nodes": [],
+                                                    "Task": "ProcessObjectForLight",
+                                                    "Name": "ProcessObjectForLight"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformTask",
+                    "Name": "PerformTask"
+                }
+            ]
+        }
+    }
+}

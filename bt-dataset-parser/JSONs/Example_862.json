@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object using fallback. If heavy, carry. If fragile, handle gently. Complete specific task.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = CarryObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Action ID = HandleObjectGently    /> <Action ID = ExamineObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CarryObject",
+                                    "Name": "CarryObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "HandleObjectGently",
+                                    "Name": "HandleObjectGently"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ExamineObject",
+                            "Name": "ExamineObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

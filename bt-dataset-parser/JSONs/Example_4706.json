@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, approach, grasp, secure it, process it, release it. Move or scan otherwise. list of available nodes: <Condition ID = IsObjectFound    /> <Condition ID = IsObjectSecure    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Condition ID = CanMoveToLocation    /> <Action ID = MoveToLocation    /> <Action ID = ApproachObject    /> <Action ID = GraspObject    /> <Action ID = ReleaseObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "CanMoveToLocation": "Boolean"
+            },
+            {
+                "IsObjectSecure": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GraspObject",
+                            "Name": "GraspObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectSecure?": "IsObjectSecure"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ReleaseObject",
+                            "Name": "ReleaseObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "CanMoveToLocation?": "CanMoveToLocation"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToLocation",
+                                    "Name": "MoveToLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If you approach object, take it, approach again and process it. Otherwise, scan area. list of available nodes: <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveSlowly    /> <Action ID = CheckObjectTemperature    /> <Condition ID = isObjectHot    /> <Action ID = CoolDownObject    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "isObjectHot": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveSlowly",
+                            "Name": "MoveSlowly"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectTemperature",
+                    "Name": "CheckObjectTemperature"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "isObjectHot?": "isObjectHot"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CoolDownObject",
+                            "Name": "CoolDownObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

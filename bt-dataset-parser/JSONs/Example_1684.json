@@ -1,0 +1,108 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach, take it, move to location, process it, drop it. If obstacle, turn. If finished, shutdown.     list of available nodes: <Action ID = MoveToLocation    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = DropObject    /> <Action ID = TurnLeft    /> <Action ID = Shutdown    /> <Condition ID = HasObject    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObstacleInFront    /> <Action ID = ProcessObject    /> <SubTree ID = ProcessObject    /> <SubTree ID = MobileRobotTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "HasObject": "Boolean"
+            },
+            {
+                "IsObstacleInFront": "Boolean"
+            },
+            {
+                "IsTaskComplete": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "HasObject?": "HasObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToLocation",
+                            "Name": "MoveToLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DropObject",
+                            "Name": "DropObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleInFront?": "IsObstacleInFront"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TurnLeft",
+                            "Name": "TurnLeft"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTaskComplete?": "IsTaskComplete"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "Shutdown",
+                            "Name": "Shutdown"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

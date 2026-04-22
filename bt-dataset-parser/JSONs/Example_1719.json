@@ -1,0 +1,67 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object seen, approach and grab it. If not, scan and rotate. Then, complete task. list of available nodes: <Condition ID = IsObjectInSight    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsPathClear    /> <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Action ID = ScanArea    /> <Action ID = Rotate180    /> <SubTree ID = TaskSubtree    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectGrabbable": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            },
+            {
+                "IsPathClear": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectInSight?": "IsObjectInSight"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectGrabbable?": "IsObjectGrabbable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TaskSubtree",
+                            "Name": "TaskSubtree"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathClear?": "IsPathClear"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

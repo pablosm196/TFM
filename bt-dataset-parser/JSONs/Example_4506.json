@@ -1,0 +1,102 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object detected, then approach & grab object. Move object to designated area. Perform task. Release object. If not, scan area. Patrol.     list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = ScanAreaForObjects    /> <Action ID = ApproachObject    /> <Action ID = PatrolDesignatedArea    /> <Action ID = ReleaseObject    /> <SubTree ID = PerformTaskOnObject    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectDetected    /> <Condition ID = AreAnyObjectsDetected    /> <Condition ID = IsObjectInCorrectPosition    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "AreAnyObjectsDetected": "Boolean"
+            },
+            {
+                "IsObjectInCorrectPosition": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedArea",
+                            "Name": "MoveObjectToDesignatedArea"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInCorrectPosition?": "IsObjectInCorrectPosition"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PerformTaskOnObject",
+                            "Name": "PerformTaskOnObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ReleaseObject",
+                            "Name": "ReleaseObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "AreAnyObjectsDetected?": "AreAnyObjectsDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PatrolDesignatedArea",
+                    "Name": "PatrolDesignatedArea"
+                }
+            ]
+        }
+    }
+}

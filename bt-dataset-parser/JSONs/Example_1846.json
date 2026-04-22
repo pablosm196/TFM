@@ -1,0 +1,100 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find, approach, take and inspect object. If visible, move and take. Then scan surrounding area. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = IsObjectApproached    /> <Action ID = InspectObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectReached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectApproached?": "IsObjectApproached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "InspectObject",
+                                    "Name": "InspectObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "MoveToObject",
+                                            "Name": "MoveToObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectReached?": "IsObjectReached"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "TakeObject",
+                                            "Name": "TakeObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "InspectObject",
+                                            "Name": "InspectObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObject",
+                    "Name": "ScanAreaForObject"
+                }
+            ]
+        }
+    }
+}

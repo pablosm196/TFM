@@ -1,0 +1,108 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, move and take it. Then, if heavy or fragile, assist or handle. Perform task.     list of available nodes: <Action ID = IsObjectFound    /> <Action ID = MoveToTarget    /> <Condition ID = IsObjectReached    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallAssistant    /> <SubTree ID = AssistWithHeavyObject    /> <Condition ID = IsObjectFragile    /> <Action ID = CheckObjectProperties    /> <SubTree ID = HandleFragileObject    /> <Action ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectReached": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToTarget",
+                    "Name": "MoveToTarget"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectReached?": "IsObjectReached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CallAssistant",
+                                    "Name": "CallAssistant"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "AssistWithHeavyObject",
+                                    "Name": "AssistWithHeavyObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectFragile?": "IsObjectFragile"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "HandleFragileObject",
+                                    "Name": "HandleFragileObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible: approach, take, check property, move to destination, perform/retry task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <Action ID = MoveToDestination    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    />     <Sequence>         <Condition ID = IsObjectWithinReach    />         <Action ID = TakeObject    />         <SubTree ID = CheckObjectProperties    />     </Sequence>     <Action ID = MoveToDestination    />     <Fallback>         <Sequence>             <Condition ID = IsTaskComplete    />             <Action ID = PerformTask    />         </Sequence>         <Sequence>             <Condition ID = IsTaskFailed    />             <Action ID = RetryTask    />         </Sequence>     </Fallback> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTaskComplete": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsTaskFailed": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToDestination",
+                    "Name": "MoveToDestination"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskComplete?": "IsTaskComplete"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask",
+                                    "Name": "PerformTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskFailed?": "IsTaskFailed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "RetryTask",
+                                    "Name": "RetryTask"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

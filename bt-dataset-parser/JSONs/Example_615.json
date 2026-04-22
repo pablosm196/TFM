@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is close, grab it. If heavy, move to destination. If obstructed, move and execute specific task. Otherwise, scan area.     list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = MoveToObject    /> <Action ID = ScanObjectProperties    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsDestinationObstructed    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsDestinationObstructed": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectHeavy?": "IsObjectHeavy"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveObjectToDestination",
+                    "Name": "MoveObjectToDestination"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsDestinationObstructed?": "IsDestinationObstructed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanObjectProperties",
+                                    "Name": "ScanObjectProperties"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

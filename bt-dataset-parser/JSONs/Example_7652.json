@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move to it. If grabbable, grab it and process. Check battery, then execute task or return. list of available nodes: <Action ID = ScanAreaForObject    />  <Action ID = ApproachObject    />  <Action ID = GrabObject    />  <Action ID = PutObjectDown    />  <Action ID = CheckBatteryLevel    />  <Action ID = MoveToObject    />  <SubTree ID = ProcessObject    />  <Condition ID = IsObjectGrabbable    />  <Condition ID = ObjectDetected    />  <Condition ID = IsTaskPossible    />  <Action ID = DoTask    />  <Action ID = ReturnToBase    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTaskPossible": "Boolean"
+            },
+            {
+                "ObjectDetected": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "ObjectDetected?": "ObjectDetected"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbable?": "IsObjectGrabbable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PutObjectDown",
+                            "Name": "PutObjectDown"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckBatteryLevel",
+                    "Name": "CheckBatteryLevel"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskPossible?": "IsTaskPossible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "DoTask",
+                                    "Name": "DoTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ReturnToBase",
+                            "Name": "ReturnToBase"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

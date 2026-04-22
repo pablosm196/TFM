@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and take it. Check properties, activate lift if heavy or complete specific task. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeObject    /> <Action ID = CheckObjectProperties    /> <Action ID = ActivatePowerLift    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectReached    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectReached": "Boolean"
+            },
+            {
+                "IsObjectSecured": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToTarget",
+                    "Name": "MoveToTarget"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectReached?": "IsObjectReached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ActivatePowerLift",
+                                    "Name": "ActivatePowerLift"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectSecured?": "IsObjectSecured"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

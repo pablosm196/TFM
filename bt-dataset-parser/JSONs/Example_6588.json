@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and take it. Otherwise, move erratically. Optionally, process the object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsInZoneA    /> <Action ID = MoveToZoneA    /> <Action ID = MoveToZoneB    /> <Action ID = RandomMovement    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsInZoneB": "Boolean"
+            },
+            {
+                "IsInZoneA": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInRange?": "IsObjectInRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsInZoneA?": "IsInZoneA"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToZoneB",
+                                    "Name": "MoveToZoneB"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsInZoneB?": "IsInZoneB"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToZoneA",
+                                    "Name": "MoveToZoneA"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "RandomMovement",
+                            "Name": "RandomMovement"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

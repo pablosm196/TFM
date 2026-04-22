@@ -1,0 +1,100 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, take object; if object heavy, move to location; perform task specific subtree. Finally, move forward OR turn around. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectFound    /> <SubTree ID = TaskSpecificSubtree    /> <Action ID = MoveObjectToLocation    /> <Condition ID = IsObjectHeavy    /> <Sequence>     <Condition ID = IsPathClear    />     <Action ID = MoveForward    /> </Sequence> <Action ID = TurnAround    /> <Sequence>     <Condition ID = IsObstacleDetected    />     <Action ID = TurnAround    /> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsPathClear": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToLocation",
+                            "Name": "MoveObjectToLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TaskSpecificSubtree",
+                            "Name": "TaskSpecificSubtree"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathClear?": "IsPathClear"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveForward",
+                                    "Name": "MoveForward"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleDetected?": "IsObstacleDetected"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TurnAround",
+                                    "Name": "TurnAround"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

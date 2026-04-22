@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If the object is visible, move to it, grab it, check properties, move it or store it. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = ProcessObject    /> <Action ID = MoveObjectToTargetLocation    /> <Action ID = TakeObjectToStorage    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToTargetLocation",
+                                    "Name": "MoveObjectToTargetLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectLight?": "IsObjectLight"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObjectToStorage",
+                                    "Name": "TakeObjectToStorage"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

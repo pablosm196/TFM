@@ -1,0 +1,76 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, then approach it, take it, and run ProcessObject. Else scan area. list of available nodes: <Action ID = ScanArea    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWithinRange    /> <SubTree ID = SearchAndRetrieve    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectApproached?": "IsObjectApproached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanArea",
+                    "Name": "ScanArea"
+                }
+            ]
+        }
+    }
+}

@@ -27,6 +27,11 @@ public:
 		if (!TaskExists(ID))
 			_currentTasks.emplace(ID, &BTFactory::CreateTask<T>);
 	}
+	template<typename T>
+	void RegisterBlackboardTask(std::string ID) {
+		if (!TaskExists(ID))
+			_currentBBTasks.emplace(ID, &BTFactory::CreateTask<T>);
+	}
 
 	template <typename T>
 	void RegisterDecorator(std::string ID) {
@@ -38,11 +43,13 @@ public:
 	UBTDecorator* GetDecorator(std::string ID);
 
 	std::string getAllTasks();
+	std::string getAllBlackboardTasks();
 	std::string getAllDecorators();
 private:
 	static BTFactory* _instance;
 
 	std::unordered_map<std::string, UBTTaskNode* (*)()> _currentTasks;
+	std::unordered_map<std::string, UBTTaskNode* (*)()> _currentBBTasks;
 	std::unordered_map<std::string, UBTDecorator* (*)()> _currentDecorators;
 
 	static bool init();

@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, grab object and return to base. If not, approach object, grab it, and process object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToBase    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <SubTree ID = ProcessObject_V2    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToBase",
+                            "Name": "MoveToBase"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject_V2",
+                                    "Name": "ProcessObject_V2"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

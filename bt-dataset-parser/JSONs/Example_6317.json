@@ -1,0 +1,73 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to target, pick it up or scan its properties. Else, search for object. list of available nodes: <Action ID = MoveToTarget    /> <Condition ID = IsObjectSighted    /> <Action ID = PickUpTarget    /> <Sequence>     <Condition ID = IsTargetWithinArmReach    />     <Action ID = PickUpTarget    /> </Sequence> <Action ID = ScanForObjectProperties    /> <Action ID = SearchForObject    /> <Condition ID = IsTargetWithinArmReach    /> <Fallback>     <Sequence>         <Condition ID = IsObjectSighted    />         <Action ID = MoveToTarget    />         <SubTree ID = PickUpTarget    />         <SubTree ID = ScanForObjectProperties    />     </Sequence>     <SubTree ID = SearchForObject    /> </Fallback>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTargetWithinArmReach": "Boolean"
+            },
+            {
+                "IsObjectSighted": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectSighted?": "IsObjectSighted"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToTarget",
+                            "Name": "MoveToTarget"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsTargetWithinArmReach?": "IsTargetWithinArmReach"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "PickUpTarget",
+                                            "Name": "PickUpTarget"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanForObjectProperties",
+                                    "Name": "ScanForObjectProperties"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SearchForObject",
+                    "Name": "SearchForObject"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it, or else scan area. Move object to spot, inspect it and do specific task. list of available nodes: <Action ID = MoveToObjectSpot    /> <Action ID = InspectObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = SpecificTask    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectInRightSpot    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectStable    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRightSpot": "Boolean"
+            },
+            {
+                "IsObjectStable": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInRightSpot?": "IsObjectInRightSpot"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObjectSpot",
+                            "Name": "MoveToObjectSpot"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectStable?": "IsObjectStable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "InspectObject",
+                            "Name": "InspectObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

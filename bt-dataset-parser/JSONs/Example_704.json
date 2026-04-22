@@ -1,0 +1,113 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find, take, move and check object, fix or do specific task, heavy: find helper. list of available nodes: <Action ID = FindHelper    /> <Action ID = CheckObjectProperties    /> <Action ID = IsObjectBroken    /> <Action ID = TakeObject    /> <Action ID = IsTaskSpecific    /> <Action ID = MoveToDestination    /> <Action ID = IsObjectHeavy    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectFound    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsTaskSpecific": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectBroken": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "FindHelper",
+                            "Name": "FindHelper"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectBroken?": "IsObjectBroken"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "FixObject",
+                                    "Name": "FixObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskSpecific?": "IsTaskSpecific"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

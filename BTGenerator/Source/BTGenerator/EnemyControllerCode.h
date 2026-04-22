@@ -10,6 +10,8 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
+#include <string>
+
 #include "EnemyControllerCode.generated.h"
 /**
  * 
@@ -20,6 +22,8 @@ class BTGENERATOR_API AEnemyControllerCode : public AAIController
 	GENERATED_BODY()
 public: 
 	AEnemyControllerCode();
+
+	void SetBT(std::string path);
 protected:
 	virtual void BeginPlay() override;
 

@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Grab object, take it to destination or scan properties, do subtask if done. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Action ID = ScanObjectProperties    /> <Condition ID = IsObjectLight    /> <Action ID = DoSpecificSubtask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDestination",
+                                    "Name": "MoveObjectToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectLight?": "IsObjectLight"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ScanObjectProperties",
+                                    "Name": "ScanObjectProperties"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "DoSpecificSubtask",
+                    "Name": "DoSpecificSubtask"
+                }
+            ]
+        }
+    }
+}

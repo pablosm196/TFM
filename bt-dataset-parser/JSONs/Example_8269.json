@@ -1,0 +1,106 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, move towards it, take it, handle with care or call for help, scan area.     list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = HandleObjectCarefully    /> <Action ID = CallForHelp    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectFragile    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "isObjectFragile": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "isObjectHeavy?": "isObjectHeavy"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "CallForHelp",
+                                                    "Name": "CallForHelp"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "isObjectFragile?": "isObjectFragile"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "HandleObjectCarefully",
+                                                    "Name": "HandleObjectCarefully"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

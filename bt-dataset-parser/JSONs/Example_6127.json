@@ -1,0 +1,100 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If visible, approach and take object. Then handle object and perform task.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = IsObjectWithinRange    /> <Action ID = PickUpObject    /> <Action ID = IsObjectHeavy    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = IsObjectFragile    /> <Action ID = HandleObjectWithCare    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinRange?": "IsObjectWithinRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "MoveObjectToDesignatedArea",
+                                            "Name": "MoveObjectToDesignatedArea"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectFragile?": "IsObjectFragile"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "HandleObjectWithCare",
+                                            "Name": "HandleObjectWithCare"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

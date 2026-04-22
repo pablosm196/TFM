@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, take it, move it and check it, do special task if needed. If not found, scan the area. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsSpecialTaskRequired    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsObjectFound    /> <Action ID = ScanAreaForObject    /> <Sequence>     <Action ID = MoveToObject    />     <Condition ID = IsObjectVisible    /> </Sequence> <Sequence>     <SubTree ID = SpecialTask    />     <Condition ID = IsSpecialTaskRequired    /> </Sequence> <Sequence>     <Action ID = TakeObject    />     <Action ID = MoveObject    />     <Condition ID = IsObjectHeavy    /> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectDamaged": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsSpecialTaskRequired": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObject",
+                            "Name": "MoveObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsSpecialTaskRequired?": "IsSpecialTaskRequired"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "SpecialTask",
+                            "Name": "SpecialTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectDamaged?": "IsObjectDamaged"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                }
+            ]
+        }
+    }
+}

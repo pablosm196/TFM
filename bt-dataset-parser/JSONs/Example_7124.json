@@ -1,0 +1,108 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. Then, pick it up and move it. Finally, perform specific task or handle exceptions. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToDesiredLocation    /> <Action ID = SlowAndCarefulMove    /> <Action ID = ConsultDatabase    /> <Action ID = PerformSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectMiscategorized    /> <SubTree ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectMiscategorized": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectInRange?": "IsObjectInRange"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "PickUpObject",
+                    "Name": "PickUpObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectHeavy?": "IsObjectHeavy"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveObjectToDesiredLocation",
+                    "Name": "MoveObjectToDesiredLocation"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "SlowAndCarefulMove",
+                                    "Name": "SlowAndCarefulMove"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMiscategorized?": "IsObjectMiscategorized"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ConsultDatabase",
+                                    "Name": "ConsultDatabase"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

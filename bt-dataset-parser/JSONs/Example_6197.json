@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object approached, grab it and process. If visible, approach it. Scan area if unsuccessful. list of available nodes: <Action ID = FindAndGrabObject    /> <Action ID = ProcessObject    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "FindObject",
+                    "Name": "FindObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectWeight",
+                                    "Name": "CheckObjectWeight"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectFragility",
+                                    "Name": "CheckObjectFragility"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickRandomTask",
+                            "Name": "PickRandomTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

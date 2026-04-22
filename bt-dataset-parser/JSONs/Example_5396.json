@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, approach and take it, move to destination or navigate safely, and process the object. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Action ID = NavigateToDestination    /> <Action ID = WaitForClearPath    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObstacleDetected    /> <Condition ID = IsSafeToNavigate    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsSafeToNavigate": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObstacleDetected?": "IsObstacleDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsSafeToNavigate?": "IsSafeToNavigate"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "NavigateToDestination",
+                                    "Name": "NavigateToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "WaitForClearPath",
+                            "Name": "WaitForClearPath"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ProcessObject",
+                    "Name": "ProcessObject"
+                }
+            ]
+        }
+    }
+}

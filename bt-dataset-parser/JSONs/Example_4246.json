@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move towards it. If grabbable, grab it, otherwise call assistant. Process object. list of available nodes: <Action ID = MoveTowardsObject    /> <Condition ID = IsObjectVisible    /> <Action ID = GrabObject    /> <Condition ID = IsObjectGrabbable    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallAssistant    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveTowardsObject",
+                    "Name": "MoveTowardsObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbable?": "IsObjectGrabbable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CallAssistant",
+                                    "Name": "CallAssistant"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

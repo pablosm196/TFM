@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Detect object, pick it up if within reach, move and check it, perform task, evade obstacles. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = AttemptToEvadeObstacle    /> <Action ID = ScanArea    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObstacleDetected    /> <Condition ID = IsSufficientSpaceAvailable    /> <Condition ID = IsObjectHeavy    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsSufficientSpaceAvailable": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsSufficientSpaceAvailable?": "IsSufficientSpaceAvailable"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedLocation",
+                            "Name": "MoveObjectToDesignatedLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

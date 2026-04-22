@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Robot, if object visible, approach it, grab it, then move and drop it. Otherwise, adjust position or lift object. Finally, scan and process object.     list of available nodes: <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToObjectDropOffLocation    /> <Action ID = DropObject    /> <Action ID = ActivateLift    /> <Action ID = ScanForObject    /> <Action ID = AdjustPosition    /> <Condition ID = IsObjectHardToReach    /> <Condition ID = IsObjectGrabbed    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectHardToReach": "Boolean"
+            },
+            {
+                "IsObjectGrabbed": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectGrabbed?": "IsObjectGrabbed"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObjectDropOffLocation",
+                            "Name": "MoveToObjectDropOffLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DropObject",
+                            "Name": "DropObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHardToReach?": "IsObjectHardToReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AdjustPosition",
+                                    "Name": "AdjustPosition"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ActivateLift",
+                                    "Name": "ActivateLift"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObject",
+                            "Name": "ScanForObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

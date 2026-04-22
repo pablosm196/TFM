@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, then move to, grab, and check. If obstacle visible, then avoid. Finally, wander. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = AvoidObstacle    /> <Action ID = WanderRandomly    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObstacleVisible    /> <Condition ID = IsObjectWithinReach    /> <SubTree ID = CheckObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObstacleVisible": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleVisible?": "IsObstacleVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "WanderRandomly",
+                    "Name": "WanderRandomly"
+                }
+            ]
+        }
+    }
+}

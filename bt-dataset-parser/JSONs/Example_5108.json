@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object approached or visible, approach or grab object. Then execute subtree task or scan area. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToLocation    /> <Action ID = PutObjectInContainer    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = ApproachTask    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectPickedUp    /> <Condition ID = IsTaskVisible    /> <SubTree ID = ProcessObject    /> <SubTree ID = TaskSpecific    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectPickedUp": "Boolean"
+            },
+            {
+                "IsTaskVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectApproached?": "IsObjectApproached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskVisible?": "IsTaskVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachTask",
+                                    "Name": "ApproachTask"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "TaskSpecific",
+                                    "Name": "TaskSpecific"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToLocation",
+                            "Name": "MoveToLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectPickedUp?": "IsObjectPickedUp"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PutObjectInContainer",
+                            "Name": "PutObjectInContainer"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

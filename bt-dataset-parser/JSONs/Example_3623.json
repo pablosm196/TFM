@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan environment. If object detected and within reach, pick up object. Then do object task and place object. If task assigned, perform specific task. Else, move to new location. list of available nodes: <Action ID = ScanEnvironment    /> <Action ID = MoveToNewLocation    /> <Action ID = PickUpObject    /> <Action ID = PlaceObject    /> <Action ID = PerformSpecificTask    /> <Condition ID = isObjectDetected    /> <Condition ID = isObjectWithinReach    /> <Condition ID = isTaskAssigned    /> <SubTree ID = ObjectTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsTaskAssigned": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ObjectTask",
+                                    "Name": "ObjectTask"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "PlaceObject",
+                                    "Name": "PlaceObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToNewLocation",
+                            "Name": "MoveToNewLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTaskAssigned?": "IsTaskAssigned"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PerformSpecificTask",
+                            "Name": "PerformSpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanEnvironment",
+                    "Name": "ScanEnvironment"
+                }
+            ]
+        }
+    }
+}

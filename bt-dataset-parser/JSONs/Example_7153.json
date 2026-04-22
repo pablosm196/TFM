@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, move & take it. If obstacle is detected, avoid it. Search, then process object. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectGraspable    /> <Condition ID = IsObstacleDetected    /> <Action ID = AvoidObstacle    /> <Action ID = SearchForObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallForHelp    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjectGraspable": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGraspable?": "IsObjectGraspable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "CallForHelp",
+                                            "Name": "CallForHelp"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleDetected?": "IsObstacleDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SearchForObject",
+                    "Name": "SearchForObject"
+                }
+            ]
+        }
+    }
+}

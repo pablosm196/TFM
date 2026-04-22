@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and approaches visible object, grabs it, moves it (if heavy) then wanders or navigates around obstacles. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = ScanPathForObject    /> <Action ID = WanderAroundArea    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObstacleInPath    /> <SubTree ID = NavigateAroundObstacle    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObstacleInPath": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedArea",
+                            "Name": "MoveObjectToDesignatedArea"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleInPath?": "IsObstacleInPath"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ScanPathForObject",
+                            "Name": "ScanPathForObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "NavigateAroundObstacle",
+                            "Name": "NavigateAroundObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "WanderAroundArea",
+                    "Name": "WanderAroundArea"
+                }
+            ]
+        }
+    }
+}

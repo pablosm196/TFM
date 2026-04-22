@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move and grasp it, then inspect it. If not detected, then scan area. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectWithinGraspingRange    /> <SubTree ID = InspectObject    /> <Action ID = MoveToNewArea    /> <Condition ID = IsObjectDetected    /> <Action ID = GraspObject    /> <Action ID = ScanArea    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinGraspingRange": "Boolean"
+            },
+            {
+                "IsAreaScanned": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveTowardsObject",
+                                    "Name": "MoveTowardsObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinGraspingRange?": "IsObjectWithinGraspingRange"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "InspectObject",
+                            "Name": "InspectObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsAreaScanned?": "IsAreaScanned"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToNewArea",
+                            "Name": "MoveToNewArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

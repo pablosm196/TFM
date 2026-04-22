@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and assess it. If path is clear, move to target. Otherwise, scan area.     list of available nodes: <Action ID = ScanAreaForObjects    /> <Action ID = IsObjectVisible    /> <Action ID = IsObjectWithinReach    /> <Action ID = PickUpObject    /> <SubTree ID = AssessObject    /> <Action ID = MoveToTarget    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsPathToTargetClear": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "AssessObject",
+                                    "Name": "AssessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathToTargetClear?": "IsPathToTargetClear"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToTarget",
+                                    "Name": "MoveToTarget"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

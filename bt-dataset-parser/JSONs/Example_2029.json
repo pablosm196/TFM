@@ -1,0 +1,106 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grasp object. Move to target. Lift or handle object gently. Perform object task. list of available nodes: <Action ID = GraspObject    /> <Action ID = MoveToTarget    /> <Action ID = LiftObject    /> <Action ID = HandleObjectGently    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformObjectTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectNearby?": "IsObjectNearby"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GraspObject",
+                            "Name": "GraspObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToTarget",
+                            "Name": "MoveToTarget"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "LiftObject",
+                                            "Name": "LiftObject"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectFragile?": "IsObjectFragile"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "HandleObjectGently",
+                                            "Name": "HandleObjectGently"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformObjectTask",
+                    "Name": "PerformObjectTask"
+                }
+            ]
+        }
+    }
+}

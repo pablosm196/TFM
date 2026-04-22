@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then approach, pick up, move if heavy, discard if broken, inspect and perform task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = DiscardObject    /> <Action ID = InspectObjectProperties    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectBroken    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectBroken": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToLocation",
+                            "Name": "MoveObjectToLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectBroken?": "IsObjectBroken"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "DiscardObject",
+                                    "Name": "DiscardObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "InspectObjectProperties",
+                            "Name": "InspectObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformTask",
+                    "Name": "PerformTask"
+                }
+            ]
+        }
+    }
+}

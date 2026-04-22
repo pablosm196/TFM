@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach and take it. If heavy, move to destination. Else, scan, move and do specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsPathClear    /> <Action ID = MoveToDestination    /> <SubTree ID = SpecificTaskSubTree    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsPathClear": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDestination",
+                            "Name": "MoveObjectToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathClear?": "IsPathClear"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTaskSubTree",
+                    "Name": "SpecificTaskSubTree"
+                }
+            ]
+        }
+    }
+}

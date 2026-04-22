@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, move to it, take it, move it, check properties, and complete task. Else, explore or avoid obstacle. list of available nodes: <Action ID = CompleteTask    /> <Action ID = ExploreArea    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObstacleInFront    /> <Condition ID = isObjectHeavy    /> <SubTree ID = CheckObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsObstacleInFront": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectNearby?": "IsObjectNearby"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "isObjectHeavy?": "isObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedLocation",
+                            "Name": "MoveObjectToDesignatedLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CompleteTask",
+                            "Name": "CompleteTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleInFront?": "IsObstacleInFront"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AvoidObstacle",
+                                    "Name": "AvoidObstacle"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ExploreArea",
+                            "Name": "ExploreArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

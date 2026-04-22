@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is in sight, approach, take and check it. Then, process it. Else, scan area and move to new location. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveToNewLocation    /> <Action ID = FindAlternateRoute    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsObjectValid    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectValid": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectInSight?": "IsObjectInSight"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectValid?": "IsObjectValid"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ProcessObject",
+                    "Name": "ProcessObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathBlocked?": "IsPathBlocked"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "FindAlternateRoute",
+                                    "Name": "FindAlternateRoute"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveToNewLocation",
+                                    "Name": "MoveToNewLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

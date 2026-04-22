@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, catch it if within reach, move to last location if lost, repeat. list of available nodes: <Action ID = ScanAreaForObjects    /> <Action ID = MoveToLastKnownLocation    /> <Action ID = RandomMove    /> <Action ID = CatchObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectLost    /> <Condition ID = IsObjectWithinReach    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLost": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CatchObject",
+                                    "Name": "CatchObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectLost?": "IsObjectLost"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToLastKnownLocation",
+                            "Name": "MoveToLastKnownLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "RandomMove",
+                    "Name": "RandomMove"
+                }
+            ]
+        }
+    }
+}

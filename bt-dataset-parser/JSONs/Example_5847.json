@@ -1,0 +1,75 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach it. If near, take it. If heavy, move and drop. Perform task. Otherwise, scan area.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveToStorage    /> <Action ID = DropObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectNear    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsNearObject": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsNearObject?": "IsNearObject"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectHeavy?": "IsObjectHeavy"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToStorage",
+                            "Name": "MoveToStorage"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DropObject",
+                            "Name": "DropObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

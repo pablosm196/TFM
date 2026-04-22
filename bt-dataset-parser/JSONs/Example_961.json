@@ -1,0 +1,84 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, approach, take, process, move; check properties, avoid damage, return when done.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveToUnvisitedLocation    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsObjectDetected    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectFragile    /> <Condition ID = IsLocationVisited    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsLocationVisited": "Boolean"
+            },
+            {
+                "isObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "isObjectFragile?": "isObjectFragile"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsLocationVisited?": "IsLocationVisited"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToUnvisitedLocation",
+                            "Name": "MoveToUnvisitedLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

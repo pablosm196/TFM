@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. Then, if within range, grab it. Finally, move and handle if necessary. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = CallAssistance    /> <Action ID = HandleWithCare    /> <Action ID = MoveObjectToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectWithinRange?": "IsObjectWithinRange"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CallAssistance",
+                                    "Name": "CallAssistance"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "HandleWithCare",
+                                    "Name": "HandleWithCare"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveObjectToDestination",
+                    "Name": "MoveObjectToDestination"
+                }
+            ]
+        }
+    }
+}

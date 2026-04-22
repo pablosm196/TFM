@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If visible, move and check object properties, perform task or grab it. Avoid obstacles or random move.     list of available nodes: <Action ID = MoveToTarget    /> <Action ID = GrabObject    /> <Action ID = AvoidObstacles    /> <Action ID = ScanAreaForObject    /> <Action ID = RandomMove    /> <Condition ID = IsObjectInGripper    /> <Condition ID = CanGrabObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = CheckObjectProperties    /> <Action ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInGripper": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "CanGrabObject": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToTarget",
+                    "Name": "MoveToTarget"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInGripper?": "IsObjectInGripper"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformSpecificTask",
+                            "Name": "PerformSpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CanGrabObject?": "CanGrabObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObject",
+                    "Name": "ScanAreaForObject"
+                }
+            ]
+        }
+    }
+}

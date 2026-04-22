@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, approach to it, take and move it to destination. Check properties, scan area if failed.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveWithObjectToDestination    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectVisible    /> <Action ID = ScanAreaForObject    /> <SubTree ID = CheckObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectInRange?": "IsObjectInRange"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveWithObjectToDestination",
+                            "Name": "MoveWithObjectToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach and take it. If heavy, move to destination. Then do tasks or idle. list of available nodes: <Action ID = Idle    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDestination    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsTask1Needed    /> <Condition ID = IsTask2Needed    /> <SubTree ID = Task1    /> <SubTree ID = Task2    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTask2Needed": "Boolean"
+            },
+            {
+                "IsTask1Needed": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDestination",
+                            "Name": "MoveObjectToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask1Needed?": "IsTask1Needed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "Task1",
+                                    "Name": "Task1"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask2Needed?": "IsTask2Needed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "Task2",
+                                    "Name": "Task2"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "Idle",
+                            "Name": "Idle"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,73 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object approached, then take or check it. Otherwise, if object visible, approach it. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectApproached    /> <Action ID = InspectObject    /> <Action ID = MoveObjectToLocation    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToLocation",
+                                    "Name": "MoveObjectToLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectLight?": "IsObjectLight"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "InspectObject",
+                                    "Name": "InspectObject"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

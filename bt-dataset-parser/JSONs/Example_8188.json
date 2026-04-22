@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If item nearby, pick up, if not then scan, move to item, pick up, check properties, perform task.     list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToObject    /> <Action ID = ScanAreaForItem    /> <Condition ID = IsItemVisible    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectWithinReach    /> <Action ID = PerformSpecificTask    /> <SubTree ID = CheckItemProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsItemVisible": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectNearby?": "IsObjectNearby"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsItemVisible?": "IsItemVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForItem",
+                    "Name": "ScanAreaForItem"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckItemProperties",
+                    "Name": "CheckItemProperties"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

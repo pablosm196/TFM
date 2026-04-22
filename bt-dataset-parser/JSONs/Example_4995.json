@@ -1,0 +1,121 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan area for visible objects, approach and grab if in reach, check properties, perform task. list of available nodes: <Action ID = ScanAreaForObjects    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Sequence>         <Condition ID = IsObjectInReach    />         <Action ID = MoveToObject    />     </Sequence>     <Action ID = StopMoving    />     <Sequence>         <Condition ID = IsObjectGrabbable    />         <Action ID = GrabObject    />         <SubTree ID = ProcessObject    />     </Sequence>     <Action ID = ScanObjectProperties    /> </Sequence> <SubTree ID = ProcessObject    /> <Action ID = GrabObject    /> <Action ID = StopMoving    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInReach": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectInReach?": "IsObjectInReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "StopMoving",
+                            "Name": "StopMoving"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbable?": "IsObjectGrabbable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanObjectProperties",
+                            "Name": "ScanObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

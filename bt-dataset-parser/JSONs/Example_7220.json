@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and take it. Then, check its properties, perform task 1 or 2. Finally, back to scanning.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = PerformTask1    /> <Action ID = PerformTask2    /> <Action ID = BackToScan    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsTask1Possible    /> <Condition ID = IsTask2Possible    /> <SubTree ID = ProcessObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsTask1Possible": "Boolean"
+            },
+            {
+                "IsTask2Possible": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectInRange?": "IsObjectInRange"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ProcessObjectProperties",
+                    "Name": "ProcessObjectProperties"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask1Possible?": "IsTask1Possible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask1",
+                                    "Name": "PerformTask1"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask2Possible?": "IsTask2Possible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask2",
+                                    "Name": "PerformTask2"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "BackToScan",
+                            "Name": "BackToScan"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is found, then if grabbable, grab, if movable, move to destination, then scan for properties, and perform specific task.     list of available nodes: <Action ID = IsObjectFound    />  <Sequence>     <Condition ID = IsObjectFound    />     <Fallback>         <Sequence>             <Condition ID = IsObjectGrabbable    />             <Action ID = GrabObject    />         </Sequence>         <Sequence>             <Condition ID = IsObjectMovable    />             <Action ID = MoveObjectToDestination    />         </Sequence>         <Action ID = ScanForObjectProperties    />     </Fallback>     <SubTree ID = SpecificTask    /> </Sequence> <Action ID = ScanForObjectProperties    /> <Action ID = MoveObjectToDestination    /> <Action ID = GrabObject    /> <Condition ID = IsObjectMovable    /> <Condition ID = IsObjectGrabbable    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbable?": "IsObjectGrabbable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMovable?": "IsObjectMovable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDestination",
+                                    "Name": "MoveObjectToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObjectProperties",
+                            "Name": "ScanForObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in range, approach, grab and take object to storage, then perform task or clean object. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectStable    /> <Action ID = GrabObject    /> <Action ID = TakeToStorage    /> <Condition ID = IsObjectClean    /> <Condition ID = IsObjectApproached    /> <SubTree ID = PerformTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectStable": "Boolean"
+            },
+            {
+                "IsObjectHeavierThan5Kg": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectClean": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavierThan5Kg?": "IsObjectHeavierThan5Kg"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeToStorage",
+                                    "Name": "TakeToStorage"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformTask",
+                            "Name": "PerformTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectStable?": "IsObjectStable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectClean?": "IsObjectClean"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ProceedToTask",
+                                    "Name": "ProceedToTask"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

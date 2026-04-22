@@ -1,0 +1,93 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If seen, approach and grab it. Then process and check it. Finally, scan the area.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObjectTask    /> <Condition ID = IsObjectVisible    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectApproached    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveTowardsObject    /> <Action ID = HasObjectInHand    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "HasObjectInHand": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObjectTask",
+                            "Name": "ProcessObjectTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInSight?": "IsObjectInSight"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "HasObjectInHand?": "HasObjectInHand"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

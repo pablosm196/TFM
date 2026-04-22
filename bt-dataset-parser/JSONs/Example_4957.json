@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move to object, pick up, sort to red/green, scan area for objects else try alternate route. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToTargetObject    /> <Action ID = SortToGreenBox    /> <Action ID = SortToRedBox    /> <Action ID = TryDifferentRoute    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsColorRed    /> <Condition ID = IsColorGreen    /> <SubTree ID = MobileRobotTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsColorGreen": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            },
+            {
+                "IsColorRed": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToTargetObject",
+                            "Name": "MoveToTargetObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsColorRed?": "IsColorRed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "SortToRedBox",
+                                    "Name": "SortToRedBox"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsColorGreen?": "IsColorGreen"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "SortToGreenBox",
+                                    "Name": "SortToGreenBox"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathBlocked?": "IsPathBlocked"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TryDifferentRoute",
+                            "Name": "TryDifferentRoute"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, move towards it, take it, do specific task, else, check battery and charge it. list of available nodes: <Action ID = CheckBatteryLevel    /> <Action ID = ChargeBattery    /> <Action ID = IsObjectFound    /> <Action ID = IsObjectMovable    /> <Action ID = IsObjectTakeable    /> <Action ID = MoveToObject    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = DoSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectTakeable": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectMovable?": "IsObjectMovable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectTakeable?": "IsObjectTakeable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "DoSpecificTask",
+                                    "Name": "DoSpecificTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

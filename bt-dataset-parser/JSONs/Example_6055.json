@@ -1,0 +1,95 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, take it, move, lift if heavy, do task, else avoid obstacles or explore area. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToLocation    /> <Action ID = LiftObject    /> <Action ID = AvoidObstacle    /> <Action ID = ExploreArea    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObstacleDetected    /> <SubTree ID = SpecificTaskSubtree    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectFound?": "IsObjectFound"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToLocation",
+                            "Name": "MoveToLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "LiftObject",
+                            "Name": "LiftObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTaskSubtree",
+                            "Name": "SpecificTaskSubtree"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleDetected?": "IsObstacleDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToLocation",
+                            "Name": "MoveToLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ExploreArea",
+                    "Name": "ExploreArea"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,120 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move towards it, check properties, take or call help. Then, move to destination or scan area. list of available nodes: <Action ID = DoNothing    /> <Action ID = TakeObject    /> <Action ID = CallForHelp    /> <Action ID = ScanForObject    /> <Action ID = MoveToDestination    /> <Action ID = MoveTowardsObject    /> <Action ID = ScanObjectProperties    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectSmall    /> <Condition ID = IsObjectHeavy    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectSmall": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            },
+            {
+                "IsPathClear": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInSight?": "IsObjectInSight"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanObjectProperties",
+                            "Name": "ScanObjectProperties"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectSmall?": "IsObjectSmall"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "TakeObject",
+                                            "Name": "TakeObject"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "CallForHelp",
+                                            "Name": "CallForHelp"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "DoNothing",
+                                    "Name": "DoNothing"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathClear?": "IsPathClear"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanForObject",
+                    "Name": "ScanForObject"
+                }
+            ]
+        }
+    }
+}

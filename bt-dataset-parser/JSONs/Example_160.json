@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If battery charged, then move and find object, if close then pick up, otherwise avoid and move. list of available nodes: <Action ID = PickUpObject    /> <Action ID = CheckBattery    /> <Action ID = AvoidObstacle    /> <Action ID = MoveTowardsObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObstacleDetected    /> <Action ID = CheckObjectProperties    /> <SubTree ID = MobileRobot    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "CheckBattery": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "CheckBattery?": "CheckBattery"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectApproached?": "IsObjectApproached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleDetected?": "IsObstacleDetected"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AvoidObstacle",
+                                    "Name": "AvoidObstacle"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

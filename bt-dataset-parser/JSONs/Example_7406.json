@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, move and take object, check object and move object. Finally, process object or scan area. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = ProcessObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectMovable    /> <Condition ID = isObjectHeavy    /> <Action ID = ScanArea    />  <Action ID = MoveToObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsAreaToScanAvailable": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectFound?": "IsObjectFound"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMovable?": "IsObjectMovable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectHeavy?": "isObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDesignatedArea",
+                                    "Name": "MoveObjectToDesignatedArea"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsAreaToScanAvailable?": "IsAreaToScanAvailable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ScanArea",
+                            "Name": "ScanArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If the mobile robot sees an object, approach, grab and check properties. Otherwise, move and scan area. list of available nodes: <Action ID = MoveForward    /> <Action ID = ScanForObject    /> <Action ID = RotateInPlace    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = isObjectVisible    /> <Condition ID = isObjectApproached    /> <Action ID = ScanObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectApproached": "Boolean"
+            },
+            {
+                "isObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveForward",
+                    "Name": "MoveForward"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanForObject",
+                    "Name": "ScanForObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectVisible?": "isObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectApproached?": "isObjectApproached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ScanObjectProperties",
+                                    "Name": "ScanObjectProperties"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "RotateInPlace",
+                            "Name": "RotateInPlace"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

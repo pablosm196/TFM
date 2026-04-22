@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find, take, process, and move object to designated area, considering weight and fragility.     list of available nodes: <Condition ID = IsObjectVisible    /> <Action ID = MoveToGrabObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectReachable    /> <Fallback>     <Sequence>         <Condition ID = IsObjectHeavy    />         <Action ID = MoveObjectToDesignatedArea    />     </Sequence>     <Sequence>         <Condition ID = IsObjectFragile    />         <Action ID = TransportObjectWithCare    />     </Sequence>     <Action ID = MoveObjectToDefaultArea    /> </Fallback>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectReachable": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectReachable?": "IsObjectReachable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToGrabObject",
+                            "Name": "MoveToGrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "MoveObjectToDesignatedArea",
+                                            "Name": "MoveObjectToDesignatedArea"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectFragile?": "IsObjectFragile"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "TransportObjectWithCare",
+                                            "Name": "TransportObjectWithCare"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDefaultArea",
+                                    "Name": "MoveObjectToDefaultArea"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

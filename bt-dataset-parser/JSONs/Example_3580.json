@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and take it. If dangerous, move away and scan. list of available nodes: <Action ID = ScanAreaForObjects    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveAwayFromObject    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectTouchDangerous    /> <SubTree ID = CheckObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectTouchDangerous": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectTouchDangerous?": "IsObjectTouchDangerous"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveAwayFromObject",
+                                    "Name": "MoveAwayFromObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanAreaForObjects",
+                                    "Name": "ScanAreaForObjects"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                }
+            ]
+        }
+    }
+}

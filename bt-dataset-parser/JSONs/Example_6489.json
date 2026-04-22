@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, move to it, take it if reachable and heavy, inspect it, do task, scan randomly.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = ActivateLiftingMechanism    /> <Action ID = InspectObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectHidden    /> <Action ID = RandomMovement    /> <Action ID = ScanForObjects    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ActivateLiftingMechanism",
+                                    "Name": "ActivateLiftingMechanism"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "InspectObject",
+                    "Name": "InspectObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

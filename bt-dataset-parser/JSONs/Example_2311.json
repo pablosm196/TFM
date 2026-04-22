@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, move and take it. Check properties and do specific task, scan area if lost. Finally explore area. list of available nodes: <Action ID = ScanArea    /> <Action ID = ExploreArea    /> <SubTree ID = ObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectLost    /> <Condition ID = IsObjectAccessible    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectLost": "Boolean"
+            },
+            {
+                "IsObjectAccessible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectFound?": "IsObjectFound"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectAccessible?": "IsObjectAccessible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ObjectProperties",
+                            "Name": "ObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectLost?": "IsObjectLost"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ScanArea",
+                            "Name": "ScanArea"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ExploreArea",
+                    "Name": "ExploreArea"
+                }
+            ]
+        }
+    }
+}

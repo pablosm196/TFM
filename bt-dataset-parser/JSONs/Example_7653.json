@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach visible object, collect it if possible, perform specific task, move away safely. list of available nodes: <Action ID = CollectObject    /> <Action ID = CheckObjectWeight    /> <Action ID = CheckObjectFragility    /> <Action ID = MoveTowardsObject    /> <Action ID = MoveAwayFromObject    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveTowardsObject",
+                    "Name": "MoveTowardsObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CollectObject",
+                            "Name": "CollectObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "CheckObjectWeight",
+                                            "Name": "CheckObjectWeight"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectFragile?": "IsObjectFragile"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "CheckObjectFragility",
+                                            "Name": "CheckObjectFragility"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "PerformSpecificTask",
+                                    "Name": "PerformSpecificTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveAwayFromObject",
+                    "Name": "MoveAwayFromObject"
+                }
+            ]
+        }
+    }
+}

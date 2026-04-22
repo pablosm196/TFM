@@ -1,0 +1,120 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object detected, move and grab it, transport it to destination or do special task, then check object properties.     list of available nodes: <Action ID = MoveNearObject    /> <Action ID = GrabObject    /> <Action ID = TransportObjectToDestination    /> <Action ID = CheckObjectProperties    /> <Action ID = RepairObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = CanGrabObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectSpecial    /> <Condition ID = IsObjectDamaged    /> <SubTree ID = SpecialTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectDamaged": "Boolean"
+            },
+            {
+                "IsObjectSpecial": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "CanGrabObject": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveNearObject",
+                    "Name": "MoveNearObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CanGrabObject?": "CanGrabObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TransportObjectToDestination",
+                                    "Name": "TransportObjectToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectSpecial?": "IsObjectSpecial"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "SpecialTask",
+                                            "Name": "SpecialTask"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectDamaged?": "IsObjectDamaged"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "RepairObject",
+                                            "Name": "RepairObject"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

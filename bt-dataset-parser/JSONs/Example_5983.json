@@ -1,0 +1,111 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object approached, take it. If moving, then stop. If heavy, put it down. Finally, process it or move to destination. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsMoving    /> <Action ID = StopMoving    /> <Condition ID = IsObjectHeavy    /> <Action ID = PutObjectDown    /> <Condition ID = IsDestinationReached    /> <Action ID = UnloadObject    /> <SubTree ID = ProcessObject    /> <Action ID = MoveToDestination    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsDestinationReached": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsMoving": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsMoving?": "IsMoving"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "StopMoving",
+                            "Name": "StopMoving"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PutObjectDown",
+                            "Name": "PutObjectDown"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsDestinationReached?": "IsDestinationReached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "UnloadObject",
+                                    "Name": "UnloadObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsDestinationReached?": "IsDestinationReached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToDestination",
+                                    "Name": "MoveToDestination"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

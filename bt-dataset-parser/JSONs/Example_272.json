@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object seen, then approach, pick-up. If heavy, move to target. If dirty, clean. Else fix it. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = MoveObjectToTarget    /> <Action ID = CleanObject    /> <Action ID = FixObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectBroken    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectBroken": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectClean": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PickupObject",
+                    "Name": "PickupObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectHeavy?": "IsObjectHeavy"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveObjectToTarget",
+                    "Name": "MoveObjectToTarget"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectClean?": "IsObjectClean"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CleanObject",
+                                    "Name": "CleanObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectBroken?": "IsObjectBroken"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "FixObject",
+                                    "Name": "FixObject"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach it, take, and handle it. Perform specific task and move. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = HandleObjectGently    /> <Action ID = HandleObjectNormally    /> <Action ID = MoveToNextLocation    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectFragile    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinRange?": "IsObjectWithinRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "HandleObjectGently",
+                                    "Name": "HandleObjectGently"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "HandleObjectNormally",
+                                    "Name": "HandleObjectNormally"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToNextLocation",
+                    "Name": "MoveToNextLocation"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected then move and take it. Check properties and perform task. Otherwise, scan or move randomly. list of available nodes: <Action ID = ScanForObject    /> <Action ID = MoveRandomly    /> <Condition ID = IsObjectDetected    /> <Action ID = MoveToDetectedObject    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallForHelp    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToDetectedObject",
+                    "Name": "MoveToDetectedObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinRange?": "IsObjectWithinRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CallForHelp",
+                                    "Name": "CallForHelp"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformSpecificTask",
+                            "Name": "PerformSpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObject",
+                            "Name": "ScanForObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveRandomly",
+                            "Name": "MoveRandomly"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

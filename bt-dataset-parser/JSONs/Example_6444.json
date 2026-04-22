@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, move to it, take it, check properties, then put it in place, return home.     list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDesignatedSpot    /> <Condition ID = IsTargetReached    /> <Action ID = ReturnToStartingPoint    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectLight    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsTargetReached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToTarget",
+                            "Name": "MoveToTarget"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTargetReached?": "IsTargetReached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "MoveObjectToDesignatedSpot",
+                                            "Name": "MoveObjectToDesignatedSpot"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectLight?": "IsObjectLight"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "ProcessObject",
+                                            "Name": "ProcessObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ReturnToStartingPoint",
+                            "Name": "ReturnToStartingPoint"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

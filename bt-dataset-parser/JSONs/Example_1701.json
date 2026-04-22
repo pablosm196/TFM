@@ -1,0 +1,68 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object with subtree. Move, check properties and perform task. Avoid obstacles if necessary.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsObjectApproached    /> <SubTree ID = ProcessObject    /> <Sequence>     <Action ID = GrabObject    />     <SubTree ID = ProcessObject    />     <Condition ID = IsObjectApproached    /> </Sequence> <Sequence>     <Action ID = ApproachObject    />     <Condition ID = IsObjectVisible    /> </Sequence> <Action ID = MoveToDestination    /> <Sequence>     <Action ID = MoveToObject    />     <Sequence>         <Action ID = GrabObject    />         <SubTree ID = PerformTask    />         <SubTree ID = CheckObjectProperties    />         <Condition ID = IsObjectWithinReach    />     </Sequence> </Sequence> <Action ID = ScanAreaForObjects    /> <Condition ID = IsPathBlocked    /> <Action ID = ChooseAlternatePath    /> <Condition ID = IsObjectFound    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformTask    /> <Action ID = MoveToDestination    /> <Action ID = ApproachObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformTask",
+                            "Name": "PerformTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToDestination",
+                    "Name": "MoveToDestination"
+                }
+            ]
+        }
+    }
+}

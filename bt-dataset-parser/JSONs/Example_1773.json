@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, pick up and process it. Otherwise, navigate and scan area until object found! list of available nodes: <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = PickUpObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = PlaceObjectOnDesiredLocation    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = HasToMoveToSearchArea    /> <Action ID = MoveToSearchArea    /> <SubTree ID = ScanAreaForObjects    /> <Condition ID = IsObstacleDetected    /> <Action ID = AvoidObstacle    /> <Action ID = ContinueMoving    /> <Action ID = StopMoving    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "HasToMoveToSearchArea": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObjectProperties",
+                            "Name": "ProcessObjectProperties"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PlaceObjectOnDesiredLocation",
+                            "Name": "PlaceObjectOnDesiredLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "HasToMoveToSearchArea?": "HasToMoveToSearchArea"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToSearchArea",
+                            "Name": "MoveToSearchArea"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "StopMoving",
+                    "Name": "StopMoving"
+                }
+            ]
+        }
+    }
+}

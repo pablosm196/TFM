@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot finds visible object, moves to it, takes it, processes it, and puts it away. list of available nodes: <Action ID = MoveToObject    /> <Action ID = ScanArea    /> <Action ID = PutObjectInContainer    /> <Action ID = CallForHelp    /> <Action ID = MoveToObjectContainer    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Condition ID = CanTakeObject    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "CanTakeObject": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "CanTakeObject?": "CanTakeObject"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "CallForHelp",
+                                                    "Name": "CallForHelp"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "MoveToObjectContainer",
+                                            "Name": "MoveToObjectContainer"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "PutObjectInContainer",
+                                            "Name": "PutObjectInContainer"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "ProcessObject",
+                                            "Name": "ProcessObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanArea",
+                    "Name": "ScanArea"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, approach it. Then, if the object is grabbed, move to destination and place it. Otherwise, call for help or check object properties. Finally, perform specific task as subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = CheckObjectProperties    /> <Action ID = PlaceObject    /> <Action ID = CallForHelp    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectTooHeavy    /> <Action ID = MoveToDestination    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectTooHeavy": "Boolean"
+            },
+            {
+                "IsObjectGrabbed": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbed?": "IsObjectGrabbed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToDestination",
+                                    "Name": "MoveToDestination"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "PlaceObject",
+                                    "Name": "PlaceObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectTooHeavy?": "IsObjectTooHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CallForHelp",
+                                    "Name": "CallForHelp"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

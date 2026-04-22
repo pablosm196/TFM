@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible: approach, pick up, analyze. If not, scan. Perform specific task. Store.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectBright    /> <Action ID = InspectObject    /> <Action ID = ScanObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = IsObjectVisible    /> <SubTree ID = SpecificTask    /> <Action ID = StoreObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectBright": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "StoreObject",
+                            "Name": "StoreObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectBright?": "IsObjectBright"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "InspectObject",
+                                    "Name": "InspectObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanObject",
+                            "Name": "ScanObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

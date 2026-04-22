@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is near, pick it up. If object is heavy, move it. Otherwise inspect properties. Do specific task. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = InspectObjectProperties    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <SubTree ID = SpecificTaskSubTree    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectNearby?": "IsObjectNearby"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "PickUpObject",
+                    "Name": "PickUpObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDesignatedArea",
+                                    "Name": "MoveObjectToDesignatedArea"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectLight?": "IsObjectLight"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "InspectObjectProperties",
+                                    "Name": "InspectObjectProperties"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTaskSubTree",
+                            "Name": "SpecificTaskSubTree"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

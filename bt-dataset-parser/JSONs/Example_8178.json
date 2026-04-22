@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, go to it. If far, move forward; if near, take it. Finally, do specific task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <SubTree ID = CheckObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectFar    /> <Condition ID = IsObjectNear    /> <Action ID = MoveForward    /> <Condition ID = IsPathClear    /> <Condition ID = IsColliding    /> <Action ID = TurnAround    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsColliding": "Boolean"
+            },
+            {
+                "IsPathClear": "Boolean"
+            },
+            {
+                "IsObjectFar": "Boolean"
+            },
+            {
+                "IsObjectNear": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectFar?": "IsObjectFar"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectNear?": "IsObjectNear"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObject",
+                            "Name": "CheckObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathClear?": "IsPathClear"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveForward",
+                                    "Name": "MoveForward"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsColliding?": "IsColliding"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TurnAround",
+                                    "Name": "TurnAround"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

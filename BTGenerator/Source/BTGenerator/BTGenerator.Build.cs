@@ -24,7 +24,12 @@ public class BTGenerator : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
-		PublicIncludePaths.AddRange(new string[] {
+        if (Target.bBuildEditor)
+        {
+            PrivateDependencyModuleNames.Add("UnrealEd");
+        }
+
+        PublicIncludePaths.AddRange(new string[] {
 			"BTGenerator",
 			"BTGenerator/Variant_Platforming",
 			"BTGenerator/Variant_Platforming/Animation",

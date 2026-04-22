@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, take if close, use lifting mechanism if heavy, move to task, do it; else scan area.     list of available nodes: <Condition ID = IsRobotCloseToObject    /> <Action ID = TakeObject    /> <Condition ID = IsPathToTaskClear    /> <Action ID = MoveToTaskLocation    /> <SubTree ID = DoTask    /> <Action ID = ScanArea    /> <Condition ID = IsObjectHeavy    /> <Action ID = UseLiftingMechanism    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsRobotCloseToObject": "Boolean"
+            },
+            {
+                "IsPathToTaskClear": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsRobotCloseToObject?": "IsRobotCloseToObject"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "UseLiftingMechanism",
+                            "Name": "UseLiftingMechanism"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathToTaskClear?": "IsPathToTaskClear"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToTaskLocation",
+                                    "Name": "MoveToTaskLocation"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "DoTask",
+                                    "Name": "DoTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanArea",
+                            "Name": "ScanArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Detect and move objects, perform task if possible. Find assistance if object too heavy.     list of available nodes: <Action ID = FindAssistance    /> <Action ID = IsObjectDetected    /> <Action ID = IsObjectInRange    /> <Action ID = isObjectTooHeavy    /> <Action ID = PerformSpecificTask    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = ScanAreaForObject    /> <SubTree ID = MobileRobotTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "isObjectTooHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectInRange?": "IsObjectInRange"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToLocation",
+                                    "Name": "MoveObjectToLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "isObjectTooHeavy?": "isObjectTooHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "FindAssistance",
+                            "Name": "FindAssistance"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

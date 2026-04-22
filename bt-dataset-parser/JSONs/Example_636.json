@@ -1,0 +1,74 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, grab it, move, check properties, perform task. Else scan. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = CheckObjectProperties    /> <Sequence>     <Condition ID = IsObjectApproached    />     <Action ID = TakeObject    />     <SubTree ID = CheckObjectProperties    />     <Action ID = MoveToDestination    />     <Fallback>         <Sequence>             <Condition ID = IsTaskComplete    />             <Action ID = PerformTask    />         </Sequence>         <Action ID = ScanAreaForObjects    />     </Fallback> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsTaskComplete": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToDestination",
+                    "Name": "MoveToDestination"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskComplete?": "IsTaskComplete"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask",
+                                    "Name": "PerformTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

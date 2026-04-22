@@ -1,0 +1,83 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, grab it and move to destination. If not visible, search. Then check properties. list of available nodes: <Action ID = SearchForObject    /> <Action ID = MoveTowardObject    /> <Action ID = IsObjectSeen    /> <Action ID = MoveObjectToDestination    /> <Action ID = IsObjectGrabbed    /> <Action ID = isObjectPlacedSuccessfully    /> <Condition ID = IsObjectFound    /> <SubTree ID = CheckObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectGrabbed": "Boolean"
+            },
+            {
+                "IsObjectSeen": "Boolean"
+            },
+            {
+                "isObjectPlacedSuccessfully": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectFound?": "IsObjectFound"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbed?": "IsObjectGrabbed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDestination",
+                                    "Name": "MoveObjectToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectSeen?": "IsObjectSeen"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardObject",
+                            "Name": "MoveTowardObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SearchForObject",
+                    "Name": "SearchForObject"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object. If found, grab, move, process details and drop object. Avoid obstacles, replan if path is blocked or scan environment. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = DropObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObstacleDetected    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsTaskComplete    /> <Action ID = AvoidObstacle    /> <Action ID = ReplanPath    /> <Action ID = ScanEnvironment    /> <SubTree ID = ProcessObjectDetails    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTaskComplete": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObjectDetails",
+                            "Name": "ProcessObjectDetails"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTaskComplete?": "IsTaskComplete"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "DropObject",
+                            "Name": "DropObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleDetected?": "IsObstacleDetected"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AvoidObstacle",
+                                    "Name": "AvoidObstacle"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathBlocked?": "IsPathBlocked"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ReplanPath",
+                                    "Name": "ReplanPath"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanEnvironment",
+                            "Name": "ScanEnvironment"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, if visible go to it. If not found, scan area. Take and process object, then move to destination.     list of available nodes: <Action ID = FindObject    /> <Action ID = Move    /> <Action ID = TakeObject    /> <Action ID = ScanArea    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectVisible    /> <SubTree ID = MobileRobotTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsDestinationReached": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsDestinationReached?": "IsDestinationReached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "Move",
+                            "Name": "Move"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanArea",
+                    "Name": "ScanArea"
+                }
+            ]
+        }
+    }
+}

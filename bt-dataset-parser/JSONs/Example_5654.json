@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to it. If close, take it. Process it. Else, scan area. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = CheckRobotBattery    /> <Action ID = ScanAreaForObjects    /> <Action ID = MoveTowardsClosestObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsObjectCloseEnough    /> <Condition ID = AreObjectsPresent    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "AreObjectsPresent": "Boolean"
+            },
+            {
+                "IsObjectCloseEnough": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInSight?": "IsObjectInSight"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectCloseEnough?": "IsObjectCloseEnough"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "AreObjectsPresent?": "AreObjectsPresent"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsClosestObject",
+                            "Name": "MoveTowardsClosestObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckRobotBattery",
+                    "Name": "CheckRobotBattery"
+                }
+            ]
+        }
+    }
+}

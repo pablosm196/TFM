@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach object, move it to task location, perform task, then move object according to its properties. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToTaskLocation    /> <Action ID = PerformTask    /> <Action ID = MoveObjectToDesignatedZone    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = MoveObjectToDefaultZone    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInGripper    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectInGripper": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInGripper?": "IsObjectInGripper"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToTaskLocation",
+                            "Name": "MoveToTaskLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformTask",
+                    "Name": "PerformTask"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDesignatedZone",
+                                    "Name": "MoveObjectToDesignatedZone"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDesignatedArea",
+                                    "Name": "MoveObjectToDesignatedArea"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDefaultZone",
+                            "Name": "MoveObjectToDefaultZone"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

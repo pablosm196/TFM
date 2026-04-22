@@ -1,0 +1,105 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If mobile robot sees an object, approach it. If movable, move and lift or push it. Perform specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveObject    /> <Action ID = LiftObject    /> <Action ID = PushObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectMovable    /> <Condition ID = isObjectHeavy    /> <Action ID = ScanAreaForObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMovable?": "IsObjectMovable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObject",
+                                    "Name": "MoveObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectHeavy?": "isObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "LiftObject",
+                                    "Name": "LiftObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMovable?": "IsObjectMovable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PushObject",
+                                    "Name": "PushObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

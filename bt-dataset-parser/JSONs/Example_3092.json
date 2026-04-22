@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach, grab and check properties. Then, perform task, return home base.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = InspectObjectProperties    /> <Action ID = MoveObjectToZone    /> <Action ID = HandleObjectCarefully    /> <Action ID = ReturnToHomeBase    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectFragile    /> <SubTree ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "isObjectFragile": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "isObjectHeavy?": "isObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "MoveObjectToZone",
+                                            "Name": "MoveObjectToZone"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "isObjectFragile?": "isObjectFragile"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "HandleObjectCarefully",
+                                            "Name": "HandleObjectCarefully"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "InspectObjectProperties",
+                                    "Name": "InspectObjectProperties"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformSpecificTask",
+                            "Name": "PerformSpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ReturnToHomeBase",
+                    "Name": "ReturnToHomeBase"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is in range, move to it, take it, and move it to the destination. If not, scan and move to closest. Finally, do the specific task. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = ScanAreaForObjects    /> <Action ID = IsObjectInRange    /> <Action ID = MoveToClosestObject    /> <Action ID = DoSpecificTask    /> <Action ID = IsObjectHeavy    /> <SubTree ID = DoSpecificTask    /> <Condition ID = AreObjectsDetected    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "AreObjectsDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInRange?": "IsObjectInRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDestination",
+                            "Name": "MoveObjectToDestination"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "AreObjectsDetected?": "AreObjectsDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToClosestObject",
+                            "Name": "MoveToClosestObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "DoSpecificTask",
+                    "Name": "DoSpecificTask"
+                }
+            ]
+        }
+    }
+}

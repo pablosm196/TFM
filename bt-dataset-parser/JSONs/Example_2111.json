@@ -1,0 +1,120 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected and within reach, then grab it and check properties. Finally, carry to designated area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = AdjustGrip    /> <Action ID = CarefullyLiftObject    /> <Action ID = CleanObject    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectDirty    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = CarryObjectToDesignatedArea    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectDirty": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "AdjustGrip",
+                                            "Name": "AdjustGrip"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectFragile?": "IsObjectFragile"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "CarefullyLiftObject",
+                                            "Name": "CarefullyLiftObject"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectDirty?": "IsObjectDirty"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "CleanObject",
+                                            "Name": "CleanObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CarryObjectToDesignatedArea",
+                    "Name": "CarryObjectToDesignatedArea"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab an object. Move and check danger, then perform task or scan. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToPosition    /> <Action ID = PerformTask    /> <Action ID = ScanArea    /> <Action ID = FindAlternativePath    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsAreaSafe    /> <Condition ID = IsPathBlocked    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            },
+            {
+                "IsAreaSafe": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToPosition",
+                    "Name": "MoveToPosition"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsAreaSafe?": "IsAreaSafe"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask",
+                                    "Name": "PerformTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathBlocked?": "IsPathBlocked"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "FindAlternativePath",
+                                    "Name": "FindAlternativePath"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanArea",
+                            "Name": "ScanArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

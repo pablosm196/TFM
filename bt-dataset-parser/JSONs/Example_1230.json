@@ -1,0 +1,75 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and grab it. If held, check properties, move it and perform the task. Else, scan the area.     list of available nodes: <Action ID = GrabObject    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeld    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectImportant    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectHeld": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectImportant": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectHeld?": "IsObjectHeld"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedLocation",
+                            "Name": "MoveObjectToDesignatedLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformSpecificTask",
+                            "Name": "PerformSpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectImportant?": "IsObjectImportant"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                }
+            ]
+        }
+    }
+}

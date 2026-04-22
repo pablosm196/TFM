@@ -1,0 +1,75 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is detected then approach, take, move and process it. If not, scan, move or fallback. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObject    /> <Action ID = MoveToRandomLocation    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsTaskCompleted    /> <Condition ID = NoObjectsFound    /> <Action ID = DoBackupTask    /> <SubTree ID = ProcessObject    /> <Action ID = ReturnToOrigin    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsTaskCompleted": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObject",
+                            "Name": "MoveObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTaskCompleted?": "IsTaskCompleted"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ReturnToOrigin",
+                            "Name": "ReturnToOrigin"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

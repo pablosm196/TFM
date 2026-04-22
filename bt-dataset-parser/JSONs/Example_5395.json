@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, navigate and take object. Carry object if heavy. If not, navigate to destination or scan area for specific task.     list of available nodes: <Action ID = NavigateToObject    /> <Action ID = GrabObject    /> <Action ID = CarryObject    /> <Action ID = PlaceObject    /> <Action ID = ScanArea    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsDestinationReached    /> <SubTree ID = SpecificTask    /> <Action ID = NavigateToNextPoint    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsDestinationReached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "NavigateToObject",
+                    "Name": "NavigateToObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CarryObject",
+                            "Name": "CarryObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsDestinationReached?": "IsDestinationReached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PlaceObject",
+                                    "Name": "PlaceObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanArea",
+                                    "Name": "ScanArea"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "NavigateToNextPoint",
+                            "Name": "NavigateToNextPoint"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

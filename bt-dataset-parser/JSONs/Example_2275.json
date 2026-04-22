@@ -1,0 +1,141 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach object, then grab it if possible, perform task and move to destination, otherwise avoid obstacle or scan area. list of available nodes: <Action ID = GrabObject    /> <Action ID = PlaceObject    /> <Action ID = MoveToObject    /> <Action ID = ScanArea    /> <Action ID = AvoidObstacle    /> <SubTree ID = PerformSpecificTask    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObstacleInFront    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectReachable    /> <Condition ID = IsDestinationReached    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsDestinationReached": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectReachable": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            },
+            {
+                "IsObstacleInFront": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectGrabbable?": "IsObjectGrabbable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PerformSpecificTask",
+                            "Name": "PerformSpecificTask"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsDestinationReached?": "IsDestinationReached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PlaceObject",
+                            "Name": "PlaceObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleInFront?": "IsObstacleInFront"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AvoidObstacle",
+                                    "Name": "AvoidObstacle"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectReachable?": "IsObjectReachable"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "MoveToObject",
+                                            "Name": "MoveToObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "CheckObjectProperties",
+                                            "Name": "CheckObjectProperties"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanArea",
+                                    "Name": "ScanArea"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,93 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find, take, process object. If object is movable, move, take - then process it. Finally, check object properties.     list of available nodes: <Action ID = TakeObject    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToObject    /> <Action ID = MoveAwayFromObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectMovable    /> <Condition ID = IsProcessingFinished    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            },
+            {
+                "IsProcessingFinished": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMovable?": "IsObjectMovable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveAwayFromObject",
+                                    "Name": "MoveAwayFromObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ProcessObject",
+                    "Name": "ProcessObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsProcessingFinished?": "IsProcessingFinished"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,93 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then grasp it and process it. Else, move to target or approach object. list of available nodes: <Action ID = IsObjectDetected    /> <Action ID = GraspObject    /> <Action ID = ProcessObject    /> <Action ID = IsObjectWithinReach    /> <Action ID = IsPathClearToTarget    /> <Action ID = ApproachObject    /> <Action ID = IsObjectWithinSight    /> <Action ID = MoveToTarget    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsPathClearToTarget": "Boolean"
+            },
+            {
+                "IsObjectWithinSight": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GraspObject",
+                            "Name": "GraspObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathClearToTarget?": "IsPathClearToTarget"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToTarget",
+                                    "Name": "MoveToTarget"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinSight?": "IsObjectWithinSight"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

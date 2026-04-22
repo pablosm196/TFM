@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, move and grab it. Check properties and do specific task or scan area.     list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsRobotApproachedToObject    /> <Condition ID = IsObjectGrabbable    /> <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsRobotApproachedToObject": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsRobotApproachedToObject?": "IsRobotApproachedToObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectGrabbable?": "IsObjectGrabbable"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "GrabObject",
+                                            "Name": "GrabObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "CheckObjectProperties",
+                                            "Name": "CheckObjectProperties"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "PerformSpecificTask",
+                                            "Name": "PerformSpecificTask"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanAreaForObject",
+                                    "Name": "ScanAreaForObject"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

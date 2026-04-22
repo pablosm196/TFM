@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Detect object, move towards it, identify it; if object is available then take it, else scan area. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IdentifyObjects    /> <Action ID = MoveToObjects    /> <Action ID = TakeObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectNotDetected    /> <Condition ID = IsObjectAvailable    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectNotDetected": "Boolean"
+            },
+            {
+                "IsObjectAvailable": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObjects",
+                            "Name": "MoveToObjects"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "IdentifyObjects",
+                            "Name": "IdentifyObjects"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectAvailable?": "IsObjectAvailable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectNotDetected?": "IsObjectNotDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

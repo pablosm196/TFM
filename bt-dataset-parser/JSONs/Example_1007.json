@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and take object. If heavy, move it to designated area. If blocked, find alternative route. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDesignatedArea    /> <Condition ID = IsPathBlocked    /> <Action ID = FindAlternativeRoute    /> <Action ID = ScanEnvironment    /> <Condition ID = IsTaskSpecificObjectDetected    /> <SubTree ID = PerformTask    /> <Action ID = ContinueExploring    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsTaskSpecificObjectDetected": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedArea",
+                            "Name": "MoveObjectToDesignatedArea"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathBlocked?": "IsPathBlocked"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "FindAlternativeRoute",
+                                    "Name": "FindAlternativeRoute"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanEnvironment",
+                                    "Name": "ScanEnvironment"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskSpecificObjectDetected?": "IsTaskSpecificObjectDetected"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask",
+                                    "Name": "PerformTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ContinueExploring",
+                            "Name": "ContinueExploring"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

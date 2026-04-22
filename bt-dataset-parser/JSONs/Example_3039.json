@@ -1,0 +1,113 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and takes visible object. It checks properties, does task A or B. Searches again. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObjectProperties    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsTaskTypeA    /> <Condition ID = IsTaskTypeB    /> <Action ID = DoTaskTypeA    /> <Action ID = DoTaskTypeB    /> <Action ID = SearchForObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTaskTypeA": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsTaskTypeB": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObjectProperties",
+                                    "Name": "ProcessObjectProperties"
+                                },
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsTaskTypeA?": "IsTaskTypeA"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "DoTaskTypeA",
+                                                    "Name": "DoTaskTypeA"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsTaskTypeB?": "IsTaskTypeB"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "DoTaskTypeB",
+                                                    "Name": "DoTaskTypeB"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SearchForObject",
+                    "Name": "SearchForObject"
+                }
+            ]
+        }
+    }
+}

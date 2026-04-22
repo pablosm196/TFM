@@ -1,0 +1,74 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected: move to location, grab object, call assist if object is heavy, then process object. Or, if obstacle detected, avoid it. list of available nodes: <Action ID = MoveToLocation    /> <Action ID = GrabObject    /> <Action ID = CallAssist    /> <Action ID = AvoidObstacle    /> <Action ID = ScanArea    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObstacleDetected    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectGrabbed": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectGrabbed?": "IsObjectGrabbed"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToLocation",
+                            "Name": "MoveToLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CallAssist",
+                            "Name": "CallAssist"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ProcessObject",
+                    "Name": "ProcessObject"
+                }
+            ]
+        }
+    }
+}

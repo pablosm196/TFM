@@ -9,7 +9,7 @@
 /**
  *  Simple GameMode for a third person game
  */
-UCLASS(abstract)
+UCLASS()
 class ABTGeneratorGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
@@ -18,6 +18,9 @@ public:
 	
 	/** Constructor */
 	ABTGeneratorGameMode();
+
+protected:
+	virtual void BeginPlay() override;
 };
 
 

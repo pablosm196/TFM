@@ -1,0 +1,123 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and take it. If not, perform tasks 1 or 2. list of available nodes: <Action ID = ApproachObject    /> <Condition ID = IsObjectReachable    /> <Condition ID = IsTask2Needed    /> <Action ID = PerformTask2    /> <Sequence>     <Action ID = TakeObject    />     <Condition ID = IsObjectHeavy    /> </Sequence> <Action ID = MoveToObjectStorage    /> <Sequence>     <Action ID = PlaceObjectInStorage    />     <SubTree ID = ProcessObject    /> </Sequence> <Action ID = Idle    /> <Condition ID = IsTask1Needed    /> <Action ID = PerformTask1    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectReachable": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsTask2Needed": "Boolean"
+            },
+            {
+                "IsTask1Needed": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectReachable?": "IsObjectReachable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObjectStorage",
+                            "Name": "MoveToObjectStorage"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PlaceObjectInStorage",
+                            "Name": "PlaceObjectInStorage"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask1Needed?": "IsTask1Needed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask1",
+                                    "Name": "PerformTask1"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask2Needed?": "IsTask2Needed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask2",
+                                    "Name": "PerformTask2"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "Idle",
+                            "Name": "Idle"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

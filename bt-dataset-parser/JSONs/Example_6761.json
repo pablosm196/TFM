@@ -1,0 +1,108 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If robot is moving, stop it. Find and approach object, move & check properties, do specific task. Resume movement.     list of available nodes: <Action ID = StopRobot    /> <Action ID = MoveObjectToDestination    /> <Action ID = ResumeMovement    /> <Action ID = ScanArea    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsRobotMoving    /> <Condition ID = IsObjectMovable    /> <Action ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    /> <Action ID = ApproachObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsRobotMoving": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            },
+            {
+                "IsObjectGrabbed": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsRobotMoving?": "IsRobotMoving"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "StopRobot",
+                    "Name": "StopRobot"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectMovable?": "IsObjectMovable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDestination",
+                                    "Name": "MoveObjectToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectGrabbed?": "IsObjectGrabbed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanArea",
+                            "Name": "ScanArea"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ResumeMovement",
+                    "Name": "ResumeMovement"
+                }
+            ]
+        }
+    }
+}

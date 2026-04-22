@@ -1,0 +1,82 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find, approach and take light and green objects. Do specific task. Call assistant if heavy.     list of available nodes: <Action ID = ApproachObject    />  <Action ID = TakeObject    />  <Condition ID = IsObjectVisible    />  <Condition ID = IsObjectNear    />  <Condition ID = IsObjectLightweight    />  <Condition ID = IsObjectGreen    />  <Action ID = CallAssistant    />  <SubTree ID = GreenObjectTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectNear": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectGreen": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectLightweight": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectNear?": "IsObjectNear"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectLightweight?": "IsObjectLightweight"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectGreen?": "IsObjectGreen"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GreenObjectTask",
+                            "Name": "GreenObjectTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectHeavy?": "IsObjectHeavy"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "CallAssistant",
+                    "Name": "CallAssistant"
+                }
+            ]
+        }
+    }
+}

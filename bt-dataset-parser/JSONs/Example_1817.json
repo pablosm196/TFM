@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, take it, move to location, process object, complete task if possible otherwise scan area. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = MoveToTargetLocation    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectFound    /> <Condition ID = CanTakeObject    /> <Condition ID = IsTaskComplete    /> <Action ID = PerformSpecificTask    /> <Action ID = ScanArea    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "CanTakeObject": "Boolean"
+            },
+            {
+                "IsTaskComplete": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CanTakeObject?": "CanTakeObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToTargetLocation",
+                            "Name": "MoveToTargetLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsTaskComplete?": "IsTaskComplete"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "PerformSpecificTask",
+                                            "Name": "PerformSpecificTask"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanArea",
+                                    "Name": "ScanArea"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

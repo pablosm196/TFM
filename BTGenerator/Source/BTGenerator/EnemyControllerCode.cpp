@@ -49,6 +49,13 @@ AEnemyControllerCode::AEnemyControllerCode()
 	_perception->SetDominantSense(_sightConfig->GetSenseImplementation());
 }
 
+void AEnemyControllerCode::SetBT(std::string path)
+{
+	UBehaviorTree* Root = BTConstructor::Instance()->CreateBT(path, _blackBoard);
+	UseBlackboard(Root->BlackboardAsset, _blackBoard);
+	RunBehaviorTree(Root);
+}
+
 void AEnemyControllerCode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -60,7 +67,7 @@ void AEnemyControllerCode::BeginPlay()
 		_perception->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyControllerCode::OnPerceptionUpdated);
 	}
 
-	BTFactory::Init();
+	/*BTFactory::Init();
 	BTFactory* f = BTFactory::Instance();
 
 	f->RegisterTask<UMyBTTask_RotateToFaceBBEntry>("RotateToFaceBBEntry");
@@ -71,7 +78,7 @@ void AEnemyControllerCode::BeginPlay()
 
 	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?");
 
-	BTConstructor::Init();
+	BTConstructor::Init();*/
 
 	/*std::string command = "uv run C:/Users/pablo/Desktop/Uni/Master/TFM/llm-bt-generator/main.py ";
 	command += f->getAllTasks();
@@ -82,7 +89,7 @@ void AEnemyControllerCode::BeginPlay()
 	command += " ";
 	command += "Ejemplo_1";*/
 
-	FString t = f->getAllTasks().c_str();
+	/*FString t = f->getAllTasks().c_str();
 	FString d = f->getAllTasks().c_str();
 	FString prompt = TEXT("NPC that, constantly, select a random point from the map, goes to the point and waits a time.");
 	FString p = TEXT("Ejemplo_1");
@@ -119,7 +126,9 @@ void AEnemyControllerCode::BeginPlay()
 
 	UBehaviorTree* Root = BTConstructor::Instance()->CreateBT("Ejemplo1.json", _blackBoard);
 	UseBlackboard(Root->BlackboardAsset, _blackBoard);
-	RunBehaviorTree(Root);
+	RunBehaviorTree(Root);*/
+
+
 //
 //#pragma region BLACKBOARD
 //	UBlackboardData* BBAsset = NewObject<UBlackboardData>(this);

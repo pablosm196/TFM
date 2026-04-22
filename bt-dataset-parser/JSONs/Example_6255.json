@@ -1,0 +1,126 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and retrieve object. Check its properties. Perform task. Use fallback if needed. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = ApproachTarget    /> <Action ID = ScanForTarget    /> <Action ID = RetrieveObject    /> <Action ID = RetrieveTarget    /> <Action ID = HandleTargetGently    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsTargetSmall    /> <Condition ID = IsTargetFragile    /> <Condition ID = IsTargetFound    /> <SubTree ID = PerformTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTargetFragile": "Boolean"
+            },
+            {
+                "IsTargetSmall": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsTargetFound": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToTarget",
+                    "Name": "MoveToTarget"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectVisible?": "IsObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "RetrieveObject",
+                                    "Name": "RetrieveObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanForTarget",
+                                    "Name": "ScanForTarget"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTargetFound?": "IsTargetFound"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachTarget",
+                                    "Name": "ApproachTarget"
+                                },
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsTargetSmall?": "IsTargetSmall"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "RetrieveTarget",
+                                                    "Name": "RetrieveTarget"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsTargetFragile?": "IsTargetFragile"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "HandleTargetGently",
+                                                    "Name": "HandleTargetGently"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformTask",
+                    "Name": "PerformTask"
+                }
+            ]
+        }
+    }
+}

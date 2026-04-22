@@ -1,0 +1,125 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach visible object, pick it up carefully or not, then execute special task or scan again. list of available nodes: <Action ID = MoveToObject    /> <Action ID = ScanAreaForObjects    /> <Action ID = PickUpObject    /> <Action ID = HandleObjectCarefully    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsTaskSpecial    /> <SubTree ID = ExecuteSpecialTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTaskSpecial": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                },
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "PickUpObject",
+                                                    "Name": "PickUpObject"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectFragile?": "IsObjectFragile"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "HandleObjectCarefully",
+                                                    "Name": "HandleObjectCarefully"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [],
+                                                    "Nodes": [],
+                                                    "Task": "PickUpObject",
+                                                    "Name": "PickUpObject"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTaskSpecial?": "IsTaskSpecial"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ExecuteSpecialTask",
+                            "Name": "ExecuteSpecialTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

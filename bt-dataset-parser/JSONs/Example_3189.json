@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is approached, then take it. If it's heavy, move it to designated location, finally check properties or complete designated task.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = CheckObjectProperties    /> <Action ID = Rest    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsDesignatedLocationReached    /> <Condition ID = IsTask1Needed    /> <Condition ID = IsTask2Needed    /> <SubTree ID = Task1    /> <SubTree ID = Task2    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsTask2Needed": "Boolean"
+            },
+            {
+                "IsTask1Needed": "Boolean"
+            },
+            {
+                "IsDesignatedLocationReached": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectHeavy?": "IsObjectHeavy"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveObjectToDesignatedLocation",
+                    "Name": "MoveObjectToDesignatedLocation"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsDesignatedLocationReached?": "IsDesignatedLocationReached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CheckObjectProperties",
+                            "Name": "CheckObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask1Needed?": "IsTask1Needed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "Task1",
+                                    "Name": "Task1"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask2Needed?": "IsTask2Needed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "Task2",
+                                    "Name": "Task2"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "Rest",
+                            "Name": "Rest"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

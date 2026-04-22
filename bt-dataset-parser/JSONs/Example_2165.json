@@ -1,0 +1,104 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is close or visible, approach, take, and process it; then move to next location. list of available nodes: <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = CompleteTask    /> <Action ID = MoveToNextLocation    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject>     <Sequence>         <Condition ID = isObjectProcessed    />         <Action ID = CompleteTask    />     </Sequence> </SubTree> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectProcessed": "Boolean"
+            },
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectApproached?": "IsObjectApproached"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectProcessed?": "isObjectProcessed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CompleteTask",
+                                    "Name": "CompleteTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectProcessed?": "isObjectProcessed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CompleteTask",
+                                    "Name": "CompleteTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToNextLocation",
+                    "Name": "MoveToNextLocation"
+                }
+            ]
+        }
+    }
+}

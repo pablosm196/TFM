@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach it, pick it up, process it. Otherwise, scan for object.     list of available nodes: <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Sequence>     <Condition ID = IsRobotNearObject    />     <Action ID = PickUpObject    />     <SubTree ID = ProcessObject    /> </Sequence> <Fallback>     <Sequence>         <Condition ID = IsObjectBroken    />         <Action ID = DiscardObject    />     </Sequence>     <Action ID = ScanAreaForObject    /> </Fallback> <Action ID = PickUpObject    /> <Action ID = DiscardObject    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectBroken": "Boolean"
+            },
+            {
+                "IsRobotNearObject": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsRobotNearObject?": "IsRobotNearObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectBroken?": "IsObjectBroken"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "DiscardObject",
+                                    "Name": "DiscardObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

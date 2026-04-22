@@ -1,0 +1,119 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is approachable then grab it, process it, otherwise approach it, and scan the area. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = ScanArea    /> <Action ID = TakeObject    /> <Action ID = InspectObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsTargetDetected    /> <Condition ID = IsObjectMovable    /> <Condition ID = IsObjectShiny    /> <SubTree ID = DoSpecificTask    /> <Action ID = ChaseTarget    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectMovable": "Boolean"
+            },
+            {
+                "IsObjectShiny": "Boolean"
+            },
+            {
+                "IsTargetDetected": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToTarget",
+                    "Name": "MoveToTarget"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectDetected?": "IsObjectDetected"
+                                        }
+                                    ],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectMovable?": "IsObjectMovable"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "TakeObject",
+                                                    "Name": "TakeObject"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectShiny?": "IsObjectShiny"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "InspectObject",
+                                                    "Name": "InspectObject"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanArea",
+                                    "Name": "ScanArea"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTargetDetected?": "IsTargetDetected"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ChaseTarget",
+                                    "Name": "ChaseTarget"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "DoSpecificTask",
+                    "Name": "DoSpecificTask"
+                }
+            ]
+        }
+    }
+}

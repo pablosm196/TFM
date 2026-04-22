@@ -1,0 +1,106 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object. If visible, move to it. If not, scan area. Grab, process, and perform task.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = IsObjectVisible    /> <Action ID = IsObjectApproached    /> <SubTree ID = ProcessObject    /> <Action ID = IsObjectWithinReach    /> <Action ID = IsObjectInSight    /> <Action ID = IsPathClearToObject    /> <Action ID = MoveToObject    /> <Action ID = RotateToFindObject    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = PerformSpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            },
+            {
+                "IsPathClearToObject": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GrabObject",
+                                    "Name": "GrabObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ProcessObject",
+                                    "Name": "ProcessObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectInSight?": "IsObjectInSight"
+                                        }
+                                    ],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsPathClearToObject?": "IsPathClearToObject"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "MoveToObject",
+                                                    "Name": "MoveToObject"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "RotateToFindObject",
+                                            "Name": "RotateToFindObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformSpecificTask",
+                    "Name": "PerformSpecificTask"
+                }
+            ]
+        }
+    }
+}

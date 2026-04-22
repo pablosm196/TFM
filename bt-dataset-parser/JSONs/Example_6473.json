@@ -1,0 +1,146 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, take it if possible, analyze object type, and move to next target. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = ScanObject    /> <Action ID = TakeToMetallicContainer    /> <Action ID = TakeToOrganicContainer    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectSmall    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectMetallic    /> <Condition ID = IsObjectOrganic    /> <Action ID = MoveToNextTarget    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectSmall": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectMetallic": "Boolean"
+            },
+            {
+                "IsObjectOrganic": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectInRange?": "IsObjectInRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectSmall?": "IsObjectSmall"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "ScanObject",
+                                            "Name": "ScanObject"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Selector",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                                }
+                                            ],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Sequence",
+                                                    "Decorators": [],
+                                                    "Nodes": [
+                                                        {
+                                                            "Type": "Task",
+                                                            "Decorators": [
+                                                                {
+                                                                    "IsObjectMetallic?": "IsObjectMetallic"
+                                                                }
+                                                            ],
+                                                            "Nodes": [],
+                                                            "Task": "TakeToMetallicContainer",
+                                                            "Name": "TakeToMetallicContainer"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "Type": "Sequence",
+                                                    "Decorators": [],
+                                                    "Nodes": [
+                                                        {
+                                                            "Type": "Task",
+                                                            "Decorators": [
+                                                                {
+                                                                    "IsObjectOrganic?": "IsObjectOrganic"
+                                                                }
+                                                            ],
+                                                            "Nodes": [],
+                                                            "Task": "TakeToOrganicContainer",
+                                                            "Name": "TakeToOrganicContainer"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToNextTarget",
+                    "Name": "MoveToNextTarget"
+                }
+            ]
+        }
+    }
+}

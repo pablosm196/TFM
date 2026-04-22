@@ -31,9 +31,13 @@ void BTFactory::Release() {
 UBTTaskNode* BTFactory::GetTask(std::string ID) {
 	auto it = _currentTasks.find(ID);
 
-	if (it == _currentTasks.end()) return nullptr;
+	if (it != _currentTasks.end()) return static_cast<UBTTaskNode*>(it->second());
 
-	return static_cast<UBTTaskNode*>(it->second());
+	auto ot = _currentBBTasks.find(ID);
+
+	if (ot == _currentTasks.end()) return nullptr;
+
+	return static_cast<UBTTaskNode*>(ot->second());
 }
 
 UBTDecorator* BTFactory::GetDecorator(std::string ID)
@@ -55,6 +59,22 @@ std::string BTFactory::getAllTasks()
 
 	if (!tasks.empty())
 		tasks.pop_back();
+	else tasks = "_";
+
+	return tasks;
+}
+
+std::string BTFactory::getAllBlackboardTasks()
+{
+	std::string tasks = "";
+
+	for (auto it = _currentBBTasks.begin(); it != _currentBBTasks.end(); it++) {
+		tasks += it->first + ",";
+	}
+
+	if (!tasks.empty())
+		tasks.pop_back();
+	else tasks = "_";
 
 	return tasks;
 }
@@ -69,6 +89,7 @@ std::string BTFactory::getAllDecorators()
 
 	if (!decorators.empty())
 		decorators.pop_back();
+	else decorators = "_";
 
 	return decorators;
 }
@@ -81,7 +102,11 @@ bool BTFactory::TaskExists(std::string ID)
 {
 	auto it = _currentTasks.find(ID);
 
-	return it != _currentTasks.end();
+	if (it != _currentTasks.end()) return true;
+
+	auto ot = _currentBBTasks.find(ID);
+
+	return ot != _currentBBTasks.end();
 }
 
 bool BTFactory::DecoratorExists(std::string ID)

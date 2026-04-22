@@ -1,0 +1,121 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is reached, grab it. Adjust grip if object is heavy. Move to destination, place object. Otherwise, perform task or scan. list of available nodes: <Action ID = PickupObject    /> <Action ID = AdjustGrip    /> <Action ID = MoveToDestination    /> <Action ID = PlaceObject    /> <Action ID = ScanForObject    /> <Condition ID = IsObjectInReach    /> <Condition ID = HasArrived    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsTaskCompleted    /> <SubTree ID = PerformTask    /> <Action ID = ReturnToHome    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectInReach": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsTaskCompleted": "Boolean"
+            },
+            {
+                "HasArrived": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "PickupObject",
+                    "Name": "PickupObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AdjustGrip",
+                            "Name": "AdjustGrip"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToDestination",
+                    "Name": "MoveToDestination"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "HasArrived?": "HasArrived"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "PlaceObject",
+                    "Name": "PlaceObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectInReach?": "IsObjectInReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PerformTask",
+                                    "Name": "PerformTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskCompleted?": "IsTaskCompleted"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ReturnToHome",
+                                    "Name": "ReturnToHome"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObject",
+                            "Name": "ScanForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object seen, then move, grab it, then inspect/transfer it depending on its weight. list of available nodes: <Action ID = MoveToObj    /> <Action ID = GrabObj    /> <Action ID = MoveObjToLocation    /> <Action ID = InspectObj    /> <Condition ID = IsObjVisible    /> <Condition ID = IsObjHeavy    /> <Condition ID = IsObjLight    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjHeavy": "Boolean"
+            },
+            {
+                "IsObjLight": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObj",
+                    "Name": "MoveToObj"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "GrabObj",
+                    "Name": "GrabObj"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjHeavy?": "IsObjHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjToLocation",
+                                    "Name": "MoveObjToLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjLight?": "IsObjLight"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "InspectObj",
+                                    "Name": "InspectObj"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

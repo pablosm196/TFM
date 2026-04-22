@@ -1,0 +1,121 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, grab, and move to storage area. Then release, check shape, color, and scan area. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToObjectStorageArea    /> <Action ID = ReleaseObject    /> <Condition ID = IsObjectInsideGripper    /> <Condition ID = IsObjectInSight    /> <Condition ID = isObjectShapeSensorMismatch    /> <Condition ID = isObjectColorSensorMismatch    /> <Condition ID = isObjectInfraredSensorOutOfRange    /> <SubTree ID = CheckObjectShape    /> <SubTree ID = CheckObjectColor    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectInfraredSensorOutOfRange": "Boolean"
+            },
+            {
+                "isObjectColorSensorMismatch": "Boolean"
+            },
+            {
+                "IsObjectInSight": "Boolean"
+            },
+            {
+                "isObjectShapeSensorMismatch": "Boolean"
+            },
+            {
+                "IsObjectInsideGripper": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectInSight?": "IsObjectInSight"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectInsideGripper?": "IsObjectInsideGripper"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObjectStorageArea",
+                    "Name": "MoveToObjectStorageArea"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ReleaseObject",
+                    "Name": "ReleaseObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectInfraredSensorOutOfRange?": "isObjectInfraredSensorOutOfRange"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ScanAreaForObject",
+                                    "Name": "ScanAreaForObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectColorSensorMismatch?": "isObjectColorSensorMismatch"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectColor",
+                                    "Name": "CheckObjectColor"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "isObjectShapeSensorMismatch?": "isObjectShapeSensorMismatch"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectShape",
+                                    "Name": "CheckObjectShape"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

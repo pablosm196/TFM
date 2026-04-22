@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object, check properties, do subtask, if failed scan area or approach.     list of available nodes: <Action ID = TakeObject    /> <Action ID = FindHelp    /> <Action ID = LiftObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = CelebrateTaskCompletion    /> <Action ID = RetryTask    /> <Action ID = CheckTaskStatus    /> <Condition ID = IsTaskFinished    /> <Condition ID = IsTaskFailed    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsTaskFinished": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsTaskFailed": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObject",
+                    "Name": "TakeObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "FindHelp",
+                            "Name": "FindHelp"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "LiftObject",
+                            "Name": "LiftObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveObjectToDestination",
+                    "Name": "MoveObjectToDestination"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskFinished?": "IsTaskFinished"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CelebrateTaskCompletion",
+                                    "Name": "CelebrateTaskCompletion"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskFailed?": "IsTaskFailed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "RetryTask",
+                                    "Name": "RetryTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CheckTaskStatus",
+                            "Name": "CheckTaskStatus"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

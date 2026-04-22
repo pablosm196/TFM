@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. First approach the visible object, grasp it within range, inspect and do task if critical, finally scan the area. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectWithinRange    /> <Action ID = GraspObject    /> <SubTree ID = InspectObject    /> <Action ID = IsObjectOfCriticalValue    /> <SubTree ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "IsObjectOfCriticalValue": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinRange?": "IsObjectWithinRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GraspObject",
+                            "Name": "GraspObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "InspectObject",
+                            "Name": "InspectObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectOfCriticalValue?": "IsObjectOfCriticalValue"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "DoSpecificTask",
+                                    "Name": "DoSpecificTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObject",
+                    "Name": "ScanAreaForObject"
+                }
+            ]
+        }
+    }
+}

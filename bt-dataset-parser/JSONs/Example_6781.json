@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object. Approach and take it only if visible and reachable. Perform task. Scan if not. list of available nodes: <Action ID = CheckObjectProperties    /> <Action ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Action ID = IsObjectWithinReach    /> <SubTree ID = PerformTask    /> <Action ID = TakeObject    /> <Action ID = ScanArea    /> <Action ID = WaitForNewTask    /> <Action ID = IsPathAvailable    /> <Action ID = MoveToNewLocation    /> <Condition ID = IsObjectVisible    /> <Sequence>     <Action ID = MoveToObject    />     <Condition ID = IsObjectWithinReach    />     <Sequence>         <Action ID = TakeObject    />         <Action ID = CheckObjectProperties    />         <SubTree ID = PerformTask    />     </Sequence> </Sequence> <Sequence>     <Action ID = ScanArea    />     <Condition ID = IsPathAvailable    />     <Action ID = MoveToNewLocation    /> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsPathAvailable": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectProperties",
+                                    "Name": "CheckObjectProperties"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "PerformTask",
+                                    "Name": "PerformTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanArea",
+                                    "Name": "ScanArea"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathAvailable?": "IsPathAvailable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToNewLocation",
+                                    "Name": "MoveToNewLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "WaitForNewTask",
+                            "Name": "WaitForNewTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

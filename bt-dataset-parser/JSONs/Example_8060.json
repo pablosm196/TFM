@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan for objects, if reachable, grasp and check them, otherwise avoid obstacle and move forward. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = GraspObject    /> <Condition ID = IsObjectWithinReach    /> <Action ID = AvoidObstacle    /> <Action ID = MoveForward    /> <SubTree ID = CheckAndTakeObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObstaclePresent": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanForObjects",
+                    "Name": "ScanForObjects"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GraspObject",
+                                    "Name": "GraspObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckAndTakeObject",
+                                    "Name": "CheckAndTakeObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstaclePresent?": "IsObstaclePresent"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AvoidObstacle",
+                                    "Name": "AvoidObstacle"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveForward",
+                            "Name": "MoveForward"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

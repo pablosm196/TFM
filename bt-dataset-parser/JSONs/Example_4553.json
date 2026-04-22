@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find movable object, approach it, grab it, process it, drop it. If not found, scan or move randomly. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = DropObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectInView    /> <Condition ID = IsPathPossible    /> <Condition ID = IsObjectMovable    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToRandomLocation    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsPathPossible": "Boolean"
+            },
+            {
+                "IsObjectMovable": "Boolean"
+            },
+            {
+                "IsObjectInView": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectInView?": "IsObjectInView"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectMovable?": "IsObjectMovable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DropObject",
+                            "Name": "DropObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObject",
+                            "Name": "ScanAreaForObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsPathPossible?": "IsPathPossible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToRandomLocation",
+                                    "Name": "MoveToRandomLocation"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

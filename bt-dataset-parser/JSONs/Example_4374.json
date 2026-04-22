@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, approach and take it. Otherwise, move if obstacle on the way. Finally, check and perform task. list of available nodes: <Action ID = TurnToFaceObject    /> <Action ID = TakeObject    /> <Action ID = MoveToAnotherPosition    /> <Action ID = ApproachObject    /> <Action ID = PerformSpecificTask    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsRobotApproached    /> <Condition ID = IsObstacleInWay    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsRobotApproached": "Boolean"
+            },
+            {
+                "IsObstacleInWay": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsRobotApproached?": "IsRobotApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TurnToFaceObject",
+                    "Name": "TurnToFaceObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleInWay?": "IsObstacleInWay"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToAnotherPosition",
+                                    "Name": "MoveToAnotherPosition"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

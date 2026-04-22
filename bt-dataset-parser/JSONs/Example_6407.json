@@ -1,0 +1,100 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, move and take object. Then check object properties, do specific task.     list of available nodes: <Action ID = IsObjectVisible    /> <Condition ID = CanReachObject    /> <Action ID = MoveTowards    /> <Condition ID = IsObjectWithinRange    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallForHelp    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWithinRange": "Boolean"
+            },
+            {
+                "CanReachObject": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CanReachObject?": "CanReachObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowards",
+                            "Name": "MoveTowards"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectWithinRange?": "IsObjectWithinRange"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Selector",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Sequence",
+                                            "Decorators": [],
+                                            "Nodes": [
+                                                {
+                                                    "Type": "Task",
+                                                    "Decorators": [
+                                                        {
+                                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                                        }
+                                                    ],
+                                                    "Nodes": [],
+                                                    "Task": "CallForHelp",
+                                                    "Name": "CallForHelp"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "CheckObjectProperties",
+                                            "Name": "CheckObjectProperties"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

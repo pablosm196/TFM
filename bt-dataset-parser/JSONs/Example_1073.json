@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, move and take it. Check its properties and do a specific task. If not found, scan and search. list of available nodes: <Action ID = ScanAreaForObject    /> <Condition ID = ObjectFound    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = ObjectStatus    /> <Action ID = ApproachObject    /> <Action ID = ContinueSearching    /> <SubTree ID = SpecificTask    /> <Condition ID = ObjectVisible    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "ObjectStatus": "Boolean"
+            },
+            {
+                "ObjectFound": "Boolean"
+            },
+            {
+                "ObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "ObjectFound?": "ObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "ObjectStatus?": "ObjectStatus"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "SpecificTask",
+                            "Name": "SpecificTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ScanAreaForObject",
+                                    "Name": "ScanAreaForObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "ObjectVisible?": "ObjectVisible"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ContinueSearching",
+                            "Name": "ContinueSearching"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

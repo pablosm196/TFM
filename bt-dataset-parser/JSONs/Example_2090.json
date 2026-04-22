@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, then move and grab it. Check criteria, then do task 1 or task 2.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = DoesObjectFitCriteria    /> <Action ID = Task1    /> <Action ID = Task2    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTask2Enabled": "Boolean"
+            },
+            {
+                "IsTask1Enabled": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "DoesObjectFitCriteria": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "DoesObjectFitCriteria?": "DoesObjectFitCriteria"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask1Enabled?": "IsTask1Enabled"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "Task1",
+                                    "Name": "Task1"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTask2Enabled?": "IsTask2Enabled"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "Task2",
+                                    "Name": "Task2"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

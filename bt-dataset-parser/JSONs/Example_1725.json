@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Robot, find and take object to task location. If task location unknown, scan for object.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Condition ID = IsObjectDetected    /> <Action ID = MoveToTaskLocation    /> <Action ID = DoTask    /> <Condition ID = IsTaskLocationKnown    /> <SubTree ID = ScanForObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTaskLocationKnown": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToTaskLocation",
+                            "Name": "MoveToTaskLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DoTask",
+                            "Name": "DoTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskLocationKnown?": "IsTaskLocationKnown"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToTaskLocation",
+                                    "Name": "MoveToTaskLocation"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "DoTask",
+                                    "Name": "DoTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObject",
+                            "Name": "ScanForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

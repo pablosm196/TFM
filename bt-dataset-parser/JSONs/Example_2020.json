@@ -1,0 +1,91 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, then try to approach and take it, check its properties, finally scan area. list of available nodes: <Action ID = MoveToObject    /> <Action ID = ScanForObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectReached    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <SubTree ID = ObjectPropertiesTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectReached": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectReached?": "IsObjectReached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ObjectPropertiesTask",
+                                    "Name": "ObjectPropertiesTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "MoveToObject",
+                                    "Name": "MoveToObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectReached?": "IsObjectReached"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ObjectPropertiesTask",
+                                    "Name": "ObjectPropertiesTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObject",
+                            "Name": "ScanForObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

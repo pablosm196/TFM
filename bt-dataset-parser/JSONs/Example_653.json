@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If robot is at home, move to location, pick up object, check weight, move object, do task, and return home. list of available nodes: <Action ID = MoveToTargetLocation    /> <Action ID = PickUpObject    /> <Condition ID = IsRobotAtHome    /> <Action ID = ApproachObject    /> <SubTree ID = SpecificTask    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveObjectToLocation    /> <Action ID = ReturnHome    /> <Condition ID = IsObjectVisible    /> <Action ID = IsObjectClose    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsRobotAtHome": "Boolean"
+            },
+            {
+                "IsObjectClose": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsRobotAtHome?": "IsRobotAtHome"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToTargetLocation",
+                    "Name": "MoveToTargetLocation"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Selector",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectClose?": "IsObjectClose"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "PickUpObject",
+                                            "Name": "PickUpObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "CheckObjectWeight",
+                                            "Name": "CheckObjectWeight"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "MoveObjectToLocation",
+                                            "Name": "MoveObjectToLocation"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ReturnHome",
+                    "Name": "ReturnHome"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, move to it, check properties, and take it if safe. Then do specific task or find new object.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = CheckObjectProperties    /> <Action ID = TakeObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToNewObject    /> <Action ID = CheckNewObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsSafeToTakeObject": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsSafeToMoveToObject": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectProperties",
+                    "Name": "CheckObjectProperties"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsSafeToTakeObject?": "IsSafeToTakeObject"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TakeObject",
+                                    "Name": "TakeObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "SpecificTask",
+                                    "Name": "SpecificTask"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsSafeToMoveToObject?": "IsSafeToMoveToObject"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToNewObject",
+                                    "Name": "MoveToNewObject"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "CheckNewObjectProperties",
+                                    "Name": "CheckNewObjectProperties"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

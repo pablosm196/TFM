@@ -1,0 +1,97 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach it, then process it. Move towards destination, scan area. Finally, put object down or check battery level.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveForwards    /> <Action ID = PutObjectDown    /> <Action ID = CheckBatteryLevel    /> <Action ID = ScanArea    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObstacleFree    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectVisible    /> <Condition ID = isObjectInHand    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsDestinationReached": "Boolean"
+            },
+            {
+                "isObjectInHand": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObstacleFree": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleFree?": "IsObstacleFree"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveForwards",
+                            "Name": "MoveForwards"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanArea",
+                    "Name": "ScanArea"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "isObjectInHand?": "isObjectInHand"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PutObjectDown",
+                            "Name": "PutObjectDown"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckBatteryLevel",
+                    "Name": "CheckBatteryLevel"
+                }
+            ]
+        }
+    }
+}

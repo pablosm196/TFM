@@ -1,0 +1,75 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If clear path, move and place in storage. If not, avoid obstacles.     list of available nodes: <Action ID = TakeObject    /> <Action ID = ScanForObjects    /> <Action ID = CompleteTask    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToTarget    /> <Action ID = MoveToObjectStorage    /> <Condition ID = IsObstacleDetected    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectAvailable    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectPlacedCorrectly    /> <Subtree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectAvailable": "Boolean"
+            },
+            {
+                "IsObjectPlacedCorrectly": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectAvailable?": "IsObjectAvailable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToObjectStorage",
+                            "Name": "MoveToObjectStorage"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectPlacedCorrectly?": "IsObjectPlacedCorrectly"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CompleteTask",
+                            "Name": "CompleteTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanForObjects",
+                    "Name": "ScanForObjects"
+                }
+            ]
+        }
+    }
+}

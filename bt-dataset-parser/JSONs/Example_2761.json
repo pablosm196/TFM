@@ -1,0 +1,75 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach, take and check. Perform specific task if possible. Scan or move randomly if stuck. list of available nodes: <Action ID = ScanArea    /> <Action ID = MoveRandomly    /> <Action ID = TakeObject    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsObjectDetected    /> <Condition ID = CanApproachObject    /> <Condition ID = CheckObjectProperties    /> <Action ID = MoveToObject    /> <SubTree ID = ProcessObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsStuck    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "CheckObjectProperties": "Boolean"
+            },
+            {
+                "CanPerformSpecificTask": "Boolean"
+            },
+            {
+                "CanApproachObject": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectDetected?": "IsObjectDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CanApproachObject?": "CanApproachObject"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObject",
+                            "Name": "MoveToObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CheckObjectProperties?": "CheckObjectProperties"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "CanPerformSpecificTask?": "CanPerformSpecificTask"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "SpecificTask",
+                    "Name": "SpecificTask"
+                }
+            ]
+        }
+    }
+}

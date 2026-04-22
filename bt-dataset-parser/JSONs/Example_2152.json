@@ -1,0 +1,81 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Detect and approach item; pick it up; process it. If path is blocked then avoid obstacle or move randomly.     list of available nodes: <Action ID = ApproachItem    /> <Action ID = PickUpItem    /> <Action ID = ProcessItem    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToRandomLocation    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsItemDetected    /> <Condition ID = IsItemInRange    /> <SubTree ID = ProcessItem    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsItemInRange": "Boolean"
+            },
+            {
+                "IsItemDetected": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsItemDetected?": "IsItemDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsItemInRange?": "IsItemInRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachItem",
+                            "Name": "ApproachItem"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpItem",
+                            "Name": "PickUpItem"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessItem",
+                            "Name": "ProcessItem"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathBlocked?": "IsPathBlocked"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveToRandomLocation",
+                            "Name": "MoveToRandomLocation"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

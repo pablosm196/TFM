@@ -1,0 +1,128 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find, grab and process object. Move to destination, avoid obstacles. Act accordingly. Finalize release.     list of available nodes: <Action ID = MoveToObjLocation    /> <Condition ID = IsObstacleDetected    /> <SubTree ID = ProcessObject    /> <Action ID = CleanObject    /> <Action ID = GrabObject    /> <Action ID = ExploreArea    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectDetected    /> <Action ID = ReleaseObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjClean    /> <Condition ID = IsObjBroken    /> <Action ID = RepairObject    /> <Action ID = AvoidObstacle    /> <Condition ID = IsObjHeavy    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjClean": "Boolean"
+            },
+            {
+                "IsObjBroken": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjHeavy": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectDetected?": "IsObjectDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToObjLocation",
+                            "Name": "MoveToObjLocation"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjHeavy?": "IsObjHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToDestination",
+                            "Name": "MoveToDestination"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjClean?": "IsObjClean"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CleanObject",
+                                    "Name": "CleanObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjBroken?": "IsObjBroken"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "RepairObject",
+                                    "Name": "RepairObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ReleaseObject",
+                            "Name": "ReleaseObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleDetected?": "IsObstacleDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ExploreArea",
+                    "Name": "ExploreArea"
+                }
+            ]
+        }
+    }
+}

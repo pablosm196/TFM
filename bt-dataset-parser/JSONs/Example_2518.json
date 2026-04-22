@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, approach it, check weight, and perform task A, task B or default task. list of available nodes: <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLocated    /> <Action ID = CheckObjectWeight    /> <SubTree ID = TaskASubtree    /> <SubTree ID = TaskBSubtree    /> <Action ID = DefaultTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectLocated": "Boolean"
+            },
+            {
+                "IsTaskB": "Boolean"
+            },
+            {
+                "IsTaskA": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectLocated?": "IsObjectLocated"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectInRange?": "IsObjectInRange"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CheckObjectWeight",
+                            "Name": "CheckObjectWeight"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskA?": "IsTaskA"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TaskASubtree",
+                                    "Name": "TaskASubtree"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskB?": "IsTaskB"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "TaskBSubtree",
+                                    "Name": "TaskBSubtree"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DefaultTask",
+                            "Name": "DefaultTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

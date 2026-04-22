@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If battery level is good, move to target location and grab object if within reach. Otherwise, scan area.     list of available nodes: <Action ID = CheckBatteryLevel    /> <Action ID = MoveToTargetLocation    /> <Condition ID = IsObjectDetected    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectWithinReach    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObjectAttributes    /> <Action ID = DoSpecificTask    /> <Action ID = DropObject    /> <Action ID = ScanAreaForObjects    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "CheckBatteryLevel": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "CheckBatteryLevel?": "CheckBatteryLevel"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToTargetLocation",
+                    "Name": "MoveToTargetLocation"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectDetected?": "IsObjectDetected"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ApproachObject",
+                                    "Name": "ApproachObject"
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [
+                                                {
+                                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                                }
+                                            ],
+                                            "Nodes": [],
+                                            "Task": "GrabObject",
+                                            "Name": "GrabObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "ProcessObjectAttributes",
+                                            "Name": "ProcessObjectAttributes"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "DoSpecificTask",
+                                            "Name": "DoSpecificTask"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "DropObject",
+                                            "Name": "DropObject"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanAreaForObjects",
+                            "Name": "ScanAreaForObjects"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

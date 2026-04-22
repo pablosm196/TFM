@@ -1,0 +1,95 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, approach it and take it. Then, process it and complete the task. Or else, avoid obstacles and move.     list of available nodes: <Action ID = MoveAround    /> <Action ID = AvoidObstacle    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObstacleInFront    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = CanCompleteTask    /> <Action ID = TakeObject    /> <Action ID = CompleteTask    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObstacleInFront": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "CanCompleteTask": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectWithinReach?": "IsObjectWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "CanCompleteTask?": "CanCompleteTask"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CompleteTask",
+                            "Name": "CompleteTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleInFront?": "IsObstacleInFront"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveAround",
+                    "Name": "MoveAround"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,121 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, move towards it, pick it up, analyze it, keep or dispose it, perform specific task. Else if obstacle detected avoid it, otherwise explore the area.     list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Action ID = AnalyzeObjectProperties    /> <Action ID = ReturnObject    /> <Action ID = DisposeObject    /> <Action ID = PerformSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsWithinRange    /> <Condition ID = IsObjectWorthKeeping    /> <Condition ID = IsObstacleDetected    /> <Action ID = AvoidObstacle    /> <Action ID = ExploreArea    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectWorthKeeping": "Boolean"
+            },
+            {
+                "IsWithinRange": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObstacleDetected": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsWithinRange?": "IsWithinRange"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "AnalyzeObjectProperties",
+                            "Name": "AnalyzeObjectProperties"
+                        },
+                        {
+                            "Type": "Selector",
+                            "Decorators": [
+                                {
+                                    "IsObjectWorthKeeping?": "IsObjectWorthKeeping"
+                                }
+                            ],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "ReturnObject",
+                                    "Name": "ReturnObject"
+                                },
+                                {
+                                    "Type": "Sequence",
+                                    "Decorators": [],
+                                    "Nodes": [
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "DisposeObject",
+                                            "Name": "DisposeObject"
+                                        },
+                                        {
+                                            "Type": "Task",
+                                            "Decorators": [],
+                                            "Nodes": [],
+                                            "Task": "PerformSpecificTask",
+                                            "Name": "PerformSpecificTask"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleDetected?": "IsObstacleDetected"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ExploreArea",
+                    "Name": "ExploreArea"
+                }
+            ]
+        }
+    }
+}

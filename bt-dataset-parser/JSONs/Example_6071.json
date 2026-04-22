@@ -1,0 +1,73 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and pick it up. If not, scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectIsVisible    /> <Condition ID = RobotIsCloseToObject    /> <Condition ID = ObjectIsNotVisible    /> <SubTree ID = FindAndPickUpObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "RobotIsCloseToObject": "Boolean"
+            },
+            {
+                "ObjectIsVisible": "Boolean"
+            },
+            {
+                "ObjectIsNotVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "ObjectIsVisible?": "ObjectIsVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ApproachObject",
+                            "Name": "ApproachObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "RobotIsCloseToObject?": "RobotIsCloseToObject"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "PickUpObject",
+                                    "Name": "PickUpObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "ObjectIsNotVisible?": "ObjectIsNotVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "ScanArea",
+                            "Name": "ScanArea"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

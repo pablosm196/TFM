@@ -1,0 +1,100 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is in range, move to it, grab it and process it. If unhealthy fix it, otherwise dispose it. list of available nodes: <Action ID = MoveToObject    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectTouchable    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectHealthy    /> <Action ID = FixObject    /> <Condition ID = IsObjectHarmful    /> <Action ID = DisposeObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectHealthy": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsObjectTouchable": "Boolean"
+            },
+            {
+                "IsObjectHarmful": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectInRange?": "IsObjectInRange"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObject",
+                    "Name": "MoveToObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectTouchable?": "IsObjectTouchable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHealthy?": "IsObjectHealthy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "FixObject",
+                                    "Name": "FixObject"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHarmful?": "IsObjectHarmful"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "DisposeObject",
+                                    "Name": "DisposeObject"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

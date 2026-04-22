@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, pick up and move to destination; if not in sight, scan area; idle. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = MoveToScanArea    /> <Action ID = ScanForObjects    /> <Condition ID = ObjectFound    /> <Condition ID = ObjectNotInSight    /> <Condition ID = ObjectIsHeavy    /> <SubTree ID = ProcessObjectProperties    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "ObjectIsHeavy": "Boolean"
+            },
+            {
+                "ObjectFound": "Boolean"
+            },
+            {
+                "ObjectNotInSight": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "ObjectFound?": "ObjectFound"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "ObjectIsHeavy?": "ObjectIsHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjectToDestination",
+                                    "Name": "MoveObjectToDestination"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObjectProperties",
+                            "Name": "ProcessObjectProperties"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "ObjectNotInSight?": "ObjectNotInSight"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToScanArea",
+                            "Name": "MoveToScanArea"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ScanForObjects",
+                            "Name": "ScanForObjects"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "Idle",
+                    "Name": "Idle"
+                }
+            ]
+        }
+    }
+}

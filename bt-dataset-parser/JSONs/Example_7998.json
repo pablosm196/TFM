@@ -1,0 +1,107 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, approach and pick it up. Then, move or check it for damage/electronics. Finally, bring it to the destination. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickupObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = CheckObjectForDamage    /> <Action ID = InspectObjectForBatteryLevel    /> <Action ID = BringObjectToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = isObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectElectronic    /> <SubTree ID = RobotTasks    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "isObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectElectronic": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PickupObject",
+                    "Name": "PickupObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "isObjectHeavy?": "isObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToLocation",
+                            "Name": "MoveObjectToLocation"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CheckObjectForDamage",
+                                    "Name": "CheckObjectForDamage"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectElectronic?": "IsObjectElectronic"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "InspectObjectForBatteryLevel",
+                                    "Name": "InspectObjectForBatteryLevel"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "BringObjectToDestination",
+                            "Name": "BringObjectToDestination"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

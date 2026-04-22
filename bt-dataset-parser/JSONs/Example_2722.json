@@ -1,0 +1,101 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach object, take it if possible, handle carefully if fragile or move it to designated location if heavy, complete task, return home. list of available nodes: <Action ID = MoveToObj    /> <Action ID = TakeObj    /> <Action ID = MoveObjToDesignatedLocation    /> <Action ID = HandleObjWithCare    /> <Action ID = ReturnToHome    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjHeavy    /> <Condition ID = IsObjFragile    /> <SubTree ID = CustomTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjHeavy": "Boolean"
+            },
+            {
+                "IsObjFragile": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "MoveToObj",
+                    "Name": "MoveToObj"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectWithinReach?": "IsObjectWithinReach"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "TakeObj",
+                    "Name": "TakeObj"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjHeavy?": "IsObjHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveObjToDesignatedLocation",
+                                    "Name": "MoveObjToDesignatedLocation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjFragile?": "IsObjFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "HandleObjWithCare",
+                                    "Name": "HandleObjWithCare"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CustomTask",
+                            "Name": "CustomTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ReturnToHome",
+                    "Name": "ReturnToHome"
+                }
+            ]
+        }
+    }
+}

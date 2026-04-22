@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Retrieve objects with a robot: If an object is visible, move towards and pick it up. Otherwise, find an alternate path. Finally, scan the area for objects. Go!     list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToStorage    /> <Action ID = FindAlternatePath    /> <SubTree ID = MobileRobotTask    /> <Condition ID = IsObjectVisible    /> <Action ID = StoreObject    /> <Action ID = ScanAreaForObjects    /> <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Sequence>     <Condition ID = IsPathBlocked    />     <Action ID = FindAlternatePath    /> </Sequence> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = MoveTowardsObject    />     <Action ID = PickUpObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveToStorage    />     <Action ID = StoreObject    /> </Sequence>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsPathBlocked": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectVisible?": "IsObjectVisible"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveTowardsObject",
+                            "Name": "MoveTowardsObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToStorage",
+                            "Name": "MoveToStorage"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "StoreObject",
+                            "Name": "StoreObject"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathBlocked?": "IsPathBlocked"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "FindAlternatePath",
+                            "Name": "FindAlternatePath"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "ScanAreaForObjects",
+                    "Name": "ScanAreaForObjects"
+                }
+            ]
+        }
+    }
+}

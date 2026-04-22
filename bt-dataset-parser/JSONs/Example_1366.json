@@ -1,0 +1,121 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and grab it. Process and move it to target location. Avoid obstacles and rotate. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsRobotNearTargetLocation    /> <Condition ID = IsTaskDone    /> <Condition ID = IsObstacleAvoided    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToTargetLocation    /> <Action ID = DropObject    /> <Action ID = MoveForward    /> <Action ID = RotateRobot    /> <SubTree ID = ProcessObject    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectInRange": "Boolean"
+            },
+            {
+                "IsRobotNearTargetLocation": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsTaskDone": "Boolean"
+            },
+            {
+                "IsObstacleAvoided": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectVisible?": "IsObjectVisible"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectInRange?": "IsObjectInRange"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "GrabObject",
+                            "Name": "GrabObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsRobotNearTargetLocation?": "IsRobotNearTargetLocation"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveToTargetLocation",
+                                    "Name": "MoveToTargetLocation"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTaskDone?": "IsTaskDone"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "DropObject",
+                                    "Name": "DropObject"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleAvoided?": "IsObstacleAvoided"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "MoveForward",
+                                    "Name": "MoveForward"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "RotateRobot",
+                            "Name": "RotateRobot"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

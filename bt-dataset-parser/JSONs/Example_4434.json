@@ -1,0 +1,114 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is close, pick it up, store it, and perform task with it, handling it appropriately. list of available nodes: <Action ID = MoveToObjectStorage    /> <Action ID = PickupObject    /> <Action ID = ScanObjectForAuthenticity    /> <Action ID = HandleObjectWithCare    /> <Action ID = AskForHelp    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectInStorage    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectApproached    /> <Action ID = MoveToObjectStorage    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectApproached": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsObjectInStorage": "Boolean"
+            },
+            {
+                "IsObjectOfValue": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectApproached?": "IsObjectApproached"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "PickupObject",
+                    "Name": "PickupObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveToObjectStorage",
+                    "Name": "MoveToObjectStorage"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [
+                        {
+                            "IsObjectInStorage?": "IsObjectInStorage"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AskForHelp",
+                                    "Name": "AskForHelp"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectFragile?": "IsObjectFragile"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "HandleObjectWithCare",
+                                    "Name": "HandleObjectWithCare"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectOfValue?": "IsObjectOfValue"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "ScanObjectForAuthenticity",
+                                    "Name": "ScanObjectForAuthenticity"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PerformTask",
+                    "Name": "PerformTask"
+                }
+            ]
+        }
+    }
+}

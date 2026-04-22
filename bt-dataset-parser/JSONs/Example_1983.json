@@ -1,0 +1,67 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and collect the target. If detected, move and analyze it in order to collect. Scan area for the target otherwise. list of available nodes: <Action ID = IsTargetDetected    /> <Condition ID = IsTargetWithinReach    /> <Action ID = CollectTarget    /> <SubTree ID = ProcessTarget>     <Sequence>         <Action ID = AnalyzeTarget    />         <Condition ID = IsTargetGoodQuality    />     </Sequence> </SubTree> <Action ID = MoveTowardsTarget    /> <Action ID = ScanAreaForTarget    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsTargetWithinReach": "Boolean"
+            },
+            {
+                "IsTargetDetected": "Boolean"
+            },
+            {
+                "IsTargetGoodQuality": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsTargetDetected?": "IsTargetDetected"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsTargetWithinReach?": "IsTargetWithinReach"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "CollectTarget",
+                            "Name": "CollectTarget"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsTargetGoodQuality?": "IsTargetGoodQuality"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AnalyzeTarget",
+                                    "Name": "AnalyzeTarget"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "MoveTowardsTarget",
+                    "Name": "MoveTowardsTarget"
+                }
+            ]
+        }
+    }
+}

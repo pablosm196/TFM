@@ -1,0 +1,127 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, pick up object, move object to area, check object, navigate carefully. Keep battery charge. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = InitiateSpecialHandlingProtocol    /> <Action ID = CheckObjectColor    /> <Action ID = GoToChargingStation    /> <Action ID = NavigateAroundObstacle    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsRobotLowOnCharge    /> <Condition ID = IsObstacleInPath    />  <SubTree ID = OperateMobileRobot    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFragile": "Boolean"
+            },
+            {
+                "IsRobotLowOnCharge": "Boolean"
+            },
+            {
+                "IsObstacleInPath": "Boolean"
+            },
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "PickUpObject",
+                    "Name": "PickUpObject"
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectHeavy?": "IsObjectHeavy"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveObjectToDesignatedArea",
+                            "Name": "MoveObjectToDesignatedArea"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectFragile?": "IsObjectFragile"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "InitiateSpecialHandlingProtocol",
+                            "Name": "InitiateSpecialHandlingProtocol"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "CheckObjectColor",
+                    "Name": "CheckObjectColor"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsRobotLowOnCharge?": "IsRobotLowOnCharge"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "GoToChargingStation",
+                                    "Name": "GoToChargingStation"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObstacleInPath?": "IsObstacleInPath"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "NavigateAroundObstacle",
+                                    "Name": "NavigateAroundObstacle"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ContinueTask",
+                            "Name": "ContinueTask"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

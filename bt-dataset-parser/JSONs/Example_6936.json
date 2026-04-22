@@ -1,0 +1,54 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. First find object, if found, pick up, transport, process it. Else, approach or scan the area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = PickupObject    /> <Action ID = TransportObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectTransportable    /> <SubTree ID = ProcessObject    /> <BehaviorTree ID = FindAndTransportObject>   <Sequence>       <Condition ID = IsObjectFound    />       <Sequence>           <Action ID = PickupObject    />           <Condition ID = IsObjectTransportable    />           <Action ID = TransportObject    />           <SubTree ID = ProcessObject    />       </Sequence>   </Sequence>   <Fallback>       <Sequence>           <Condition ID = IsObjectVisible    />           <Action ID = ApproachObject    />       </Sequence>       <Action ID = ScanAreaForObject    />   </Fallback> </BehaviorTree>",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectFound": "Boolean"
+            },
+            {
+                "IsObjectTransportable": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [
+                        {
+                            "IsObjectFound?": "IsObjectFound"
+                        }
+                    ],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "PickupObject",
+                            "Name": "PickupObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectTransportable?": "IsObjectTransportable"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "TransportObject",
+                            "Name": "TransportObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "ProcessObject",
+                            "Name": "ProcessObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

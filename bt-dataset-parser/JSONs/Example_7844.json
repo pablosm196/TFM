@@ -1,0 +1,80 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is detected, then approach and take it. If heavy, call for help. Finally, complete the task or match properties.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = ObjectPropertiesMatch    /> <SubTree ID = CompleteTask    /> <Action ID = CallForHelp    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "ObjectPropertiesMatch": "Boolean"
+            },
+            {
+                "ObjectDetected": "Boolean"
+            },
+            {
+                "IsObjectHeavy": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "ObjectDetected?": "ObjectDetected"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PickUpObject",
+                    "Name": "PickUpObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectHeavy?": "IsObjectHeavy"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CallForHelp",
+                                    "Name": "CallForHelp"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "ObjectPropertiesMatch?": "ObjectPropertiesMatch"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "CompleteTask",
+                                    "Name": "CompleteTask"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

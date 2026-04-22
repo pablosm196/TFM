@@ -1,0 +1,88 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If not visible, scan. Move to holder. Check, empty. Do custom task. Avoid obstacles.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = IsObjectApproached    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = IsObjectVisible    /> <Action ID = ScanAreaForObject    /> <Action ID = IsObjectNearby    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToHolder    /> <Action ID = IsHolderFull    /> <Action ID = EmptyHolder    /> <SubTree ID = CustomTask    /> <Action ID = IsObstacleInFront    /> <Action ID = AvoidObstacle    /> <Action ID = PatrolArea    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObstacleInFront": "Boolean"
+            },
+            {
+                "IsHolderFull": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectNearby?": "IsObjectNearby"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "PickUpObject",
+                            "Name": "PickUpObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "MoveObjectToHolder",
+                            "Name": "MoveObjectToHolder"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsHolderFull?": "IsHolderFull"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "EmptyHolder",
+                            "Name": "EmptyHolder"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "CustomTask",
+                            "Name": "CustomTask"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObstacleInFront?": "IsObstacleInFront"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "AvoidObstacle",
+                            "Name": "AvoidObstacle"
+                        }
+                    ]
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [],
+                    "Nodes": [],
+                    "Task": "PatrolArea",
+                    "Name": "PatrolArea"
+                }
+            ]
+        }
+    }
+}

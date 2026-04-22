@@ -1,0 +1,94 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach and grab. If red, sort to red bin, blue to blue bin, or drop. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = SortObjectToRedBin    /> <Action ID = SortObjectToBlueBin    /> <Action ID = DropObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectBlue    /> <SubTree ID = RobotTask    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectBlue": "Boolean"
+            },
+            {
+                "IsObjectGrabbable": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            },
+            {
+                "IsObjectRed": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Sequence",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectNearby?": "IsObjectNearby"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "ApproachObject",
+                    "Name": "ApproachObject"
+                },
+                {
+                    "Type": "Task",
+                    "Decorators": [
+                        {
+                            "IsObjectGrabbable?": "IsObjectGrabbable"
+                        }
+                    ],
+                    "Nodes": [],
+                    "Task": "GrabObject",
+                    "Name": "GrabObject"
+                },
+                {
+                    "Type": "Selector",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectRed?": "IsObjectRed"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "SortObjectToRedBin",
+                                    "Name": "SortObjectToRedBin"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectBlue?": "IsObjectBlue"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "SortObjectToBlueBin",
+                                    "Name": "SortObjectToBlueBin"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "DropObject",
+                            "Name": "DropObject"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

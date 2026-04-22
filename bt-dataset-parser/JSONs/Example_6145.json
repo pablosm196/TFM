@@ -1,0 +1,87 @@
+{
+    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, move, take and analyze it, then do specific task. Else, avoid obstacles. list of available nodes: <Action ID = AnalyzeObjectProperties    /> <Action ID = DoSpecificTask    /> <Action ID = MoveToTargetObject    /> <Action ID = TakeObject    /> <Action ID = MoveAroundObstacles    /> <Action ID = IsObjectNearby    /> <Action ID = IsPathBlocked    /> <Condition ID = IsObjectDesirable    />",
+    "BT": {
+        "Blackboard": [
+            {
+                "IsObjectDesirable": "Boolean"
+            },
+            {
+                "IsObjectNearby": "Boolean"
+            },
+            {
+                "IsPathBlocked": "Boolean"
+            }
+        ],
+        "Node": {
+            "Type": "Selector",
+            "Decorators": [],
+            "Nodes": [
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsObjectNearby?": "IsObjectNearby"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveToTargetObject",
+                            "Name": "MoveToTargetObject"
+                        },
+                        {
+                            "Type": "Task",
+                            "Decorators": [],
+                            "Nodes": [],
+                            "Task": "TakeObject",
+                            "Name": "TakeObject"
+                        },
+                        {
+                            "Type": "Sequence",
+                            "Decorators": [],
+                            "Nodes": [
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [
+                                        {
+                                            "IsObjectDesirable?": "IsObjectDesirable"
+                                        }
+                                    ],
+                                    "Nodes": [],
+                                    "Task": "AnalyzeObjectProperties",
+                                    "Name": "AnalyzeObjectProperties"
+                                },
+                                {
+                                    "Type": "Task",
+                                    "Decorators": [],
+                                    "Nodes": [],
+                                    "Task": "DoSpecificTask",
+                                    "Name": "DoSpecificTask"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Type": "Sequence",
+                    "Decorators": [],
+                    "Nodes": [
+                        {
+                            "Type": "Task",
+                            "Decorators": [
+                                {
+                                    "IsPathBlocked?": "IsPathBlocked"
+                                }
+                            ],
+                            "Nodes": [],
+                            "Task": "MoveAroundObstacles",
+                            "Name": "MoveAroundObstacles"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
