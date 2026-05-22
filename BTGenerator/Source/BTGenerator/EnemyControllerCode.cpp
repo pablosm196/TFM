@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "EnemyControllerCode.h"
 
+#include "EngineUtils.h"
+#include "BTGeneratorComponent.h"
+
 //Clases base
 #include "BehaviorTree/BehaviorTree.h"
 
@@ -51,9 +54,9 @@ AEnemyControllerCode::AEnemyControllerCode()
 
 void AEnemyControllerCode::SetBT(std::string path)
 {
-	UBehaviorTree* Root = BTConstructor::Instance()->CreateBT(path, _blackBoard);
-	UseBlackboard(Root->BlackboardAsset, _blackBoard);
-	RunBehaviorTree(Root);
+	_root = BTConstructor::Instance()->CreateBT(path, _blackBoard);
+	UseBlackboard(_root->BlackboardAsset, _blackBoard);
+	RunBehaviorTree(_root);
 }
 
 void AEnemyControllerCode::BeginPlay()
@@ -66,6 +69,22 @@ void AEnemyControllerCode::BeginPlay()
 	if (_perception) {
 		_perception->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyControllerCode::OnPerceptionUpdated);
 	}
+
+	FString name;
+
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		if (It->Tags.Contains("Generator"))
+		{
+			if (UBTGeneratorComponent* Comp = It->FindComponentByClass<UBTGeneratorComponent>())
+			{
+				name = Comp->getBTName();
+				break;
+			}
+		}
+	}
+
+	SetBT(TCHAR_TO_UTF8(*name));
 
 	/*BTFactory::Init();
 	BTFactory* f = BTFactory::Instance();

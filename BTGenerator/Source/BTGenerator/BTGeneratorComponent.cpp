@@ -37,20 +37,8 @@ void UBTGeneratorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-
-	//BTFactory::Init();
-	//BTFactory* f = BTFactory::Instance();
-
-	//f->RegisterTask<UMyBTTask_RotateToFaceBBEntry>("RotateToFaceBBEntry");
-	//f->RegisterTask<UBTTask_ChasePlayer>("ChasePlayer");
-	//f->RegisterTask<UMyBTTask_MoveTo>("MoveTo");
-	//f->RegisterTask<UBTTask_FindRandomPatrol>("FindRandomPatrol");
-	//f->RegisterTask<UBTTask_Wait>("Wait");
-
-	//f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?");
-
-	//BTConstructor::Init();
+	if (BehaviorList::Init())
+		_list = BehaviorList::Instance();
 }
 
 void UBTGeneratorComponent::GenerateBT()
@@ -58,21 +46,21 @@ void UBTGeneratorComponent::GenerateBT()
 	BTFactory::Init();
 	BTFactory* f = BTFactory::Instance();
 
-	f->RegisterBlackboardTask<UMyBTTask_RotateToFaceBBEntry>("RotateToFaceBBEntry");
-	f->RegisterTask<UBTTask_ChasePlayer>("ChasePlayer");
-	f->RegisterBlackboardTask<UMyBTTask_MoveTo>("MoveTo");
-	f->RegisterTask<UBTTask_FindRandomPatrol>("FindRandomPatrol");
-	f->RegisterTask<UBTTask_Wait>("Wait");
-	f->RegisterTask<UPickRedFlowerTask>("PickRedFlower");
-	f->RegisterTask<UPickYellowFlowerTask>("PickYellowFlower");
-	f->RegisterTask<UPickBlueFlowerTask>("PickBlueFlower");
-	f->RegisterTask<UPickBlackFlowerTask>("PickBlackFlower");
-	f->RegisterBlackboardTask<UBTTask_ChooseRedFlower>("ChooseRedFlower");
-	f->RegisterBlackboardTask<UBTTask_ChooseYellowFlower>("ChooseYellowFlower");
-	f->RegisterBlackboardTask<UBTTask_ChooseBlueFlower>("ChooseBlueFlower");
-	f->RegisterBlackboardTask<UBTTask_ChooseBlackFlower>("ChooseBlackFlower");
+	f->RegisterBlackboardTask<UMyBTTask_RotateToFaceBBEntry>("RotateToFaceBBEntry", "Rotate until facing the target");
+	f->RegisterTask<UBTTask_ChasePlayer>("ChasePlayer", "Chases the player");
+	f->RegisterBlackboardTask<UMyBTTask_MoveTo>("MoveTo", "Moves to the target position or object");
+	f->RegisterTask<UBTTask_FindRandomPatrol>("FindRandomPatrol", "Choose a random point from the map and stores in the target");
+	f->RegisterTask<UBTTask_Wait>("Wait", "Does nothing for a while");
+	f->RegisterTask<UPickRedFlowerTask>("PickRedFlower", "Pick a red flower");
+	f->RegisterTask<UPickYellowFlowerTask>("PickYellowFlower", "Pick a yellow flower");
+	f->RegisterTask<UPickBlueFlowerTask>("PickBlueFlower", "Pick a blue flower");
+	f->RegisterTask<UPickBlackFlowerTask>("PickBlackFlower", "Pick a black flower");
+	f->RegisterBlackboardTask<UBTTask_ChooseRedFlower>("ChooseRedFlower", "Choose one red flower as a target");
+	f->RegisterBlackboardTask<UBTTask_ChooseYellowFlower>("ChooseYellowFlower", "Choose one yellow flower as a target");
+	f->RegisterBlackboardTask<UBTTask_ChooseBlueFlower>("ChooseBlueFlower", "Choose one blue flower as a target");
+	f->RegisterBlackboardTask<UBTTask_ChooseBlackFlower>("ChooseBlackFlower", "Choose one black flower as a target");
 
-	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?");
+	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?", "True if the player is in the line of sight, false if not");
 
 	BTConstructor::Init();
 
@@ -80,19 +68,21 @@ void UBTGeneratorComponent::GenerateBT()
 	FString bbt = f->getAllBlackboardTasks().c_str();
 	FString d = f->getAllTasks().c_str();
 	FString p = _BTName;
+	FString entries = "[{\"\"Flower\"\" : \"\"Object\"\"}]";
 
 	FString UVExe = TEXT("python");
 	//FString UVExe = TEXT("uv");
 
 	FString ScriptPath = TEXT("C:/Users/pablo/Desktop/Uni/Master/TFM/llm-bt-generator/main.py");
 	FString Args = FString::Printf(
-		TEXT("%s %s %s %s \"%s\" %s"),
+		TEXT("%s \"%s\" \"%s\" \"%s\" \"%s\" %s \"%s\""),
 		*ScriptPath,
 		*t,
 		*bbt,
 		*d,
 		*_prompt,
-		*p
+		*p,
+		*entries
 	);
 
 	int32 ReturnCode = 0;
@@ -115,8 +105,6 @@ void UBTGeneratorComponent::GenerateBT()
 	if (GEditor)
 		GEditor->RequestPlaySession(FRequestPlaySessionParams());
 #endif
-
-	//AEnemyControllerCode* controller = Cast<AEnemyControllerCode>(_pawn->GetController());
 }
 
 

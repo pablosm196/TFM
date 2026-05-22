@@ -36,6 +36,9 @@ private:
 	UPROPERTY()
 	UBehaviorTreeComponent* _behaviorTree = nullptr;
 
+	UPROPERTY()
+	UBehaviorTree* _root;
+
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	UAIPerceptionComponent* _perception;
 

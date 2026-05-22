@@ -38,8 +38,12 @@ public:
 
 	void resetLists();
 protected:
-	std::list<AActor*> _redFlowers;
-	std::list<AActor*> _blueFlowers;
-	std::list<AActor*> _yellowFlowers;
-	std::list<AActor*> _blackFlowers;
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> _redFlowers;
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> _blueFlowers;
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> _yellowFlowers;
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> _blackFlowers;
 };

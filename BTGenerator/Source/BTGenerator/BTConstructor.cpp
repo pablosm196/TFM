@@ -51,16 +51,17 @@ void BTConstructor::Release() {
 }
 
 UBehaviorTree* BTConstructor::CreateBT(std::string file, UBlackboardComponent* blackboard) {
-	std::string route = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())).append(BASE_ROUTE).append(file);
+	std::string route = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())).append(BASE_ROUTE).append(file).append(".json");
 	std::ifstream f(route);
 	json data = json::parse(f);
 	
-	UBlackboardData* BBAsset = CreateBlackboardAsset(data["Blackboard"], blackboard);
+	UBehaviorTree* Root = NewObject<UBehaviorTree>(GetTransientPackage());
+	BTFactory::Instance()->setOwner(Root);
+	UBlackboardData* BBAsset = CreateBlackboardAsset(data["BT"]["Blackboard"], blackboard, Root);
 	if (BBAsset == nullptr)
 		return nullptr;
 
-	FBTCompositeChild RootNode = CreateNode(data["Node"], BBAsset);
-	UBehaviorTree* Root = NewObject<UBehaviorTree>();
+	FBTCompositeChild RootNode = CreateNode(data["BT"]["Root"]["Node"], BBAsset, Root);
 
 	Root->RootNode = RootNode.ChildComposite;
 	Root->BlackboardAsset = BBAsset;
@@ -71,8 +72,8 @@ bool BTConstructor::init() {
 	return true;
 }
 
-UBlackboardData* BTConstructor::CreateBlackboardAsset(json data, UBlackboardComponent* blackboard) {
-	UBlackboardData* BBAsset = NewObject<UBlackboardData>();
+UBlackboardData* BTConstructor::CreateBlackboardAsset(json data, UBlackboardComponent* blackboard, UObject* outer) {
+	UBlackboardData* BBAsset = NewObject<UBlackboardData>(outer);
 
 	for (auto& it : data) {
 
@@ -86,17 +87,17 @@ UBlackboardData* BTConstructor::CreateBlackboardAsset(json data, UBlackboardComp
 			entry.EntryName = FName(key.c_str());
 
 			if(value == "Bool")
-				entry.KeyType = NewObject<UBlackboardKeyType_Bool>();
+				entry.KeyType = NewObject<UBlackboardKeyType_Bool>(BBAsset);
 			else if(value == "Int")
-				entry.KeyType = NewObject<UBlackboardKeyType_Int>();
+				entry.KeyType = NewObject<UBlackboardKeyType_Int>(BBAsset);
 			else if (value == "Float")
-				entry.KeyType = NewObject<UBlackboardKeyType_Float>();
+				entry.KeyType = NewObject<UBlackboardKeyType_Float>(BBAsset);
 			else if (value == "Vector")
-				entry.KeyType = NewObject<UBlackboardKeyType_Vector>();
+				entry.KeyType = NewObject<UBlackboardKeyType_Vector>(BBAsset);
 			else if (value == "Object")
-				entry.KeyType = NewObject<UBlackboardKeyType_Object>();
+				entry.KeyType = NewObject<UBlackboardKeyType_Object>(BBAsset);
 			else if (value == "String")
-				entry.KeyType = NewObject<UBlackboardKeyType_String>();
+				entry.KeyType = NewObject<UBlackboardKeyType_String>(BBAsset);
 		}
 
 		BBAsset->Keys.Add(entry);
@@ -108,22 +109,24 @@ UBlackboardData* BTConstructor::CreateBlackboardAsset(json data, UBlackboardComp
 	return BBAsset;
 }
 
-FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset)
+FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset, UBehaviorTree* ownerTree)
 {
 	FBTCompositeChild composite;
 
 	if (data["Type"] != "Task") {
 		UBTCompositeNode* compositeNode = nullptr;
 		if (data["Type"] == "Selector")
-			compositeNode = NewObject<UBTComposite_Selector>();
+			compositeNode = NewObject<UBTComposite_Selector>(ownerTree);
 		else if (data["Type"] == "Sequence")
-			compositeNode = NewObject<UBTComposite_Sequence>();
+			compositeNode = NewObject<UBTComposite_Sequence>(ownerTree);
 		else if (data["Type"] == "Parallel")
-			compositeNode = NewObject<UBTComposite_SimpleParallel>();
+			compositeNode = NewObject<UBTComposite_SimpleParallel>(ownerTree);
 		else FBTCompositeChild();
 
+		compositeNode->InitializeFromAsset(*ownerTree);
+
 		for (auto it : data["Nodes"]) {
-			FBTCompositeChild child = CreateNode(it["Node"], BBAsset);
+			FBTCompositeChild child = CreateNode(it["Node"], BBAsset, ownerTree);
 			compositeNode->Children.Add(child);
 		}
 
@@ -134,6 +137,8 @@ FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset)
 
 		if(task == nullptr)
 			return FBTCompositeChild();
+
+		task->InitializeFromAsset(*ownerTree);
 
 		composite.ChildTask = task;
 
@@ -152,6 +157,9 @@ FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset)
 			std::string value = ot.value();
 
 			UBTDecorator* decorator = BTFactory::Instance()->GetDecorator(key);
+
+			decorator->InitializeFromAsset(*ownerTree);
+
 			if (value != "") {
 				if (dynamic_cast<UBaseDecorator*>(decorator) != nullptr) {
 					dynamic_cast<UBaseDecorator*>(decorator)->SetKeyName(FName(std::string(value).c_str()));

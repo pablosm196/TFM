@@ -54,7 +54,7 @@ std::string BTFactory::getAllTasks()
 	std::string tasks = "";
 
 	for (auto it = _currentTasks.begin(); it != _currentTasks.end(); it++) {
-		tasks += it->first + ",";
+		tasks += it->first + " : " + _descriptions[it->first] + ", ";
 	}
 
 	if (!tasks.empty())
@@ -69,7 +69,7 @@ std::string BTFactory::getAllBlackboardTasks()
 	std::string tasks = "";
 
 	for (auto it = _currentBBTasks.begin(); it != _currentBBTasks.end(); it++) {
-		tasks += it->first + ",";
+		tasks += it->first + " : " + _descriptions[it->first] + ", ";
 	}
 
 	if (!tasks.empty())
@@ -84,7 +84,7 @@ std::string BTFactory::getAllDecorators()
 	std::string decorators = "";
 
 	for (auto it = _currentDecorators.begin(); it != _currentDecorators.end(); it++) {
-		decorators += it->first + ",";
+		decorators += it->first + " : " + _descriptions[it->first] + ", ";
 	}
 
 	if (!decorators.empty())
@@ -95,6 +95,7 @@ std::string BTFactory::getAllDecorators()
 }
 
 bool BTFactory::init() {
+	_instance->_owner = nullptr;
 	return true;
 }
 

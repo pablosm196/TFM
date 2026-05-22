@@ -335,13 +335,16 @@
 #         subgoals.update({r : composite})
 
 from dotenv import load_dotenv
+from pathlib import Path
 
 from langchain_mistralai import ChatMistralAI
+from langchain_ollama import ChatOllama
 
 from dataclasses import dataclass, field
 from typing import List, Optional
 import re
 import json
+import sys, getopt, os
 
 class Node:
     pass
@@ -364,8 +367,9 @@ class ParserError(Exception):
 
 
 class BehaviorTreeParser:
-
-    def parse(self, pseudocode: str, actions : str, conditionals : str) -> str:
+    def parse(self, pseudocode: str, actions : str, bbactions : str, conditionals : str, BBEntries : List[dict], prompt : str) -> str:
+        all_actions = actions + bbactions
+        
         lines = self._preprocess(pseudocode)
 
         stack = []
@@ -420,7 +424,7 @@ class BehaviorTreeParser:
                 if len(tokens) < 2:
                     raise ParserError(f"Line {i}: DO missing action")
                 
-                if tokens[1] not in actions:
+                if tokens[1] not in all_actions:
                     raise ParserError(f"Unknown action in line {i}. Action {tokens[1]} is not in the actions list.")
 
                 node = Action(name=tokens[1])
@@ -457,20 +461,33 @@ class BehaviorTreeParser:
         if root is None:
             raise ParserError("No root node generated")
 
-        return self._toJSON(root)
+        return self._toJSON(root, bbactions, conditionals, BBEntries, pseudocode, prompt)
     
-    def _toJSON(self, root : Node) -> dict:
+    def _toJSON(self, root : Node, bbactions : str, conditionals : str, BBEntries : list[dict], pseudocode : str, prompt : str) -> dict:
         if isinstance(root, Action):
+            entry = []
+            if root.name in bbactions:
+                action = self._get_action_and_description(bbactions, root.name)
+                entries = self._addBBEntry(action, BBEntries, pseudocode, prompt).split()
+                entry = [x.strip() for x in entries if x.lower() != "none"]
+
+            decorator = []
+            if root.decorator is not None:
+                decorator = self._get_action_and_description(conditionals, root.decorator)
+                entry = self._addBBEntry(action, BBEntries, pseudocode, prompt).split()[0]
+                if(entry.lower() != "none"):
+                    decorator.append({root.decorator : entry})
+
             return {
                 "Node": {
                     "Type": "Task",
                     "Task": root.name,
-                    "Decorators": root.decorator if root.decorator is not None else [],
-                    "BlackboardEntries": []
+                    "Decorators": decorator,
+                    "BlackboardEntries": entry
                 }
             }
 
-        children = [self._toJSON(child) for child in root.children]
+        children = [self._toJSON(child, bbactions, conditionals, BBEntries, pseudocode, prompt) for child in root.children]
 
         return {
             "Node": {
@@ -480,7 +497,7 @@ class BehaviorTreeParser:
             }
         }
 
-    def _preprocess(self, pseudocode: str) -> List[str]:
+    def _preprocess(self, pseudocode: str) -> list[str]:
         lines = pseudocode.split("\n")
         return [line.strip() for line in lines if line.strip()]
 
@@ -491,14 +508,108 @@ class BehaviorTreeParser:
         parent, branch = stack[-1]
         getattr(parent, branch).append(node)
 
+    def _get_action_and_description(self, actions : str, action_name : str) -> tuple[str, str]:
+        pairs = [p.strip() for p in actions.split(",")]
+
+        for pair in pairs:
+            if " : " in pair:
+                action, desc = pair.split(" : ", 1)
+                if action.strip() == action_name:
+                    return action.strip() + " : " + desc.strip()
+
+        return None
+
+    def _addBBEntry(self, action : str, BBEntries : list[dict], pseudocode : str, prompt : str) -> str:
+        system_prompt = f"""
+You are an AI assistant specialized in analyzing behavior-tree pseudocode and determining which input/output variables are relevant to a specific action.
+
+You will receive:
+1) A specific action paired with its natural-language description.
+2) A list of variables in the format: [{{"VariableName" : "VariableType"}}, ...]
+3) A block of pseudocode describing a behavior.
+4) The description of the global task from which the pseudocode comes.
+
+Your task is to determine which variables from the list are required or relevant
+for performing that specific action.
+
+Follow this reasoning protocol:
+- First, think step-by-step internally about the meaning of the action,
+its description, and how it would logically use or depend on the variables.
+- Consider semantic relationships: objects referenced, entities manipulated,
+positions, states, or resources implied by the action.
+- Do NOT invent variables or infer new ones not present in the "Variables" list.
+- Do NOT output your reasoning.
+
+Output format:
+Return ONLY the names of the variables from the "Variables" list that are relevant to the action.
+If multiple variables apply, return them separated by commas.
+If only one variable applies, return only that variable.
+If none apply, return "none".
+
+Example input:
+Action : grab_key : Stores the key in the inventory
+Variables: ["Key" : "Object", "Door" : "Object", "Enemy_position" : "Vector3"]
+Pseudocode:
+``
+    SEQUENCE
+        IF has_key THEN
+            DO move_to
+            DO open_door
+        ELSE
+            SEQUENCE
+                DO find_key
+                DO grab_key
+                DO move_to
+                DO open_door
+            END
+        END
+    END
+``
+Global task: NPC that has to open the door if he has the key. In case of not having it, it has to find the key. In order to open the door it has to be in front of it.
+
+Example output:
+Key
+        """
+
+        prompt = f"""
+Action : {action}
+Variables: {BBEntries}
+Pseudocode:
+``
+{pseudocode}
+``
+Global task: {prompt}
+"""
+
+        #llm = ChatMistralAI(model="mistral-large-latest", temperature=0.0, timeout=10) //Demasiadas requests, no lo puedo usar.
+        llm = ChatOllama(model = "llama3:8b", temperature= 0.0, timeout = 10)
+
+        messages = [
+            ("system", system_prompt),
+            ("human", prompt)
+        ]
+
+        key = llm.invoke(messages).content
+
+        print(f"Action : {action}, key: {key}\n")
+
+        return key
+
 def main():
-    tasks = "ChasePlayer : Chases the player, MoveTo : Moves to a position, ChooseRedFlower : Choose one red flower as a target, ChooseYellowFlower : Choose one yellow flower as a target, ChooseBlueFlower : Choose one blue flower as a target, ChooseBlackFlower : Choose one black flower as a target, "
-    bbtasks = "RotateToFaceBBEntry : Rotate until facing the target, FindRandomPatrol : Choose a random point from the map, Wait : Does nothing for a while., PickRedFlower : Pick a red flower, PickYellowFlower : Pick a yellow flower, PickBlueFlower : Pick a blue flower, PickBlackFlower : Pick a black flower, "
-    decorators = "HasLineOfSight? : True if the player is in the line of sight, false if not"
-    prompt = "NPC that has to choose and pick one flower red, one flower yellow, and one flower blue, regardless the order. In order to pick a flower it has to be in the position of the flower"
-    path = "Flowers_1"
-    max_depth = 3
-    BBEntries = ""
+    # tasks = "ChasePlayer : Chases the player, PickRedFlower : Pick a red flower, PickYellowFlower : Pick a yellow flower, PickBlueFlower : Pick a blue flower, PickBlackFlower : Pick a black flower, "
+    # bbtasks = "MoveTo : Moves to the target position, RotateToFaceBBEntry : Rotate until facing the target, FindRandomPatrol : Choose a random point from the map and stores in the target, Wait : Does nothing for a while, ChooseRedFlower : Choose one red flower as a target, ChooseYellowFlower : Choose one yellow flower as a target, ChooseBlueFlower : Choose one blue flower as a target, ChooseBlackFlower : Choose one black flower as a target, "
+    # decorators = "HasLineOfSight? : True if the player is in the line of sight, false if not"
+    # prompt = "NPC that has to choose and pick one flower red, one flower yellow, and one flower blue, regardless the order. In order to pick a flower it has to be in the position of the flower"
+    # path = "Flowers_1"
+    # BBEntries = [{"Flower" : "Object"}]
+    tasks = sys.argv[1]
+    bbtasks = sys.argv[2]
+    decorators = sys.argv[3]
+    prompt = sys.argv[4]
+    path = sys.argv[5]
+    entries = sys.argv[6]
+
+    BBEntries = json.loads(entries)
 
     system_prompt = f"""
 You are an expert in behavior trees and algorithm design.
@@ -511,7 +622,7 @@ Input:
     * A list of available conditions
 
 Requirements:
-    * Use ONLY the provided actions and ONLY the provided conditions. Do NOT invent new ones. You DON'T HAVE to use ALL the provided actions and conditions, use only the necessary ones.
+    * Use ONLY the provided actions and ONLY the provided conditions. Do NOT invent new ones. You DON'T HAVE to use ALL the provided actions and conditions, USE ONLY the necessary ones.
     * Produce a deterministic and unambiguous pseudocode.
     * The structure must be easy to parse programmatically.
     * Explicitly represent:
@@ -525,7 +636,7 @@ Pseudocode Format Rules:
     * Use uppercase keywords: SEQUENCE, SELECTOR, IF, THEN, ELSE, END
     * You don't have to use all the keywords, only use the necessary ones.
     * Indentation must reflect hierarchy
-    * Each condition must be written as: IF condition_name
+    * Each condition must be written as: IF condition_name. The conditions names are given in the "Conditions" list, DO NOT use other names and DO NOT invent others. 
     * Each action must be written as: DO action_name
     * Blocks must always be explicitly closed with END
     * No free text explanations, only pseudocode
@@ -592,7 +703,7 @@ Think step by step all the decisions made by you in order to give me the minimum
 
     while not parsed and retries < maxRetries:
         try: 
-            bt = parser.parse(code, tasks + bbtasks, decorators)
+            bt = parser.parse(code, tasks, bbtasks, decorators, BBEntries, prompt)
             parsed = True
         except ParserError as e:
             retries += 1
@@ -606,6 +717,17 @@ Think step by step all the decisions made by you in order to give me the minimum
     print(bt)
     print(json.dumps(bt, indent = 4))
 
+    j = {
+        "code" : code,
+        "BT" : {
+            "Blackboard" : BBEntries,
+            "Root" : bt
+        }
+    }
+
+    f = open(f'C:/Users/pablo/Desktop/Uni/Master/TFM/BTGenerator/Content/TFM/JSONs/{path}.json', 'w')
+    f.write(json.dumps(j, indent=4))
+    f.close()
 
     
 if __name__ == "__main__":

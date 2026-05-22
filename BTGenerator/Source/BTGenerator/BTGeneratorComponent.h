@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 
+#include "BehaviorList.h"
+
 #if WITH_EDITOR
 #include "Editor.h"
 #endif
@@ -20,6 +22,7 @@ public:
 	// Sets default values for this component's properties
 	UBTGeneratorComponent();
 
+	inline FString getBTName() { return _BTName; }
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -35,6 +38,8 @@ protected:
 
 	UFUNCTION(CallInEditor)
 	void GenerateBT();
+
+	BehaviorList* _list;
 
 public:	
 	// Called every frame

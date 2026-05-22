@@ -29,6 +29,6 @@ private:
 	std::string BASE_ROUTE = "/TFM/JSONs/";
 
 	static bool init();
-	UBlackboardData* CreateBlackboardAsset(json data, UBlackboardComponent* blackboard);
-	FBTCompositeChild CreateNode(json data, UBlackboardData* BBAsset);
+	UBlackboardData* CreateBlackboardAsset(json data, UBlackboardComponent* blackboard, UObject* outer);
+	FBTCompositeChild CreateNode(json data, UBlackboardData* BBAsset, UBehaviorTree* ownerTree);
 };

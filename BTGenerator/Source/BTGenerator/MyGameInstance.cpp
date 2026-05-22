@@ -4,65 +4,69 @@
 #include "MyGameInstance.h"
 
 UMyGameInstance::UMyGameInstance() : UGameInstance() {
-	_redFlowers = std::list<AActor*>();
-	_blueFlowers = std::list<AActor*>();
-	_yellowFlowers = std::list<AActor*>();
-	_blackFlowers = std::list<AActor*>();
+	_redFlowers = TArray<TObjectPtr<AActor>>();
+	_blueFlowers = TArray<TObjectPtr<AActor>>();
+	_yellowFlowers = TArray<TObjectPtr<AActor>>();
+	_blackFlowers = TArray<TObjectPtr<AActor>>();
 }
 
 void UMyGameInstance::addRedFlower(AActor* flower)
 {
-	_redFlowers.push_back(flower);
+	_redFlowers.Add(flower);
 }
 
 void UMyGameInstance::addBlueFlower(AActor* flower)
 {
-	_blueFlowers.push_back(flower);
+	_blueFlowers.Add(flower);
 }
 
 void UMyGameInstance::addYellowFlower(AActor* flower)
 {
-	_yellowFlowers.push_back(flower);
+	_yellowFlowers.Add(flower);
 
 }
 
 void UMyGameInstance::addBlackFlower(AActor* flower)
 {
-	_blackFlowers.push_back(flower);
+	_blackFlowers.Add(flower);
 }
 
 AActor* UMyGameInstance::getRedFlower()
 {
-	AActor* flower = _redFlowers.front();
-	_redFlowers.pop_front();
+	if (_redFlowers.Num() == 0) return nullptr;
+	AActor* flower = _redFlowers[0];
+	//_redFlowers.RemoveAt(0);
 	return flower;
 }
 
 AActor* UMyGameInstance::getBlueFlower()
 {
-	AActor* flower = _blueFlowers.front();
-	_blueFlowers.pop_front();
+	if (_blueFlowers.Num() == 0) return nullptr;
+	AActor* flower = _blueFlowers[0];
+	//_blueFlowers.RemoveAt(0);
 	return flower;
 }
 
 AActor* UMyGameInstance::getYellowFlower()
 {
-	AActor* flower = _yellowFlowers.front();
-	_yellowFlowers.pop_front();
+	if (_yellowFlowers.Num() == 0) return nullptr;
+	AActor* flower = _yellowFlowers[0];
+	//_yellowFlowers.RemoveAt(0);
 	return flower;
 }
 
 AActor* UMyGameInstance::getBlackFlower()
 {
-	AActor* flower = _blackFlowers.front();
-	_blackFlowers.pop_front();
+	if (_blackFlowers.Num() == 0) return nullptr;
+	AActor* flower = _blackFlowers[0];
+	//_blackFlowers.RemoveAt(0);
 	return flower;
 }
 
 void UMyGameInstance::resetLists()
 {
-	_redFlowers.clear();
-	_blueFlowers.clear();
-	_yellowFlowers.clear();
-	_blackFlowers.clear();
+	_redFlowers.Empty();
+	_blueFlowers.Empty();
+	_yellowFlowers.Empty();
+	_blackFlowers.Empty();
 }
