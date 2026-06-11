@@ -11,7 +11,9 @@ UPickFlowerTask::UPickFlowerTask()
 
 EBTNodeResult::Type UPickFlowerTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	std::string behavior = "Pick flower " + _color;
+	std::string color = _color;
+	color[0] = toupper(color[0]);
+	FString behavior = ("Pick" + color + "Flower").c_str();
 
 	BehaviorList::Instance()->addBehavior(behavior);
 

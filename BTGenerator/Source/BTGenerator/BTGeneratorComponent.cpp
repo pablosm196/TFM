@@ -5,21 +5,25 @@
 
 #include "EnemyControllerCode.h"
 
+#include "Kismet/GameplayStatics.h"
+
 #include "MyBTTask_RotateToFaceBBEntry.h"
 #include "BTTask_ChasePlayer.h"
 #include "MyBTTask_MoveTo.h"
 #include "BTTask_FindRandomPatrol.h"
 #include "BehaviorTree/Tasks/BTTask_Wait.h"
-
-#include "HasLineOfSight_Decorator.h"
 #include "PickFlowerTask.h"
 #include "BTTask_ChooseFlower.h"
+
+#include "HasLineOfSight_Decorator.h"
 
 #include "BTConstructor.h"
 #include "BTFactory.h"
 
 #include <string>
 #include <cstdlib>
+
+#include<fstream>
 
 // Sets default values for this component's properties
 UBTGeneratorComponent::UBTGeneratorComponent()
@@ -37,7 +41,7 @@ void UBTGeneratorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (BehaviorList::Init())
+	if (BehaviorList::Init(TCHAR_TO_UTF8(*_validationPath), this))
 		_list = BehaviorList::Instance();
 }
 
@@ -64,6 +68,20 @@ void UBTGeneratorComponent::GenerateBT()
 
 	BTConstructor::Init();
 
+	//CallGenerator(_prompt);
+
+
+#if WITH_EDITOR
+	if (GEditor)
+		GEditor->RequestPlaySession(FRequestPlaySessionParams());
+#endif
+}
+
+
+void UBTGeneratorComponent::CallGenerator(FString prompt)
+{
+	BTFactory* f = BTFactory::Instance();
+
 	FString t = f->getAllTasks().c_str();
 	FString bbt = f->getAllBlackboardTasks().c_str();
 	FString d = f->getAllTasks().c_str();
@@ -80,7 +98,7 @@ void UBTGeneratorComponent::GenerateBT()
 		*t,
 		*bbt,
 		*d,
-		*_prompt,
+		*prompt,
 		*p,
 		*entries
 	);
@@ -101,12 +119,8 @@ void UBTGeneratorComponent::GenerateBT()
 	UE_LOG(LogTemp, Error, TEXT("Errores: %s"), *StdErr);
 	UE_LOG(LogTemp, Warning, TEXT("Código retorno: %d"), ReturnCode);
 
-#if WITH_EDITOR
-	if (GEditor)
-		GEditor->RequestPlaySession(FRequestPlaySessionParams());
-#endif
-}
 
+}
 
 // Called every frame
 void UBTGeneratorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -114,5 +128,63 @@ void UBTGeneratorComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UBTGeneratorComponent::OnValidationFails(FString message)
+{
+	UE_LOG(LogTemp, Warning, TEXT("VALIDACIÓN FALLIDA"));
+	std::string route = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())).append("/TFM/JSONs/").append(TCHAR_TO_UTF8(*_BTName)).append(".json");
+	std::ifstream f(route);
+	json data = json::parse(f);
+
+	if (data["Tries"] > 3) {
+		data["Failed"] = true;
+		std::ofstream out(route);
+		out << data.dump(4);
+		out.close();
+
+#if WITH_EDITOR
+		if (GEditor)
+		{
+			GEditor->RequestEndPlayMap();
+		}
+#endif
+
+		return; // FALLO DEL CONSTRUCTOR DE BTs
+	}
+
+	std::string pseudocode = data["code"];
+
+	FString prompt = "With the following pseudocode:\n" +
+		FString(pseudocode.c_str()) +
+		"\nIt gave me the following error: " +
+		message +
+		"\nFix the pseudocode for the following action:\n" +
+		_prompt;
+
+	CallGenerator(prompt);
+
+	FString LevelName = UGameplayStatics::GetCurrentLevelName(this, true);
+
+	UGameplayStatics::OpenLevel(this, FName(*LevelName));
+}
+
+void UBTGeneratorComponent::OnValidationEnds()
+{
+	std::string route = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())).append("/TFM/JSONs/").append(TCHAR_TO_UTF8(*_BTName)).append(".json");
+	std::ifstream f(route);
+	json data = json::parse(f);
+
+	data["Failed"] = false;
+	std::ofstream out(route);
+	out << data.dump(4);
+	out.close();
+
+#if WITH_EDITOR
+	if (GEditor)
+	{
+		GEditor->RequestEndPlayMap();
+	}
+#endif
 }
 

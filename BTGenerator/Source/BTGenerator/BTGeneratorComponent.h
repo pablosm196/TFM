@@ -11,10 +11,16 @@
 #include "Editor.h"
 #endif
 
+#include "json.hpp"
+using json = nlohmann::json;
+
+#include "ValidatorCallback.h"
+
+
 #include "BTGeneratorComponent.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BTGENERATOR_API UBTGeneratorComponent : public UActorComponent
+class BTGENERATOR_API UBTGeneratorComponent : public UActorComponent, public IValidatorCallback
 {
 	GENERATED_BODY()
 
@@ -34,6 +40,9 @@ protected:
 	FString _BTName;
 
 	UPROPERTY(EditAnywhere)
+	FString _validationPath;
+
+	UPROPERTY(EditAnywhere)
 	APawn* _pawn;
 
 	UFUNCTION(CallInEditor)
@@ -41,9 +50,13 @@ protected:
 
 	BehaviorList* _list;
 
+
+	void CallGenerator(FString prompt);
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	
+	void OnValidationFails(FString message) override;
+	void OnValidationEnds() override;
 };

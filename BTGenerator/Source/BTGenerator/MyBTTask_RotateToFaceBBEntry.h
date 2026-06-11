@@ -18,4 +18,6 @@ public:
 	inline void SetPrecision(float precision) { Precision = precision; };
 	inline void SetKeyName(FName name) override { BlackboardKey.SelectedKeyName = name; };
 	inline void ResolveKey(UBlackboardData* BBAsset) override { BlackboardKey.ResolveSelectedKey(*BBAsset); };
+protected:
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

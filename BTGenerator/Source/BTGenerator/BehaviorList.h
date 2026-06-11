@@ -6,6 +6,11 @@
 #include <list>
 #include <string>
 
+#include "ValidatorCallback.h"
+
+#include "json.hpp"
+using json = nlohmann::json;
+
 /**
  * (
  */
@@ -16,14 +21,37 @@ public:
 	~BehaviorList();
 
 	static BehaviorList* Instance();
-	static bool Init();
+	static bool Init(std::string path, IValidatorCallback* callback);
 	static void Release();
 
-	void addBehavior(std::string behavior);
-	std::string getBehaviors();
+	void addBehavior(FString& behavior);
+	FString getBehaviors();
 private:
-	bool init();
+	bool init(std::string path, IValidatorCallback* callback);
+
+	void addTask(json data, int parentID);
+
 	static BehaviorList* _instance;
 
-	std::list<std::string> _behaviors;
+	IValidatorCallback* _callback;
+
+	struct NodesDefinition {
+		FString _task;
+		int _id = INDEX_NONE;
+		int _parentId = INDEX_NONE;
+		TArray<int> _children;
+	};
+
+
+	/*TMap<FString, TArray<FString>> _dependenciesGraph;
+	TMap<FString, FString> _immediateAfterGraph;
+*/
+
+	std::string BASE_ROUTE = "/TFM/JSONs/";
+
+	TArray<FString> _behaviors;
+
+	TArray<NodesDefinition> _nodes;
+	TMultiMap<FString, int> _namesToNodes;
+	TSet<int> _activeStates;
 };

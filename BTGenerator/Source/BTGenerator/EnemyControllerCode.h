@@ -23,7 +23,7 @@ class BTGENERATOR_API AEnemyControllerCode : public AAIController
 public: 
 	AEnemyControllerCode();
 
-	void SetBT(std::string path);
+	void SetBT();
 protected:
 	virtual void BeginPlay() override;
 
@@ -46,4 +46,6 @@ private:
 	UAISenseConfig_Sight* _sightConfig;
 
 	FTimerHandle _timerHandle;
+
+	FString _btPath;
 };

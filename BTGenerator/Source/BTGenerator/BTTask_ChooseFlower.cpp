@@ -5,6 +5,7 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "MyGameInstance.h"
+#include "BehaviorList.h"
 
 
 EBTNodeResult::Type UBTTask_ChooseRedFlower::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -19,6 +20,11 @@ EBTNodeResult::Type UBTTask_ChooseRedFlower::ExecuteTask(UBehaviorTreeComponent&
 	if (!Flower) return EBTNodeResult::Failed;
 
 	setBBKey(OwnerComp, Flower);
+
+	FString behavior = "ChooseRedFlower";
+	BehaviorList::Instance()->addBehavior(behavior);
+
+
 	return EBTNodeResult::Succeeded;
 }
 
@@ -34,6 +40,10 @@ EBTNodeResult::Type UBTTask_ChooseYellowFlower::ExecuteTask(UBehaviorTreeCompone
 	if (!Flower) return EBTNodeResult::Failed;
 
 	setBBKey(OwnerComp, Flower);
+
+	FString behavior = "ChooseYellowFlower";
+	BehaviorList::Instance()->addBehavior(behavior);
+	
 	return EBTNodeResult::Succeeded;
 }
 
@@ -49,6 +59,10 @@ EBTNodeResult::Type UBTTask_ChooseBlueFlower::ExecuteTask(UBehaviorTreeComponent
 	if (!Flower) return EBTNodeResult::Failed;
 
 	setBBKey(OwnerComp, Flower);
+
+	FString behavior = "ChooseBlueFlower";
+	BehaviorList::Instance()->addBehavior(behavior);
+
 	return EBTNodeResult::Succeeded;
 }
 
@@ -64,6 +78,10 @@ EBTNodeResult::Type UBTTask_ChooseBlackFlower::ExecuteTask(UBehaviorTreeComponen
 	if (!Flower) return EBTNodeResult::Failed;
 
 	setBBKey(OwnerComp, Flower);
+
+	FString behavior = "ChooseBlackFlower";
+	BehaviorList::Instance()->addBehavior(behavior);
+
 	return EBTNodeResult::Succeeded;
 }
 

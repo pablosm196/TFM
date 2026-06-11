@@ -16,6 +16,8 @@
 #include "BehaviorTree/Composites/BTComposite_Selector.h"
 #include "BehaviorTree/Composites/BTComposite_SimpleParallel.h"
 
+#include "FinalTask.h"
+
 #include "BTFactory.h"
 #include "BaseTask.h"
 #include "BaseDecorator.h"
@@ -62,8 +64,16 @@ UBehaviorTree* BTConstructor::CreateBT(std::string file, UBlackboardComponent* b
 		return nullptr;
 
 	FBTCompositeChild RootNode = CreateNode(data["BT"]["Root"]["Node"], BBAsset, Root);
+	
+	UFinalTask* finalTask = NewObject<UFinalTask>(Root);
+	finalTask->InitializeFromAsset(*Root);
+	FBTCompositeChild finalNode;
+	finalNode.ChildTask = finalTask;
+	RootNode.ChildComposite.Get()->Children.Add(finalNode);
 
 	Root->RootNode = RootNode.ChildComposite;
+	Root->RootNode->InitializeExecutionOrder(nullptr);
+
 	Root->BlackboardAsset = BBAsset;
 	return Root;
 }
@@ -117,8 +127,9 @@ FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset,
 		UBTCompositeNode* compositeNode = nullptr;
 		if (data["Type"] == "Selector")
 			compositeNode = NewObject<UBTComposite_Selector>(ownerTree);
-		else if (data["Type"] == "Sequence")
+		else if (data["Type"] == "Sequence") {
 			compositeNode = NewObject<UBTComposite_Sequence>(ownerTree);
+		}
 		else if (data["Type"] == "Parallel")
 			compositeNode = NewObject<UBTComposite_SimpleParallel>(ownerTree);
 		else FBTCompositeChild();

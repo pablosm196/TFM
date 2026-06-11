@@ -52,9 +52,9 @@ AEnemyControllerCode::AEnemyControllerCode()
 	_perception->SetDominantSense(_sightConfig->GetSenseImplementation());
 }
 
-void AEnemyControllerCode::SetBT(std::string path)
+void AEnemyControllerCode::SetBT()
 {
-	_root = BTConstructor::Instance()->CreateBT(path, _blackBoard);
+	_root = BTConstructor::Instance()->CreateBT(TCHAR_TO_UTF8(*_btPath), _blackBoard);
 	UseBlackboard(_root->BlackboardAsset, _blackBoard);
 	RunBehaviorTree(_root);
 }
@@ -84,7 +84,17 @@ void AEnemyControllerCode::BeginPlay()
 		}
 	}
 
-	SetBT(TCHAR_TO_UTF8(*name));
+	_btPath = name;
+
+	GetWorld()->GetTimerManager().SetTimer(
+		_timerHandle,
+		this,
+		&AEnemyControllerCode::SetBT,
+		1.0f,
+		false
+	);
+
+	//SetBT(TCHAR_TO_UTF8(*name));
 
 	/*BTFactory::Init();
 	BTFactory* f = BTFactory::Instance();

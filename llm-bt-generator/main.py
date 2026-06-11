@@ -591,6 +591,19 @@ Global task: {prompt}
 
         key = llm.invoke(messages).content
 
+        isInList = False
+        for value in BBEntries:
+            for k in value.keys():
+                if key == k:
+                    isInList = True
+                    break
+
+        if not isInList:
+            messages.append(("assistant", key))
+            messages.append(("human", "The key you gave me is not in the \"Variables\" list. Give me ONLY a key from that list, DO NOT invent a new one. Respond me ONLY with the key, respecting the output format"))
+
+            key = llm.invoke(messages).content
+
         print(f"Action : {action}, key: {key}\n")
 
         return key
@@ -725,7 +738,16 @@ Think step by step all the decisions made by you in order to give me the minimum
         }
     }
 
-    f = open(f'C:/Users/pablo/Desktop/Uni/Master/TFM/BTGenerator/Content/TFM/JSONs/{path}.json', 'w')
+    if(os.path.exists(f'{os.getenv('JSON_ROOT')}{path}.json')):
+        e = open(f'{os.getenv('JSON_ROOT')}{path}.json', 'r')
+        prevBT = json.load(e)
+        e.close()
+        j["Tries"] = prevBT["Tries"] + 1
+    else:
+        j["Tries"] = 1
+
+    
+    f = open(f'{os.getenv('JSON_ROOT')}{path}.json', 'w')
     f.write(json.dumps(j, indent=4))
     f.close()
 

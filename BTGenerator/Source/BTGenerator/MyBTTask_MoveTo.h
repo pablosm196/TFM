@@ -16,4 +16,6 @@ class BTGENERATOR_API UMyBTTask_MoveTo : public UBTTask_MoveTo, public IBaseTask
 public:
 	inline void SetKeyName(FName name) override { BlackboardKey.SelectedKeyName = name; } ;
 	inline void ResolveKey(UBlackboardData* BBAsset) override { BlackboardKey.ResolveSelectedKey(*BBAsset); } ;
+protected:
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };
