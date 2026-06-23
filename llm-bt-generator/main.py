@@ -464,6 +464,12 @@ class BehaviorTreeParser:
         return self._toJSON(root, bbactions, conditionals, BBEntries, pseudocode, prompt)
     
     def _toJSON(self, root : Node, bbactions : str, conditionals : str, BBEntries : list[dict], pseudocode : str, prompt : str) -> dict:
+        decorator = []
+        if root.decorator is not None:
+            dec = self._get_action_and_description(conditionals, root.decorator)
+            entry = self._addBBEntry(dec, BBEntries, pseudocode, prompt).split()[0]
+            if(entry.lower() != "none"):
+                decorator.append({root.decorator : entry})
         if isinstance(root, Action):
             entry = []
             if root.name in bbactions:
@@ -471,12 +477,6 @@ class BehaviorTreeParser:
                 entries = self._addBBEntry(action, BBEntries, pseudocode, prompt).split()
                 entry = [x.strip() for x in entries if x.lower() != "none"]
 
-            decorator = []
-            if root.decorator is not None:
-                decorator = self._get_action_and_description(conditionals, root.decorator)
-                entry = self._addBBEntry(action, BBEntries, pseudocode, prompt).split()[0]
-                if(entry.lower() != "none"):
-                    decorator.append({root.decorator : entry})
 
             return {
                 "Node": {
@@ -492,7 +492,7 @@ class BehaviorTreeParser:
         return {
             "Node": {
                 "Type": root.type.capitalize(),
-                "Decorators": root.decorator if root.decorator is not None else [],
+                "Decorators": decorator,
                 "Nodes": children
             }
         }
@@ -537,6 +537,7 @@ Follow this reasoning protocol:
 its description, and how it would logically use or depend on the variables.
 - Consider semantic relationships: objects referenced, entities manipulated,
 positions, states, or resources implied by the action.
+- If some action needs a variable of a certain type, you HAVE TO keep that in mind.
 - Do NOT invent variables or infer new ones not present in the "Variables" list.
 - Do NOT output your reasoning.
 
@@ -562,7 +563,6 @@ Pseudocode:
                 DO move_to
                 DO open_door
             END
-        END
     END
 ``
 Global task: NPC that has to open the door if he has the key. In case of not having it, it has to find the key. In order to open the door it has to be in front of it.
@@ -631,8 +631,6 @@ Your task is to convert a high-level task description into a structured pseudoco
 
 Input:
     * A task description
-    * A list of available actions
-    * A list of available conditions
 
 Requirements:
     * Use ONLY the provided actions and ONLY the provided conditions. Do NOT invent new ones. You DON'T HAVE to use ALL the provided actions and conditions, USE ONLY the necessary ones.
@@ -649,15 +647,15 @@ Pseudocode Format Rules:
     * Use uppercase keywords: SEQUENCE, SELECTOR, IF, THEN, ELSE, END
     * You don't have to use all the keywords, only use the necessary ones.
     * Indentation must reflect hierarchy
-    * Each condition must be written as: IF condition_name. The conditions names are given in the "Conditions" list, DO NOT use other names and DO NOT invent others. 
-    * Each action must be written as: DO action_name
-    * Blocks must always be explicitly closed with END
+    * Each condition must be written as: IF condition_name. Use ONLY the names from the "conditions" list, DO NOT use other name and DO NOT invent others. 
+    * Each action must be written as: DO action_name. Use ONLY the names from the "actions" list.
+    * ONLY blocks of SEQUENCE and SELECTOR must always be explicitly closed with END. DO NOT use the END keyword in other blocks, not even in the IF ELSE statements.
     * No free text explanations, only pseudocode
 
 Behavior Tree Mapping:
     * SEQUENCE: executes children in order until one fails
     * SELECTOR: executes children until one succeeds
-    * IF condition THEN ... ELSE ... END: conditional branching
+    * IF condition THEN ... ELSE ... : conditional branching
 
 Output:
 Return ONLY the pseudocode, no explanations.
@@ -668,6 +666,7 @@ Actions: [find_key, move_to_door, open_door]
 Conditions: [has_key, door_is_locked]
 
 Example Output:
+```
 SEQUENCE
     IF has_key THEN
         DO move_to_door
@@ -678,11 +677,12 @@ SEQUENCE
             DO move_to_door
             DO open_door
         END
-    END
 END
+```
 
-List of actions : {tasks + bbtasks}
-List of conditions : {decorators}
+List of actions ("actions" list): {tasks + bbtasks}
+
+List of conditions ("conditions" list) : {decorators}
 
 Think step by step all the decisions made by you in order to give me the minimum algorithm with only the necessary instructions.
 """
@@ -724,7 +724,12 @@ Think step by step all the decisions made by you in order to give me the minimum
             messages.append(("assistant", code))
             messages.append(("human", f"The last pseudocode gave me the following error while parsing: {e}. Fix it and give me only the pseudocode."))
 
-            response = llm.invoke(messages)
+            try:
+                response = llm.invoke(messages)
+            except:
+                llm_fallback = ChatOllama(model = "llama3:8b", temperature= 0.0, timeout = 10)
+                response = llm_fallback.invoke(messages)
+
             code = re.search(r"```(.*?)```", response.content, re.DOTALL).group(1)
             
     print(bt)

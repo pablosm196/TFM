@@ -14,11 +14,16 @@
 #include "BehaviorTree/Tasks/BTTask_Wait.h"
 #include "PickFlowerTask.h"
 #include "BTTask_ChooseFlower.h"
+#include "AttackNode.h"
+#include "SelectWaypoint_Task.h"
 
 #include "HasLineOfSight_Decorator.h"
+#include "IsItNear_Decorator.h"
 
 #include "BTConstructor.h"
 #include "BTFactory.h"
+
+#include "ObjectiveValidatorBase.h"
 
 #include <string>
 #include <cstdlib>
@@ -41,8 +46,29 @@ void UBTGeneratorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (BehaviorList::Init(TCHAR_TO_UTF8(*_validationPath), this))
+	IObjectiveValidatorBase* validator = nullptr;
+
+	for (UActorComponent* C : GetOwner()->GetComponents())
+	{
+		if (C->GetClass()->ImplementsInterface(UObjectiveValidatorBase::StaticClass()))
+		{
+			validator = Cast<IObjectiveValidatorBase>(C);
+			break;
+		}
+	}
+
+	if (BehaviorList::Init(TCHAR_TO_UTF8(*_validationPath), this, validator))
 		_list = BehaviorList::Instance();
+
+	//_timerHandle = FTimerHandle();
+
+	GetWorld()->GetTimerManager().SetTimer(
+		_timerHandle,
+		this,
+		&UBTGeneratorComponent::CheckValidationByTimer,
+		10.0f,
+		false
+	);
 }
 
 void UBTGeneratorComponent::GenerateBT()
@@ -52,7 +78,7 @@ void UBTGeneratorComponent::GenerateBT()
 
 	f->RegisterBlackboardTask<UMyBTTask_RotateToFaceBBEntry>("RotateToFaceBBEntry", "Rotate until facing the target");
 	f->RegisterTask<UBTTask_ChasePlayer>("ChasePlayer", "Chases the player");
-	f->RegisterBlackboardTask<UMyBTTask_MoveTo>("MoveTo", "Moves to the target position or object");
+	f->RegisterBlackboardTask<UMyBTTask_MoveTo>("MoveTo", "Moves to the target position or object. The target position MUST BE an Object type.");
 	f->RegisterTask<UBTTask_FindRandomPatrol>("FindRandomPatrol", "Choose a random point from the map and stores in the target");
 	f->RegisterTask<UBTTask_Wait>("Wait", "Does nothing for a while");
 	f->RegisterTask<UPickRedFlowerTask>("PickRedFlower", "Pick a red flower");
@@ -63,12 +89,15 @@ void UBTGeneratorComponent::GenerateBT()
 	f->RegisterBlackboardTask<UBTTask_ChooseYellowFlower>("ChooseYellowFlower", "Choose one yellow flower as a target");
 	f->RegisterBlackboardTask<UBTTask_ChooseBlueFlower>("ChooseBlueFlower", "Choose one blue flower as a target");
 	f->RegisterBlackboardTask<UBTTask_ChooseBlackFlower>("ChooseBlackFlower", "Choose one black flower as a target");
+	f->RegisterTask<UAttackNode>("Attack", "It launches an attack on whoever is nearby");
+	f->RegisterBlackboardTask<USelectWaypoint_Task>("SelectWaypoint", "Choose a random waypoint as a target. It needs and Object type");
 
-	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?", "True if the player is in the line of sight, false if not");
+	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?", "True if the player is seeing the target, false if not. It NEEDS a to check only a bool type");
+	f->RegisterDecorator<UHasLineOfSight_Decorator>("IsItNear?", "True if the distance between the executor and the objective is less or equal than a certain number, false if not. The objective NEEDS to be an Object type");
 
 	BTConstructor::Init();
 
-	//CallGenerator(_prompt);
+	CallGenerator(_prompt);
 
 
 #if WITH_EDITOR
@@ -84,9 +113,19 @@ void UBTGeneratorComponent::CallGenerator(FString prompt)
 
 	FString t = f->getAllTasks().c_str();
 	FString bbt = f->getAllBlackboardTasks().c_str();
-	FString d = f->getAllTasks().c_str();
+	FString d = f->getAllDecorators().c_str();
 	FString p = _BTName;
-	FString entries = "[{\"\"Flower\"\" : \"\"Object\"\"}]";
+	FString entries = "[";
+
+	for (auto i = _blackboardEntries.begin(); i != _blackboardEntries.end(); ++i) {
+		entries += "{\"\"" + i->Key + "\"\" : \"\"" + i->Value + "\"\"},";
+	}
+
+	entries.RemoveAt(entries.Len() - 1);
+
+	entries += "]";
+
+	UE_LOG(LogTemp, Warning, TEXT("Salida: %s"), *entries);
 
 	FString UVExe = TEXT("python");
 	//FString UVExe = TEXT("uv");
@@ -120,6 +159,33 @@ void UBTGeneratorComponent::CallGenerator(FString prompt)
 	UE_LOG(LogTemp, Warning, TEXT("Código retorno: %d"), ReturnCode);
 
 
+}
+
+void UBTGeneratorComponent::CheckValidationByTimer()
+{
+	IObjectiveValidatorBase* validator = nullptr;
+
+	for (UActorComponent* C : GetOwner()->GetComponents())
+	{
+		if (C->GetClass()->ImplementsInterface(UObjectiveValidatorBase::StaticClass()))
+		{
+			validator = Cast<IObjectiveValidatorBase>(C);
+			break;
+		}
+	}
+
+	if (validator == nullptr) return;
+
+	if (!validator->CheckObjectiveCompleted()) {
+		FString message = validator->getMessage() +
+			"The list of executed tasks is as follows: " +
+			BehaviorList::Instance()->getBehaviors();
+
+		OnValidationFails(message);
+	}
+	else {
+		OnValidationEnds();
+	}
 }
 
 // Called every frame

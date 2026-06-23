@@ -7,6 +7,7 @@
 #include <string>
 
 #include "ValidatorCallback.h"
+#include "ObjectiveValidatorBase.h"
 
 #include "json.hpp"
 using json = nlohmann::json;
@@ -21,19 +22,20 @@ public:
 	~BehaviorList();
 
 	static BehaviorList* Instance();
-	static bool Init(std::string path, IValidatorCallback* callback);
+	static bool Init(std::string path, IValidatorCallback* callback, IObjectiveValidatorBase* objectiveValidator);
 	static void Release();
 
 	void addBehavior(FString& behavior);
 	FString getBehaviors();
 private:
-	bool init(std::string path, IValidatorCallback* callback);
+	bool init(std::string path, IValidatorCallback* callback, IObjectiveValidatorBase* objectiveValidator);
 
 	void addTask(json data, int parentID);
 
 	static BehaviorList* _instance;
 
 	IValidatorCallback* _callback;
+	IObjectiveValidatorBase* _objectiveValidator;
 
 	struct NodesDefinition {
 		FString _task;

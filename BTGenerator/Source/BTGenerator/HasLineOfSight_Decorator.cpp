@@ -4,6 +4,8 @@
 #include "HasLineOfSight_Decorator.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+#include "BehaviorList.h"
+
 UHasLineOfSight_Decorator::UHasLineOfSight_Decorator()
 {
 	NodeName = "Has Line Of Sight?";
@@ -14,6 +16,9 @@ UHasLineOfSight_Decorator::UHasLineOfSight_Decorator()
 
 bool UHasLineOfSight_Decorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
+	FString behavior = "HasLineOfSight?";
+	BehaviorList::Instance()->addBehavior(behavior);
+
 	bool tmp = OwnerComp.GetBlackboardComponent()->GetValueAsBool(BlackboardKey.SelectedKeyName);
 	return tmp;
 }

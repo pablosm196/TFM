@@ -65,11 +65,11 @@ UBehaviorTree* BTConstructor::CreateBT(std::string file, UBlackboardComponent* b
 
 	FBTCompositeChild RootNode = CreateNode(data["BT"]["Root"]["Node"], BBAsset, Root);
 	
-	UFinalTask* finalTask = NewObject<UFinalTask>(Root);
+	/*UFinalTask* finalTask = NewObject<UFinalTask>(Root);
 	finalTask->InitializeFromAsset(*Root);
 	FBTCompositeChild finalNode;
 	finalNode.ChildTask = finalTask;
-	RootNode.ChildComposite.Get()->Children.Add(finalNode);
+	RootNode.ChildComposite.Get()->Children.Add(finalNode);*/
 
 	Root->RootNode = RootNode.ChildComposite;
 	Root->RootNode->InitializeExecutionOrder(nullptr);

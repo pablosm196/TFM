@@ -8,6 +8,14 @@ UMyGameInstance::UMyGameInstance() : UGameInstance() {
 	_blueFlowers = TArray<TObjectPtr<AActor>>();
 	_yellowFlowers = TArray<TObjectPtr<AActor>>();
 	_blackFlowers = TArray<TObjectPtr<AActor>>();
+	_waypoints = TArray<TObjectPtr<AActor>>();
+
+	_numRed = 0;
+	_numBlue = 0;
+	_numYellow = 0;
+	_numBlack = 0;
+
+	_playerDied = false;
 }
 
 void UMyGameInstance::addRedFlower(AActor* flower)
@@ -29,6 +37,11 @@ void UMyGameInstance::addYellowFlower(AActor* flower)
 void UMyGameInstance::addBlackFlower(AActor* flower)
 {
 	_blackFlowers.Add(flower);
+}
+
+void UMyGameInstance::addWaypoint(AActor* waypoint)
+{
+	_waypoints.Add(waypoint);
 }
 
 AActor* UMyGameInstance::getRedFlower()
@@ -63,10 +76,37 @@ AActor* UMyGameInstance::getBlackFlower()
 	return flower;
 }
 
+AActor* UMyGameInstance::getRandomWaypoint()
+{
+	int i = FMath::RandRange(0, _waypoints.Num() - 1);
+
+	return _waypoints[i];
+}
+
+void UMyGameInstance::flowerPicked(FString color)
+{
+	if (color == "red")
+		_numRed++;
+	else if (color == "blue")
+		_numBlue++;
+	else if (color == "yellow")
+		_numYellow++;
+	else if (color == "black")
+		_numYellow++;
+}
+
 void UMyGameInstance::resetLists()
 {
 	_redFlowers.Empty();
 	_blueFlowers.Empty();
 	_yellowFlowers.Empty();
 	_blackFlowers.Empty();
+	_waypoints.Empty();
+
+	_numRed = 0;
+	_numBlue = 0;
+	_numYellow = 0;
+	_numBlack = 0;
+
+	_playerDied = false;
 }

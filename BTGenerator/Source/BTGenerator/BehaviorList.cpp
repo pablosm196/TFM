@@ -21,10 +21,10 @@ BehaviorList* BehaviorList::Instance() {
 	return _instance;
 }
 
-bool BehaviorList::Init(std::string path, IValidatorCallback* callback) {
+bool BehaviorList::Init(std::string path, IValidatorCallback* callback, IObjectiveValidatorBase* objectiveValidator) {
 	if (_instance == nullptr) {
 		_instance = new BehaviorList();
-		return _instance->init(path, callback);
+		return _instance->init(path, callback, objectiveValidator);
 	}
 	return true;
 }
@@ -36,10 +36,21 @@ void BehaviorList::Release() {
 
 void BehaviorList::addBehavior(FString& behavior)
 {
-	if (behavior.Equals("Final")) {
-		_callback->OnValidationEnds();
+	/*if (behavior.Equals("Final")) {
+
+		if (_objectiveValidator != nullptr && !_objectiveValidator->CheckObjectiveCompleted()) {
+			FString message = _objectiveValidator->getMessage() + 
+				"The list of executed tasks is as follows: " +
+				getBehaviors();
+
+			_callback->OnValidationFails(message);
+		}
+		else {
+			_callback->OnValidationEnds();
+		}
+
 		return;
-	}
+	}*/
 
 	_behaviors.Add(behavior);
 
@@ -91,9 +102,10 @@ FString BehaviorList::getBehaviors()
 	return behaviors;
 }
 
-bool BehaviorList::init(std::string path, IValidatorCallback* callback)
+bool BehaviorList::init(std::string path, IValidatorCallback* callback, IObjectiveValidatorBase* objectiveValidator)
 {
 	_callback = callback;
+	_objectiveValidator = objectiveValidator;
 
 	std::string route = std::string(TCHAR_TO_UTF8(*FPaths::ProjectContentDir())).append(BASE_ROUTE).append(path).append(".json");
 	std::ifstream f(route);

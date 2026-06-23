@@ -16,6 +16,8 @@ using json = nlohmann::json;
 
 #include "ValidatorCallback.h"
 
+#include "Chaos/Pair.h"
+
 
 #include "BTGeneratorComponent.generated.h"
 
@@ -43,6 +45,9 @@ protected:
 	FString _validationPath;
 
 	UPROPERTY(EditAnywhere)
+	TMap<FString, FString> _blackboardEntries;
+
+	UPROPERTY(EditAnywhere)
 	APawn* _pawn;
 
 	UFUNCTION(CallInEditor)
@@ -50,8 +55,11 @@ protected:
 
 	BehaviorList* _list;
 
+	FTimerHandle _timerHandle;
+
 
 	void CallGenerator(FString prompt);
+
 
 public:	
 	// Called every frame
@@ -59,4 +67,5 @@ public:
 
 	void OnValidationFails(FString message) override;
 	void OnValidationEnds() override;
+	void CheckValidationByTimer();
 };

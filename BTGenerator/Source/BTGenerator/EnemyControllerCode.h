@@ -48,4 +48,6 @@ private:
 	FTimerHandle _timerHandle;
 
 	FString _btPath;
+
+	bool _btParsed;
 };

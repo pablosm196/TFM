@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 
+#include "BehaviorList.h"
+
 UBTTask_ChasePlayer::UBTTask_ChasePlayer()
 {
 	NodeName = "Chase Player Task";
@@ -26,6 +28,9 @@ EBTNodeResult::Type UBTTask_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& Own
 	if (!CharacterMovementComponent) return EBTNodeResult::Failed;
 
 	CharacterMovementComponent->MaxWalkSpeed = NewWalkSpeed;
+
+	FString behavior = "ChasePlayer";
+	BehaviorList::Instance()->addBehavior(behavior);
 
 	return EBTNodeResult::Succeeded;
 }
