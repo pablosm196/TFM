@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object found, approach it, pick it up, then check and process it. Else, move and scan for objects.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeld    /> <Condition ID = IsAreaExplored    /> <Action ID = MoveToUnexploredArea    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object found, approach it, pick it up, then check and process it. Else, move and scan for objects.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeld    /> <Condition ID = IsAreaExplored    /> <Action ID = MoveToUnexploredArea    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectHeld": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsObjectHeld": "Boolean"
             },
             {
                 "IsAreaExplored": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeld?": "IsObjectHeld"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAreaExplored?": "IsAreaExplored"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToUnexploredArea",
-                            "Name": "MoveToUnexploredArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeld?": "IsObjectHeld"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAreaExplored?": "IsAreaExplored"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToUnexploredArea",
+                                "Name": "MoveToUnexploredArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO PickUpObject\n\t\t\t\tIF IsObjectHeld? THEN\n\t\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsAreaExplored? THEN\n\t\t\t\tDO MoveToUnexploredArea\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

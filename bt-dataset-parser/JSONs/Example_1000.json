@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is perceived, approach it. If near, take it and execute the task. Otherwise scan.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToTheObject    /> <Action ID = TakeTheObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If an object is perceived, approach it. If near, take it and execute the task. Otherwise scan.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToTheObject    /> <Action ID = TakeTheObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectKnown": "Boolean"
+                "isObjectNear": "Boolean"
             },
             {
-                "isObjectNear": "Boolean"
+                "isObjectKnown": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectKnown?": "isObjectKnown"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTheObject",
-                            "Name": "MoveToTheObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectNear?": "isObjectNear"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeTheObject",
-                            "Name": "TakeTheObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectKnown?": "isObjectKnown"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTheObject",
+                                "Name": "MoveToTheObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectNear?": "isObjectNear"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeTheObject",
+                                "Name": "TakeTheObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF isObjectKnown? THEN\n\t\t\t\tDO MoveToTheObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isObjectNear? THEN\n\t\t\t\tDO TakeTheObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, pick it up. Then move to destination, inspect shiny objects, else explore area. list of available nodes: <Action ID = PickupObject    /> <Action ID = MoveToDestination    /> <Action ID = InspectObject    /> <Action ID = ExploreArea    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectShiny    /> <SubTree ID = RobotWithObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, pick it up. Then move to destination, inspect shiny objects, else explore area. list of available nodes: <Action ID = PickupObject    /> <Action ID = MoveToDestination    /> <Action ID = InspectObject    /> <Action ID = ExploreArea    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectShiny    /> <SubTree ID = RobotWithObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectShiny": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectShiny": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickupObject",
-                            "Name": "PickupObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectShiny?": "IsObjectShiny"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ExploreArea",
-                            "Name": "ExploreArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickupObject",
+                                "Name": "PickupObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectShiny?": "IsObjectShiny"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ExploreArea",
+                                "Name": "ExploreArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO PickupObject\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveToDestination\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectShiny? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\t\tDO ExploreArea\n\t\tEND\n\tEND\n"
 }

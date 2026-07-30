@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move, grab, identify properties, perform task. Else avoid obstacle and continue search. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = MoveToNextSearchArea    /> <Action ID = AvoidObstacle    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectInReach    /> <Condition ID = IsObstacleInPath    /> <Condition ID = isObjectHeavy    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move, grab, identify properties, perform task. Else avoid obstacle and continue search. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = MoveToNextSearchArea    /> <Action ID = AvoidObstacle    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectInReach    /> <Condition ID = IsObstacleInPath    /> <Condition ID = isObjectHeavy    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,56 +12,59 @@
                 "isObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "ObjectDetected?": "ObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInReach?": "IsObjectInReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "isObjectHeavy?": "isObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToDesignatedArea",
-                                    "Name": "MoveObjectToDesignatedArea"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "ObjectDetected?": "ObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInReach?": "IsObjectInReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "isObjectHeavy?": "isObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToDesignatedArea",
+                                        "Name": "MoveObjectToDesignatedArea"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectInReach? THEN\n\t\t\t\t\tDO GrabObject\n\t\t\tELSE\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\t\t\tDO MoveObjectToDesignatedArea\n\t\t\t\tEND\n\t\t\t\tDO PerformSpecificTask\n\t\t\tEND\n\tEND\n"
 }

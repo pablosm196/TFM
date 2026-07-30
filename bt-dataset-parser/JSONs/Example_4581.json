@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible then approach, grab if possible, process, move and release, else find alternative route. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = MoveToDestination    /> <Action ID = ReleaseObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsPathBlocked    /> <SubTree ID = FindAlternateRoute    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible then approach, grab if possible, process, move and release, else find alternative route. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = MoveToDestination    /> <Action ID = ReleaseObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsPathBlocked    /> <SubTree ID = FindAlternateRoute    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectGrabbable": "Boolean"
+                "IsPathBlocked": "Boolean"
             },
             {
-                "IsPathBlocked": "Boolean"
+                "IsObjectGrabbable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ReleaseObject",
-                            "Name": "ReleaseObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsPathBlocked?": "IsPathBlocked"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "FindAlternateRoute",
-                            "Name": "FindAlternateRoute"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ReleaseObject",
+                                "Name": "ReleaseObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsPathBlocked?": "IsPathBlocked"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "FindAlternateRoute",
+                                "Name": "FindAlternateRoute"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\t\tDO MoveToDestination\n\t\t\tDO ReleaseObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsPathBlocked? THEN\n\t\t\t\tDO FindAlternateRoute\n\t\tELSE\n\t\t\tDO MoveToDestination\n\t\tEND\n\tEND\n"
 }

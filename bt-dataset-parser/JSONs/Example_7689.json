@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is reachable, take it, check its properties, move, and do task or retry. list of available nodes: <Action ID = DoTask    /> <Action ID = RetryTask    /> <Action ID = MoveToLocation    /> <Action ID = TakeObject    /> <Condition ID = IsObjectReached    /> <Condition ID = IsTaskFinished    /> <Condition ID = IsTaskFailed    /> <SubTree ID = CheckObjectProperties    /> <Action ID = FindObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is reachable, take it, check its properties, move, and do task or retry. list of available nodes: <Action ID = DoTask    /> <Action ID = RetryTask    /> <Action ID = MoveToLocation    /> <Action ID = TakeObject    /> <Condition ID = IsObjectReached    /> <Condition ID = IsTaskFinished    /> <Condition ID = IsTaskFailed    /> <SubTree ID = CheckObjectProperties    /> <Action ID = FindObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTaskFailed": "Boolean"
+                "IsTaskFinished": "Boolean"
             },
             {
                 "IsObjectReached": "Boolean"
             },
             {
-                "IsTaskFinished": "Boolean"
+                "IsTaskFailed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindObject",
-                    "Name": "FindObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectReached?": "IsObjectReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTaskFinished?": "IsTaskFinished"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DoTask",
-                                    "Name": "DoTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTaskFailed?": "IsTaskFailed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "RetryTask",
-                                    "Name": "RetryTask"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindObject",
+                        "Name": "FindObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReached?": "IsObjectReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTaskFinished?": "IsTaskFinished"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DoTask",
+                                        "Name": "DoTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTaskFailed?": "IsTaskFailed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "RetryTask",
+                                        "Name": "RetryTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectReached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO MoveToLocation\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTaskFinished? THEN\n\t\t\t\t\tDO DoTask\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTaskFailed? THEN\n\t\t\t\t\tDO RetryTask\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move and grab it, else go to task location, perform task and explore area. list of available nodes: <Action ID = MoveToTaskLocation    /> <Action ID = PerformTask    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveToObjectStorageLocation    /> <Action ID = StoreObject    /> <Action ID = IsTaskAssigned    /> <Action ID = ExploreArea    /> <Action ID = IsObjectDetected    /> <Action ID = IsObjectPropertyMet    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move and grab it, else go to task location, perform task and explore area. list of available nodes: <Action ID = MoveToTaskLocation    /> <Action ID = PerformTask    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveToObjectStorageLocation    /> <Action ID = StoreObject    /> <Action ID = IsTaskAssigned    /> <Action ID = ExploreArea    /> <Action ID = IsObjectDetected    /> <Action ID = IsObjectPropertyMet    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTaskAssigned": "Boolean"
+                "IsObjectPropertyMet": "Boolean"
             },
             {
-                "IsObjectPropertyMet": "Boolean"
+                "IsTaskAssigned": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTaskAssigned?": "IsTaskAssigned"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTaskLocation",
-                            "Name": "MoveToTaskLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectPropertyMet?": "IsObjectPropertyMet"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObjectStorageLocation",
-                            "Name": "MoveToObjectStorageLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "StoreObject",
-                            "Name": "StoreObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreArea",
-                    "Name": "ExploreArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTaskAssigned?": "IsTaskAssigned"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTaskLocation",
+                                "Name": "MoveToTaskLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectPropertyMet?": "IsObjectPropertyMet"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObjectStorageLocation",
+                                "Name": "MoveToObjectStorageLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "StoreObject",
+                                "Name": "StoreObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreArea",
+                        "Name": "ExploreArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsTaskAssigned? THEN\n\t\t\t\tDO MoveToTaskLocation\n\t\tELSE\n\t\t\tDO PerformTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF IsObjectPropertyMet? THEN\n\t\t\t\tDO MoveToObjectStorageLocation\n\t\tELSE\n\t\t\tDO StoreObject\n\t\tEND\n\t\tDO ExploreArea\n\tEND\n"
 }

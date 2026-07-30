@@ -1,9 +1,9 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and take it. If fragile, place gently. If magnetic, connect. Dispose or do specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = PlaceObjectGently    /> <Action ID = ConnectObject    /> <Action ID = DisposeObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectMagnetic    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and take it. If fragile, place gently. If magnetic, connect. Dispose or do specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = PlaceObjectGently    /> <Action ID = ConnectObject    /> <Action ID = DisposeObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectMagnetic    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectMagnetic": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectFragile": "Boolean"
@@ -12,90 +12,93 @@
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectMagnetic": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectFragile?": "IsObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PlaceObjectGently",
-                                    "Name": "PlaceObjectGently"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectMagnetic?": "IsObjectMagnetic"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ConnectObject",
-                                    "Name": "ConnectObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DisposeObject",
-                            "Name": "DisposeObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectFragile?": "IsObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PlaceObjectGently",
+                                        "Name": "PlaceObjectGently"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectMagnetic?": "IsObjectMagnetic"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ConnectObject",
+                                        "Name": "ConnectObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DisposeObject",
+                                "Name": "DisposeObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO TakeObject\n\t\tSELECTOR\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\tDO PlaceObjectGently\n\t\t\t\tEND\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectMagnetic? THEN\n\t\t\t\t\tDO ConnectObject\n\t\t\tEND\n\t\t\tDO DisposeObject\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

@@ -1,67 +1,70 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and take; if not, scan area. Then process object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and take; if not, scan area. Then process object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinReach": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO ApproachObject\n\t\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\t\tDO TakeObject\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

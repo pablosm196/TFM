@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If robot is at home, move to location, pick up object, check weight, move object, do task, and return home. list of available nodes: <Action ID = MoveToTargetLocation    /> <Action ID = PickUpObject    /> <Condition ID = IsRobotAtHome    /> <Action ID = ApproachObject    /> <SubTree ID = SpecificTask    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveObjectToLocation    /> <Action ID = ReturnHome    /> <Condition ID = IsObjectVisible    /> <Action ID = IsObjectClose    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If robot is at home, move to location, pick up object, check weight, move object, do task, and return home. list of available nodes: <Action ID = MoveToTargetLocation    /> <Action ID = PickUpObject    /> <Condition ID = IsRobotAtHome    /> <Action ID = ApproachObject    /> <SubTree ID = SpecificTask    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveObjectToLocation    /> <Action ID = ReturnHome    /> <Condition ID = IsObjectVisible    /> <Action ID = IsObjectClose    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsRobotAtHome": "Boolean"
-            },
             {
                 "IsObjectClose": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsRobotAtHome": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsRobotAtHome?": "IsRobotAtHome"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToTargetLocation",
-                    "Name": "MoveToTargetLocation"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectClose?": "IsObjectClose"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PickUpObject",
-                                            "Name": "PickUpObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "CheckObjectWeight",
-                                            "Name": "CheckObjectWeight"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "MoveObjectToLocation",
-                                            "Name": "MoveObjectToLocation"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ReturnHome",
-                    "Name": "ReturnHome"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsRobotAtHome?": "IsRobotAtHome"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToTargetLocation",
+                        "Name": "MoveToTargetLocation"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectClose?": "IsObjectClose"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PickUpObject",
+                                                "Name": "PickUpObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "CheckObjectWeight",
+                                                "Name": "CheckObjectWeight"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "MoveObjectToLocation",
+                                                "Name": "MoveObjectToLocation"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ReturnHome",
+                        "Name": "ReturnHome"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsRobotAtHome? THEN\n\t\t\tDO MoveToTargetLocation\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tSELECTOR\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectClose? THEN\n\t\t\t\t\t\t\tDO PickUpObject\n\t\t\t\t\tELSE\n\t\t\t\t\t\tDO CheckObjectWeight\n\t\t\t\t\t\tDO MoveObjectToLocation\n\t\t\t\t\tEND\n\t\t\t\t\tDO ApproachObject\n\t\t\t\tEND\n\t\tEND\n\t\tDO SpecificTask\n\t\tDO ReturnHome\n\tEND\n"
 }

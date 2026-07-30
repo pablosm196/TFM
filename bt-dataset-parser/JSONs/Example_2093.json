@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Check for nearby objects. If found, pick up and move to destination. Finally, wrap or place object based on its properties. list of available nodes: <Action ID = PickObject    /> <Action ID = MoveToDestination    /> <Action ID = PlaceObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Action ID = WrapObject    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Check for nearby objects. If found, pick up and move to destination. Finally, wrap or place object based on its properties. list of available nodes: <Action ID = PickObject    /> <Action ID = MoveToDestination    /> <Action ID = PlaceObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Action ID = WrapObject    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,83 +12,86 @@
                 "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickObject",
-                    "Name": "PickObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PlaceObject",
-                                    "Name": "PlaceObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectFragile?": "IsObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "WrapObject",
-                                    "Name": "WrapObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PlaceObject",
-                                    "Name": "PlaceObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickObject",
+                        "Name": "PickObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PlaceObject",
+                                        "Name": "PlaceObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectFragile?": "IsObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "WrapObject",
+                                        "Name": "WrapObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PlaceObject",
+                                        "Name": "PlaceObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO PickObject\n\tELSE\n\t\tDO MoveToDestination\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO PlaceObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\tDO WrapObject\n\t\t\tELSE\n\t\t\t\tDO PlaceObject\n\t\t\tEND\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

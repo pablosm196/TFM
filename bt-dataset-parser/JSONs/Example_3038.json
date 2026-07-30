@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. Check color. Take and do task. Move to next location. If unseen, approach or scan.     list of available nodes: <Action ID = TakeObject    /> <Action ID = CheckObjectColor    /> <Action ID = MoveToNextLocation    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = TaskSpecificAction    /> <Condition ID = IsObjectTakeable    /> <Condition ID = IsNewObjectApproached    /> <Condition ID = IsObjectVisible    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. Check color. Take and do task. Move to next location. If unseen, approach or scan.     list of available nodes: <Action ID = TakeObject    /> <Action ID = CheckObjectColor    /> <Action ID = MoveToNextLocation    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = TaskSpecificAction    /> <Condition ID = IsObjectTakeable    /> <Condition ID = IsNewObjectApproached    /> <Condition ID = IsObjectVisible    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,53 +9,56 @@
                 "IsNewObjectApproached": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsNewObjectApproached?": "IsNewObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CheckObjectColor",
-                    "Name": "CheckObjectColor"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectTakeable?": "IsObjectTakeable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TaskSpecificAction",
-                            "Name": "TaskSpecificAction"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToNextLocation",
-                    "Name": "MoveToNextLocation"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsNewObjectApproached?": "IsNewObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CheckObjectColor",
+                        "Name": "CheckObjectColor"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectTakeable?": "IsObjectTakeable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TaskSpecificAction",
+                                "Name": "TaskSpecificAction"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToNextLocation",
+                        "Name": "MoveToNextLocation"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsNewObjectApproached? THEN\n\t\t\tDO CheckObjectColor\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectTakeable? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO TaskSpecificAction\n\t\tEND\n\t\tDO MoveToNextLocation\n\tEND\n"
 }

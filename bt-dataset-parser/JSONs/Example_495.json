@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find, approach and pick up object. Perform task or avoid obstacles. Explore, then rest.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = ObjectWeight    /> <SubTree ID = PerformTask    /> <Condition ID = IsObstacle    /> <Action ID = AvoidObstacle    /> <Action ID = ScanForObjects    /> <SubTree ID = ExploreArea    /> <Action ID = Rest    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find, approach and pick up object. Perform task or avoid obstacles. Explore, then rest.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = ObjectWeight    /> <SubTree ID = PerformTask    /> <Condition ID = IsObstacle    /> <Action ID = AvoidObstacle    /> <Action ID = ScanForObjects    /> <SubTree ID = ExploreArea    /> <Action ID = Rest    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,57 +12,60 @@
                 "IsObstacle": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "ObjectFound?": "ObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectWeight?": "ObjectWeight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObstacle?": "IsObstacle"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "AvoidObstacle",
-                    "Name": "AvoidObstacle"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "ObjectFound?": "ObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectWeight?": "ObjectWeight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObstacle?": "IsObstacle"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "AvoidObstacle",
+                        "Name": "AvoidObstacle"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\tDO PickUpObject\n\t\t\t\t\tIF ObjectWeight? THEN\n\t\t\t\t\tDO PerformTask\n\t\t\tEND\n\tELSE\n\t\t\tIF IsObstacle? THEN\n\t\t\tDO AvoidObstacle\n\tEND\n"
 }

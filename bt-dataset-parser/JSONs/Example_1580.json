@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and grab it, process properties, transport it, else scan and move randomly. list of available nodes: <Action ID = MoveToObject    /> <Action ID = IsCloseToObject    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = TransportObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = RandomMovement    /> <Condition ID = IsObjectVisible    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and grab it, process properties, transport it, else scan and move randomly. list of available nodes: <Action ID = MoveToObject    /> <Action ID = IsCloseToObject    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = TransportObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = RandomMovement    /> <Condition ID = IsObjectVisible    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsCloseToObject": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsCloseToObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsCloseToObject?": "IsCloseToObject"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObjectProperties",
-                                    "Name": "ProcessObjectProperties"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TransportObject",
-                                    "Name": "TransportObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "RandomMovement",
-                            "Name": "RandomMovement"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsCloseToObject?": "IsCloseToObject"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObjectProperties",
+                                        "Name": "ProcessObjectProperties"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TransportObject",
+                                        "Name": "TransportObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "RandomMovement",
+                                "Name": "RandomMovement"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToObject\n\t\t\t\t\tIF IsCloseToObject? THEN\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\tDO GrabObject\n\t\t\t\t\t\tDO ProcessObjectProperties\n\t\t\t\t\t\tDO TransportObject\n\t\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tDO ScanAreaForObject\n\t\t\tDO RandomMovement\n\t\tEND\n\tEND\n"
 }

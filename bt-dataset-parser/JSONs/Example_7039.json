@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Grab object, take it to destination or scan properties, do subtask if done. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Action ID = ScanObjectProperties    /> <Condition ID = IsObjectLight    /> <Action ID = DoSpecificSubtask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Grab object, take it to destination or scan properties, do subtask if done. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Action ID = ScanObjectProperties    /> <Condition ID = IsObjectLight    /> <Action ID = DoSpecificSubtask    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectLight": "Boolean"
-            },
             {
                 "IsObjectApproached": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectLight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToDestination",
-                                    "Name": "MoveObjectToDestination"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectLight?": "IsObjectLight"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ScanObjectProperties",
-                                    "Name": "ScanObjectProperties"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoSpecificSubtask",
-                    "Name": "DoSpecificSubtask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToDestination",
+                                        "Name": "MoveObjectToDestination"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectLight?": "IsObjectLight"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ScanObjectProperties",
+                                        "Name": "ScanObjectProperties"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoSpecificSubtask",
+                        "Name": "DoSpecificSubtask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDestination\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectLight? THEN\n\t\t\t\t\tDO ScanObjectProperties\n\t\t\tEND\n\t\tEND\n\t\tDO DoSpecificSubtask\n\tEND\n"
 }

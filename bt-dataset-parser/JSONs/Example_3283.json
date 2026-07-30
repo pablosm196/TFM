@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, then approach. If within reach, then take. Finally, process object or call helper robot. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = CallHelperRobot    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = ProcessObject    /> <SubTree ID = FindAndTakeObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, then approach. If within reach, then take. Finally, process object or call helper robot. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = CallHelperRobot    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = ProcessObject    /> <SubTree ID = FindAndTakeObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinReach": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallHelperRobot",
-                                    "Name": "CallHelperRobot"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObjectWithHelper",
-                                    "Name": "TakeObjectWithHelper"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallHelperRobot",
+                                        "Name": "CallHelperRobot"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObjectWithHelper",
+                                        "Name": "TakeObjectWithHelper"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CallHelperRobot\n\t\t\tELSE\n\t\t\t\tDO TakeObjectWithHelper\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

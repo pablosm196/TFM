@@ -1,89 +1,92 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, move and check its properties. Either drop off, clean or perform task. list of available nodes: <Action ID = PickUpObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectDirty    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveToLocation    /> <Action ID = CleanObject    /> <Action ID = DropOffObject    /> <SubTree ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, move and check its properties. Either drop off, clean or perform task. list of available nodes: <Action ID = PickUpObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectDirty    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveToLocation    /> <Action ID = CleanObject    /> <Action ID = DropOffObject    /> <SubTree ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectDirty": "Boolean"
-            },
             {
                 "IsObjectFound": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectDirty": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToLocation",
-                                    "Name": "MoveToLocation"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "DropOffObject",
-                                    "Name": "DropOffObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectDirty?": "IsObjectDirty"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CleanObject",
-                                    "Name": "CleanObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToLocation",
+                                        "Name": "MoveToLocation"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "DropOffObject",
+                                        "Name": "DropOffObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectDirty?": "IsObjectDirty"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CleanObject",
+                                        "Name": "CleanObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO PickUpObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToLocation\n\t\t\t\tDO DropOffObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectDirty? THEN\n\t\t\t\t\tDO CleanObject\n\t\t\tEND\n\t\t\tDO PerformTask\n\t\tEND\n\tEND\n"
 }

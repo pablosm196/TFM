@@ -1,75 +1,78 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to it, take it, check properties, do task. Else, scan for object. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Condition ID = IsObjectReachable    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallAssist    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to it, take it, check properties, do task. Else, scan for object. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Condition ID = IsObjectReachable    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallAssist    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectReachable": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectReachable?": "IsObjectReachable"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallAssist",
-                            "Name": "CallAssist"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoSpecificTask",
-                    "Name": "DoSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectReachable?": "IsObjectReachable"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallAssist",
+                                "Name": "CallAssist"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoSpecificTask",
+                        "Name": "DoSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\t\tIF IsObjectReachable? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CallAssist\n\t\tEND\n\t\tDO CheckObjectProperties\n\t\tDO DoSpecificTask\n\tEND\n"
 }

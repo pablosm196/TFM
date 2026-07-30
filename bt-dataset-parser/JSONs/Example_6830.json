@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is movable, move, take it. Based on its shape, rotate, place or throw, and finish. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectMovable    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectShapeSquare    /> <Condition ID = isObjectShapeCircle    /> <Action ID = RotateObject    /> <Action ID = PlaceObject    /> <Action ID = ThrowObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is movable, move, take it. Based on its shape, rotate, place or throw, and finish. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectMovable    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectShapeSquare    /> <Condition ID = isObjectShapeCircle    /> <Action ID = RotateObject    /> <Action ID = PlaceObject    /> <Action ID = ThrowObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "isObjectShapeCircle": "Boolean"
             },
             {
-                "isObjectShapeSquare": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
                 "IsObjectMovable": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "isObjectShapeSquare": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectMovable?": "IsObjectMovable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "isObjectShapeSquare?": "isObjectShapeSquare"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "RotateObject",
-                                            "Name": "RotateObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "PlaceObject",
-                                            "Name": "PlaceObject"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "isObjectShapeCircle?": "isObjectShapeCircle"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "ThrowObject",
-                                            "Name": "ThrowObject"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectMovable?": "IsObjectMovable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "isObjectShapeSquare?": "isObjectShapeSquare"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "RotateObject",
+                                                "Name": "RotateObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "PlaceObject",
+                                                "Name": "PlaceObject"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "isObjectShapeCircle?": "isObjectShapeCircle"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "ThrowObject",
+                                                "Name": "ThrowObject"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectMovable? THEN\n\t\t\t\t\tDO MoveToObject\n\t\t\tELSE\n\t\t\t\tDO TakeObject\n\t\t\t\tSELECTOR\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF isObjectShapeSquare? THEN\n\t\t\t\t\t\t\tDO RotateObject\n\t\t\t\t\tELSE\n\t\t\t\t\t\tDO PlaceObject\n\t\t\t\t\tEND\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF isObjectShapeCircle? THEN\n\t\t\t\t\t\t\tDO ThrowObject\n\t\t\t\t\tEND\n\t\t\t\tEND\n\t\t\tEND\n\tEND\n"
 }

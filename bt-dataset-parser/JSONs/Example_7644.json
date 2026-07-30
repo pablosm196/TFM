@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. If not, scan for it. If approached, grab it. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = SpecificTask    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObstacleInFront    /> <SubTree ID = ObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. If not, scan for it. If approached, grab it. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = SpecificTask    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObstacleInFront    /> <SubTree ID = ObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObstacleInFront": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsObstacleInFront": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ObjectProperties",
-                            "Name": "ObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleInFront?": "IsObstacleInFront"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToLocation",
-                    "Name": "MoveToLocation"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ObjectProperties",
+                                "Name": "ObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleInFront?": "IsObstacleInFront"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToLocation",
+                        "Name": "MoveToLocation"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ObjectProperties\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleInFront? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tEND\n\t\tDO MoveToLocation\n\tEND\n"
 }

@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object using fallback. If heavy, carry. If fragile, handle gently. Complete specific task.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = CarryObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Action ID = HandleObjectGently    /> <Action ID = ExamineObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object using fallback. If heavy, carry. If fragile, handle gently. Complete specific task.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = CarryObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Action ID = HandleObjectGently    /> <Action ID = ExamineObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CarryObject",
-                                    "Name": "CarryObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectFragile?": "IsObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "HandleObjectGently",
-                                    "Name": "HandleObjectGently"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ExamineObject",
-                            "Name": "ExamineObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CarryObject",
+                                        "Name": "CarryObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectFragile?": "IsObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "HandleObjectGently",
+                                        "Name": "HandleObjectGently"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ExamineObject",
+                                "Name": "ExamineObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tDO GrabObject\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CarryObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\tDO HandleObjectGently\n\t\t\tEND\n\t\t\tDO ExamineObject\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, move and take it to destination, check and complete specific task. list of available nodes: <Action ID = FindAndGrabObject    /> <SubTree ID = ProcessObject    /> <Action ID = GrabObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectPresent    /> <Action ID = TakeObject    /> <Action ID = CheckObjectSize    /> <Condition ID = IsObjectHeavy    /> <Action ID = TransportObject    /> <Condition ID = IsObjectLight    /> <Action ID = InspectObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, move and take it to destination, check and complete specific task. list of available nodes: <Action ID = FindAndGrabObject    /> <SubTree ID = ProcessObject    /> <Action ID = GrabObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectPresent    /> <Action ID = TakeObject    /> <Action ID = CheckObjectSize    /> <Condition ID = IsObjectHeavy    /> <Action ID = TransportObject    /> <Condition ID = IsObjectLight    /> <Action ID = InspectObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectLight": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectPresent": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectLight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindAndGrabObject",
-                    "Name": "FindAndGrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectPresent?": "IsObjectPresent"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectSize",
-                    "Name": "CheckObjectSize"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TransportObject",
-                                    "Name": "TransportObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectLight?": "IsObjectLight"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindAndGrabObject",
+                        "Name": "FindAndGrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectPresent?": "IsObjectPresent"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectSize",
+                        "Name": "CheckObjectSize"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TransportObject",
+                                        "Name": "TransportObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectLight?": "IsObjectLight"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindAndGrabObject\n\t\tDO MoveToDestination\n\t\t\tIF IsObjectPresent? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO CheckObjectSize\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO TransportObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectLight? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

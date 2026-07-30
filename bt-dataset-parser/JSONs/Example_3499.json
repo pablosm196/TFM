@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is nearby, pick it up, check properties, move to destination for specific task. Else, avoid obstacles or scan area for object. list of available nodes: <Action ID = AvoidObstacle    /> <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanAreaForObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObstacleInPath    /> <Condition ID = IsObjectNotVisible    /> <Condition ID = IsObjectNearby    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If an object is nearby, pick it up, check properties, move to destination for specific task. Else, avoid obstacles or scan area for object. list of available nodes: <Action ID = AvoidObstacle    /> <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanAreaForObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObstacleInPath    /> <Condition ID = IsObjectNotVisible    /> <Condition ID = IsObjectNearby    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectNotVisible": "Boolean"
+                "IsObstacleInPath": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
             },
             {
-                "IsObstacleInPath": "Boolean"
+                "IsObjectNotVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleInPath?": "IsObstacleInPath"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNotVisible?": "IsObjectNotVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleInPath?": "IsObstacleInPath"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNotVisible?": "IsObjectNotVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO MoveToDestination\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleInPath? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNotVisible? THEN\n\t\t\t\tDO ScanAreaForObject\n\t\tEND\n\tEND\n"
 }

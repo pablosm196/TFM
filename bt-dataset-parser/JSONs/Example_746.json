@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is found, approach and pick it up. Check properties, do task. Otherwise, plan new path or scan area.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = CanRobotPickUpObject    /> <Action ID = PickUpObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsPathObstructed    /> <SubTree ID = PlanNewPath    /> <Action ID = MoveToNewPosition    /> <Condition ID = IsObjectFound    /> <Action ID = ScanAreaForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is found, approach and pick it up. Check properties, do task. Otherwise, plan new path or scan area.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = CanRobotPickUpObject    /> <Action ID = PickUpObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsPathObstructed    /> <SubTree ID = PlanNewPath    /> <Action ID = MoveToNewPosition    /> <Condition ID = IsObjectFound    /> <Action ID = ScanAreaForObject    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "CanRobotPickUpObject": "Boolean"
-            },
             {
                 "IsObjectFound": "Boolean"
             },
             {
                 "IsPathObstructed": "Boolean"
+            },
+            {
+                "CanRobotPickUpObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CanRobotPickUpObject?": "CanRobotPickUpObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsPathObstructed?": "IsPathObstructed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PlanNewPath",
-                                    "Name": "PlanNewPath"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToNewPosition",
-                                    "Name": "MoveToNewPosition"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CanRobotPickUpObject?": "CanRobotPickUpObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsPathObstructed?": "IsPathObstructed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PlanNewPath",
+                                        "Name": "PlanNewPath"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToNewPosition",
+                                        "Name": "MoveToNewPosition"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\t\tIF CanRobotPickUpObject? THEN\n\t\t\t\t\tDO PickUpObject\n\t\t\tELSE\n\t\t\t\tDO CheckObjectProperties\n\t\t\t\tDO SpecificTask\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsPathObstructed? THEN\n\t\t\t\t\tDO PlanNewPath\n\t\t\tELSE\n\t\t\t\tDO MoveToNewPosition\n\t\t\tEND\n\t\t\tDO ScanAreaForObject\n\t\tEND\n\tEND\n"
 }

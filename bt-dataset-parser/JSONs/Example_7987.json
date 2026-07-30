@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Search for and grab object. If carrying, process properties. Move to destination and drop. list of available nodes: <Action ID = SearchForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObjectProperties    /> <Action ID = DropObject    /> <Action ID = MoveToNextDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsCarryingObject    /> <Condition ID = IsDestinationApproached    /> <SubTree ID = MobileRobotTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Search for and grab object. If carrying, process properties. Move to destination and drop. list of available nodes: <Action ID = SearchForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObjectProperties    /> <Action ID = DropObject    /> <Action ID = MoveToNextDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsCarryingObject    /> <Condition ID = IsDestinationApproached    /> <SubTree ID = MobileRobotTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsDestinationApproached": "Boolean"
             },
             {
-                "IsCarryingObject": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsCarryingObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsCarryingObject?": "IsCarryingObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDestinationApproached?": "IsDestinationApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "DropObject",
-                            "Name": "DropObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToNextDestination",
-                            "Name": "MoveToNextDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SearchForObject",
-                    "Name": "SearchForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsCarryingObject?": "IsCarryingObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDestinationApproached?": "IsDestinationApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "DropObject",
+                                "Name": "DropObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToNextDestination",
+                                "Name": "MoveToNextDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SearchForObject",
+                        "Name": "SearchForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO GrabObject\n\t\t\t\tIF IsCarryingObject? THEN\n\t\t\t\tDO ProcessObjectProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsDestinationApproached? THEN\n\t\t\t\tDO DropObject\n\t\tELSE\n\t\t\tDO MoveToNextDestination\n\t\tEND\n\t\tDO SearchForObject\n\tEND\n"
 }

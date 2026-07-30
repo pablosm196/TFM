@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and approaches an object, grabs and moves it to the storage, then performs a specific task or scans the area. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = MoveToObjectStorageArea    /> <Action ID = PutObjectInStorageArea    /> <Action ID = CheckObjectLabel    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = AreStorageAreaFull    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and approaches an object, grabs and moves it to the storage, then performs a specific task or scans the area. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = MoveToObjectStorageArea    /> <Action ID = PutObjectInStorageArea    /> <Action ID = CheckObjectLabel    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = AreStorageAreaFull    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "AreStorageAreaFull": "Boolean"
             },
             {
-                "IsObjectGrabbed": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectGrabbed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectGrabbed?": "IsObjectGrabbed"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObjectStorageArea",
-                    "Name": "MoveToObjectStorageArea"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PutObjectInStorageArea",
-                    "Name": "PutObjectInStorageArea"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "AreStorageAreaFull?": "AreStorageAreaFull"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectLabel",
-                                    "Name": "CheckObjectLabel"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PerformSpecificTask",
-                                    "Name": "PerformSpecificTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectGrabbed?": "IsObjectGrabbed"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObjectStorageArea",
+                        "Name": "MoveToObjectStorageArea"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PutObjectInStorageArea",
+                        "Name": "PutObjectInStorageArea"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "AreStorageAreaFull?": "AreStorageAreaFull"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectLabel",
+                                        "Name": "CheckObjectLabel"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PerformSpecificTask",
+                                        "Name": "PerformSpecificTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectGrabbed? THEN\n\t\t\tDO MoveToObjectStorageArea\n\tELSE\n\t\tDO PutObjectInStorageArea\n\t\t\tIF AreStorageAreaFull? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO CheckObjectLabel\n\t\t\t\t\tDO PerformSpecificTask\n\t\t\t\tEND\n\t\t\t\tDO ScanAreaForObject\n\t\t\tEND\n\tEND\n"
 }

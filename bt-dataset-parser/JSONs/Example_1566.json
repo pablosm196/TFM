@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is nearby, grab it; otherwise, scan area whether to pick or store it. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectNearby    /> <Sequence>     <Action ID = MoveToObject    />     <Condition ID = IsObjectFragile    />     <Action ID = CarefullyTakeObject    />     <SubTree ID = ProcessObjectProperties    /> </Sequence> <Sequence>     <Action ID = TakeObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveToStorage    /> </Sequence> <Action ID = ScanAreaForObjects    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If an object is nearby, grab it; otherwise, scan area whether to pick or store it. list of available nodes: <Action ID = TakeObject    /> <Condition ID = IsObjectNearby    /> <Sequence>     <Action ID = MoveToObject    />     <Condition ID = IsObjectFragile    />     <Action ID = CarefullyTakeObject    />     <SubTree ID = ProcessObjectProperties    /> </Sequence> <Sequence>     <Action ID = TakeObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveToStorage    /> </Sequence> <Action ID = ScanAreaForObjects    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectFragile": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveToStorage",
-                                    "Name": "MoveToStorage"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToObject",
-                                    "Name": "MoveToObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectFragile?": "IsObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CarefullyTakeObject",
-                                    "Name": "CarefullyTakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObjectProperties",
-                                    "Name": "ProcessObjectProperties"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObjects",
-                            "Name": "ScanAreaForObjects"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveToStorage",
+                                        "Name": "MoveToStorage"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToObject",
+                                        "Name": "MoveToObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectFragile?": "IsObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CarefullyTakeObject",
+                                        "Name": "CarefullyTakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObjectProperties",
+                                        "Name": "ProcessObjectProperties"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObjects",
+                                "Name": "ScanAreaForObjects"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO TakeObject\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO MoveToStorage\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO MoveToObject\n\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\tDO CarefullyTakeObject\n\t\t\t\tELSE\n\t\t\t\t\tDO ProcessObjectProperties\n\t\t\t\tEND\n\t\t\t\tDO ScanAreaForObjects\n\t\t\tEND\n\tEND\n"
 }

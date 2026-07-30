@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is approached and grabbed, move, check object and perform task. Else approach or scan area. list of available nodes: <Condition ID = IsObjectApproached    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = MoveToDestination    /> <SubTree ID = CheckObjectProperty    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectInHand    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is approached and grabbed, move, check object and perform task. Else approach or scan area. list of available nodes: <Condition ID = IsObjectApproached    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = MoveToDestination    /> <SubTree ID = CheckObjectProperty    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectInHand    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,53 +9,56 @@
                 "IsObjectInHand": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInHand?": "IsObjectInHand"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperty",
-                            "Name": "CheckObjectProperty"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInHand?": "IsObjectInHand"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperty",
+                                "Name": "CheckObjectProperty"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\tSEQUENCE\n\t\t\tDO MoveToDestination\n\t\t\t\tIF IsObjectInHand? THEN\n\t\t\t\tDO CheckObjectProperty\n\t\tELSE\n\t\t\tDO PerformTask\n\t\tEND\n\tEND\n"
 }

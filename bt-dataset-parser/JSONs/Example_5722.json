@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, approach it. Then, if the object is grabbed, move to destination and place it. Otherwise, call for help or check object properties. Finally, perform specific task as subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = CheckObjectProperties    /> <Action ID = PlaceObject    /> <Action ID = CallForHelp    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectTooHeavy    /> <Action ID = MoveToDestination    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, approach it. Then, if the object is grabbed, move to destination and place it. Otherwise, call for help or check object properties. Finally, perform specific task as subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = CheckObjectProperties    /> <Action ID = PlaceObject    /> <Action ID = CallForHelp    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectTooHeavy    /> <Action ID = MoveToDestination    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "IsObjectTooHeavy": "Boolean"
             },
             {
                 "IsObjectGrabbed": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectGrabbed?": "IsObjectGrabbed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveToDestination",
-                                    "Name": "MoveToDestination"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PlaceObject",
-                                    "Name": "PlaceObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectTooHeavy?": "IsObjectTooHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallForHelp",
-                                    "Name": "CallForHelp"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectGrabbed?": "IsObjectGrabbed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveToDestination",
+                                        "Name": "MoveToDestination"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PlaceObject",
+                                        "Name": "PlaceObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectTooHeavy?": "IsObjectTooHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallForHelp",
+                                        "Name": "CallForHelp"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectGrabbed? THEN\n\t\t\t\t\tDO MoveToDestination\n\t\t\tELSE\n\t\t\t\tDO PlaceObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectTooHeavy? THEN\n\t\t\t\t\tDO CallForHelp\n\t\t\tEND\n\t\t\tDO CheckObjectProperties\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

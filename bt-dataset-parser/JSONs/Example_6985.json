@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Move towards object, pick it up if reachable, check object properties, perform specific task. list of available nodes: <Action ID = IsObjectInSight    /> <SubTree ID = CheckObjectProperties    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectWithinReach    /> <Action ID = MoveTowardsObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = FindHelp    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Move towards object, pick it up if reachable, check object properties, perform specific task. list of available nodes: <Action ID = IsObjectInSight    /> <SubTree ID = CheckObjectProperties    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectWithinReach    /> <Action ID = MoveTowardsObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = FindHelp    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinReach": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectWithinReach": "Boolean"
             },
             {
                 "IsObjectInSight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInSight?": "IsObjectInSight"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveTowardsObject",
-                    "Name": "MoveTowardsObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "FindHelp",
-                                            "Name": "FindHelp"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectProperties",
-                                    "Name": "CheckObjectProperties"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInSight?": "IsObjectInSight"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveTowardsObject",
+                        "Name": "MoveTowardsObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "FindHelp",
+                                                "Name": "FindHelp"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectProperties",
+                                        "Name": "CheckObjectProperties"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInSight? THEN\n\t\t\tDO MoveTowardsObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO FindHelp\n\t\t\t\tEND\n\t\t\t\tDO CheckObjectProperties\n\t\t\tEND\n\t\t\tDO SpecificTask\n\t\tEND\n\tEND\n"
 }

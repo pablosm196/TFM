@@ -1,0 +1,119 @@
+\chapter{JSON Schema para los \glspl{BT} generados}
+\label{appendix:Schema}
+
+\begin{lstlisting}[style = json, caption={JSON Schema (Draft 2020-12) de los \glspl{BT} generados}, label={lst:MixamoDumperCode}]
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/behaviour-tree.schema.json",
+  "title": "Behaviour Tree",
+  "type": "object",
+  "required": ["Blackboard", "Node"],
+  "additionalProperties": false,
+
+  "properties": {
+    "Blackboard": {
+      "type": "array",
+      "description": "Blackboard",
+      "items": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "enum": ["Bool", "Int", "Float", "Vector", "Object", "String"]
+        }
+      }
+    },
+
+    "Node": {
+      "$ref": "#/$defs/TreeNodeWrapper"
+    }
+  },
+
+  "$defs": {
+    "TreeNodeWrapper": {
+      "type": "object",
+      "description": "Nodo del arbol",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/TreeNode"
+      }
+    },
+
+    "TreeNode": {
+      "type": "object",
+      "required": ["Type", "Decorators", "Nodes"],
+      "additionalProperties": false,
+
+      "properties": {
+        "Type": {
+          "type": "string",
+          "enum": ["Selector", "Sequence", "Task", "Parallel"]
+        },
+
+        "Name": {
+          "type": "string",
+          "description": "Nombre opcional del nodo"
+        },
+
+        "Decorators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+
+        "Task": {
+          "type": "string",
+          "description": "Nombre de la tarea"
+        },
+
+        "BlackboardEntries": {
+          "type": "array",
+          "description": "Entradas del Blackboard usadas por el nodo",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "Nodes": {
+          "type": "array",
+          "description": "Nodos hijos",
+          "items": {
+            "$ref": "#/$defs/TreeNodeWrapper"
+          }
+        }
+      }
+      ,
+      "Nodes": {
+          "type": "array",
+          "description": "Nodos hijos",
+          "minItems": 0,
+          "items": {
+            "type" : "object",
+            "required": ["Node"],
+            "additionalProperties" : false,
+            "properties": {
+              "Node": {
+                "$ref": "#/$defs/TreeNode"
+              }
+            }
+          }
+        },
+
+      "allOf": [
+        {
+          "if": {
+            "properties": { "Type": { "const": "Task" } }
+          },
+          "then": {
+            "required": ["Task"]
+          }
+        }
+      ]
+    }
+  }
+}
+\end{lstlisting}

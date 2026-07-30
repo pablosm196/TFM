@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, grab it, check properties, move and perform specific task. Otherwise, move and scan. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanEnvironment    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToNextLocation    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectReachable    /> <Condition ID = IsPathClear    /> <SubTree ID = DoSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is found, grab it, check properties, move and perform specific task. Otherwise, move and scan. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanEnvironment    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToNextLocation    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectReachable    /> <Condition ID = IsPathClear    /> <SubTree ID = DoSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectReachable": "Boolean"
+                "IsObjectDetected": "Boolean"
             },
             {
-                "IsObjectDetected": "Boolean"
+                "IsObjectReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectReachable?": "IsObjectReachable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoSpecificTask",
-                    "Name": "DoSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReachable?": "IsObjectReachable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoSpecificTask",
+                        "Name": "DoSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectReachable? THEN\n\t\t\t\t\tDO GrabObject\n\t\t\tELSE\n\t\t\t\tDO CheckObjectProperties\n\t\t\tEND\n\tELSE\n\t\tDO MoveToDestination\n\t\tDO DoSpecificTask\n\tEND\n"
 }

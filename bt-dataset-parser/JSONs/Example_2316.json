@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach, take it, move to area; if fragile, inspect and move to safe area; else do specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = InspectObject    /> <Action ID = MoveObjectToSafeArea    /> <SubTree ID = SpecificTaskSubtree    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectLightWeight    /> <Condition ID = IsObjectFragile    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach, take it, move to area; if fragile, inspect and move to safe area; else do specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = InspectObject    /> <Action ID = MoveObjectToSafeArea    /> <SubTree ID = SpecificTaskSubtree    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectLightWeight    /> <Condition ID = IsObjectFragile    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectFragile": "Boolean"
+                "IsObjectLightWeight": "Boolean"
             },
             {
-                "IsObjectLightWeight": "Boolean"
+                "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectLightWeight?": "IsObjectLightWeight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedArea",
-                            "Name": "MoveObjectToDesignatedArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectFragile?": "IsObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToSafeArea",
-                                    "Name": "MoveObjectToSafeArea"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTaskSubtree",
-                            "Name": "SpecificTaskSubtree"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectLightWeight?": "IsObjectLightWeight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedArea",
+                                "Name": "MoveObjectToDesignatedArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectFragile?": "IsObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToSafeArea",
+                                        "Name": "MoveObjectToSafeArea"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTaskSubtree",
+                                "Name": "SpecificTaskSubtree"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO TakeObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectLightWeight? THEN\n\t\t\t\tDO MoveObjectToDesignatedArea\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tELSE\n\t\t\t\tDO MoveObjectToSafeArea\n\t\t\tEND\n\t\t\tDO InspectObject\n\t\t\tDO SpecificTaskSubtree\n\t\tEND\n\tEND\n"
 }

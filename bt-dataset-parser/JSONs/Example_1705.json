@@ -1,84 +1,87 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object, then check properties, or scan the area if necessary - for the mobile robot.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToForObject    /> <SubTree ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = CanReachObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectInView    /> <Condition ID = IsObjectVisible    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object, then check properties, or scan the area if necessary - for the mobile robot.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToForObject    /> <SubTree ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = CanReachObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectInView    /> <Condition ID = IsObjectVisible    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectGrabbable": "Boolean"
+                "CanReachObject": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "CanReachObject": "Boolean"
+                "IsObjectInView": "Boolean"
             },
             {
-                "IsObjectInView": "Boolean"
+                "IsObjectGrabbable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CanReachObject?": "CanReachObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToForObject",
-                            "Name": "MoveToForObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CanReachObject?": "CanReachObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToForObject",
+                                "Name": "MoveToForObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF CanReachObject? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveToForObject\n\t\tEND\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

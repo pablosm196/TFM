@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to object, grab object, check object, and perform subtask. Otherwise, move to visible object or search. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Condition ID = IsObjectInSight    /> <Action ID = MoveToVisibleObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = CheckObjectColor    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectVisible    /> <Action ID = SearchForObjects    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to object, grab object, check object, and perform subtask. Otherwise, move to visible object or search. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Condition ID = IsObjectInSight    /> <Action ID = MoveToVisibleObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = CheckObjectColor    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectVisible    /> <Action ID = SearchForObjects    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
                 "IsObjectInSight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInSight?": "IsObjectInSight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedArea",
-                            "Name": "MoveObjectToDesignatedArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectColor",
-                            "Name": "CheckObjectColor"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToVisibleObject",
-                            "Name": "MoveToVisibleObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SearchForObjects",
-                    "Name": "SearchForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInSight?": "IsObjectInSight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedArea",
+                                "Name": "MoveObjectToDesignatedArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectColor",
+                                "Name": "CheckObjectColor"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToVisibleObject",
+                                "Name": "MoveToVisibleObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SearchForObjects",
+                        "Name": "SearchForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInSight? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO GrabObject\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToDesignatedArea\n\t\tELSE\n\t\t\tDO CheckObjectColor\n\t\t\tDO PerformTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveToVisibleObject\n\t\tEND\n\t\tDO SearchForObjects\n\tEND\n"
 }

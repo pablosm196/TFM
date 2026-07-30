@@ -1,83 +1,86 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, grab it and move to destination. If not visible, search. Then check properties. list of available nodes: <Action ID = SearchForObject    /> <Action ID = MoveTowardObject    /> <Action ID = IsObjectSeen    /> <Action ID = MoveObjectToDestination    /> <Action ID = IsObjectGrabbed    /> <Action ID = isObjectPlacedSuccessfully    /> <Condition ID = IsObjectFound    /> <SubTree ID = CheckObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is found, grab it and move to destination. If not visible, search. Then check properties. list of available nodes: <Action ID = SearchForObject    /> <Action ID = MoveTowardObject    /> <Action ID = IsObjectSeen    /> <Action ID = MoveObjectToDestination    /> <Action ID = IsObjectGrabbed    /> <Action ID = isObjectPlacedSuccessfully    /> <Condition ID = IsObjectFound    /> <SubTree ID = CheckObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectGrabbed": "Boolean"
+                "isObjectPlacedSuccessfully": "Boolean"
             },
             {
                 "IsObjectSeen": "Boolean"
             },
             {
-                "isObjectPlacedSuccessfully": "Boolean"
+                "IsObjectGrabbed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectGrabbed?": "IsObjectGrabbed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToDestination",
-                                    "Name": "MoveObjectToDestination"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectSeen?": "IsObjectSeen"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardObject",
-                            "Name": "MoveTowardObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SearchForObject",
-                    "Name": "SearchForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectGrabbed?": "IsObjectGrabbed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToDestination",
+                                        "Name": "MoveObjectToDestination"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectSeen?": "IsObjectSeen"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardObject",
+                                "Name": "MoveTowardObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SearchForObject",
+                        "Name": "SearchForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectGrabbed? THEN\n\t\t\t\t\t\tDO MoveObjectToDestination\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectSeen? THEN\n\t\t\t\tDO MoveTowardObject\n\t\tEND\n\t\tDO SearchForObject\n\tEND\n"
 }

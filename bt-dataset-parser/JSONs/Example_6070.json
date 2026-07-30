@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is reached, grab it. Then move, check and approve object. Finally, perform specific task or leave object. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = CheckAndApproveObject    /> <Action ID = LeaveObjectAndResumeSearch    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectCheckedAndApproved    /> <Condition ID = IsObjectCheckedAndRejected    /> <SubTree ID = PerformSpecificTask    />  <Action ID = ScanAreaForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is reached, grab it. Then move, check and approve object. Finally, perform specific task or leave object. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = CheckAndApproveObject    /> <Action ID = LeaveObjectAndResumeSearch    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectCheckedAndApproved    /> <Condition ID = IsObjectCheckedAndRejected    /> <SubTree ID = PerformSpecificTask    />  <Action ID = ScanAreaForObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectCheckedAndApproved": "Boolean"
+                "IsObjectCheckedAndRejected": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectCheckedAndRejected": "Boolean"
+                "IsObjectCheckedAndApproved": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToDesignatedArea",
-                    "Name": "MoveObjectToDesignatedArea"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectCheckedAndApproved?": "IsObjectCheckedAndApproved"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformSpecificTask",
-                                    "Name": "PerformSpecificTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectCheckedAndRejected?": "IsObjectCheckedAndRejected"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "LeaveObjectAndResumeSearch",
-                                    "Name": "LeaveObjectAndResumeSearch"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckAndApproveObject",
-                            "Name": "CheckAndApproveObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToDesignatedArea",
+                        "Name": "MoveObjectToDesignatedArea"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectCheckedAndApproved?": "IsObjectCheckedAndApproved"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformSpecificTask",
+                                        "Name": "PerformSpecificTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectCheckedAndRejected?": "IsObjectCheckedAndRejected"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "LeaveObjectAndResumeSearch",
+                                        "Name": "LeaveObjectAndResumeSearch"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckAndApproveObject",
+                                "Name": "CheckAndApproveObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToDesignatedArea\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectCheckedAndApproved? THEN\n\t\t\t\t\tDO PerformSpecificTask\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectCheckedAndRejected? THEN\n\t\t\t\t\tDO LeaveObjectAndResumeSearch\n\t\t\tEND\n\t\t\tDO CheckAndApproveObject\n\t\tEND\n\tEND\n"
 }

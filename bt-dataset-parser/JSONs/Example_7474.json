@@ -1,10 +1,7 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. If found, move to location, take, move to destination. If blocked, find alternate route. list of available nodes: <Action ID = MoveToLocation    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = FindAlternateRoute    /> <Condition ID = IsObjectFound    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectDamaged    /> <SubTree ID = MobileRobotTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. If found, move to location, take, move to destination. If blocked, find alternate route. list of available nodes: <Action ID = MoveToLocation    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = FindAlternateRoute    /> <Condition ID = IsObjectFound    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectDamaged    /> <SubTree ID = MobileRobotTask    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectDamaged": "Boolean"
-            },
             {
                 "IsObjectFound": "Boolean"
             },
@@ -12,89 +9,95 @@
                 "IsObjectHeavy": "Boolean"
             },
             {
+                "IsObjectDamaged": "Boolean"
+            },
+            {
                 "IsPathBlocked": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDestination",
-                            "Name": "MoveObjectToDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsPathBlocked?": "IsPathBlocked"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FindAlternateRoute",
-                                    "Name": "FindAlternateRoute"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectDamaged?": "IsObjectDamaged"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "RepairObject",
-                                    "Name": "RepairObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDestination",
+                                "Name": "MoveObjectToDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsPathBlocked?": "IsPathBlocked"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FindAlternateRoute",
+                                        "Name": "FindAlternateRoute"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectDamaged?": "IsObjectDamaged"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "RepairObject",
+                                        "Name": "RepairObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToLocation\n\t\t\t\tDO TakeObject\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDestination\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsPathBlocked? THEN\n\t\t\t\t\tDO FindAlternateRoute\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectDamaged? THEN\n\t\t\t\t\tDO RepairObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

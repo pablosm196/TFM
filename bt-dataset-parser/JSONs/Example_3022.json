@@ -1,9 +1,9 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find, approach and take light and green objects. Do specific task. Call assistant if heavy.     list of available nodes: <Action ID = ApproachObject    />  <Action ID = TakeObject    />  <Condition ID = IsObjectVisible    />  <Condition ID = IsObjectNear    />  <Condition ID = IsObjectLightweight    />  <Condition ID = IsObjectGreen    />  <Action ID = CallAssistant    />  <SubTree ID = GreenObjectTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find, approach and take light and green objects. Do specific task. Call assistant if heavy.     list of available nodes: <Action ID = ApproachObject    />  <Action ID = TakeObject    />  <Condition ID = IsObjectVisible    />  <Condition ID = IsObjectNear    />  <Condition ID = IsObjectLightweight    />  <Condition ID = IsObjectGreen    />  <Action ID = CallAssistant    />  <SubTree ID = GreenObjectTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectNear": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
@@ -12,71 +12,74 @@
                 "IsObjectGreen": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectLightweight": "Boolean"
             },
             {
-                "IsObjectLightweight": "Boolean"
+                "IsObjectNear": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectNear?": "IsObjectNear"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectLightweight?": "IsObjectLightweight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGreen?": "IsObjectGreen"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GreenObjectTask",
-                            "Name": "GreenObjectTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CallAssistant",
-                    "Name": "CallAssistant"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectNear?": "IsObjectNear"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectLightweight?": "IsObjectLightweight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGreen?": "IsObjectGreen"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GreenObjectTask",
+                                "Name": "GreenObjectTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CallAssistant",
+                        "Name": "CallAssistant"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectNear? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectLightweight? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tELSE\n\t\t\t\t\tIF IsObjectGreen? THEN\n\t\t\t\t\tDO GreenObjectTask\n\t\t\tEND\n\tELSE\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO CallAssistant\n\tEND\n"
 }

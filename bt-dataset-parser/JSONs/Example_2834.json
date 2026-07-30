@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and grabs object, processes it, returns it. If not found, scan and move it. list of available nodes: <Action ID = ReturnObject    /> <Action ID = ScanForObjects    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToFreeSpace    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsFreeSpaceAvailable    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and grabs object, processes it, returns it. If not found, scan and move it. list of available nodes: <Action ID = ReturnObject    /> <Action ID = ScanForObjects    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToFreeSpace    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsFreeSpaceAvailable    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,77 +12,80 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ReturnObject",
-                            "Name": "ReturnObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanForObjects",
-                            "Name": "ScanForObjects"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsFreeSpaceAvailable?": "IsFreeSpaceAvailable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToFreeSpace",
-                            "Name": "MoveToFreeSpace"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ReturnObject",
+                                "Name": "ReturnObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanForObjects",
+                                "Name": "ScanForObjects"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsFreeSpaceAvailable?": "IsFreeSpaceAvailable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToFreeSpace",
+                                "Name": "MoveToFreeSpace"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\t\tDO ReturnObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\tDO ScanForObjects\n\t\t\t\tIF IsFreeSpaceAvailable? THEN\n\t\t\t\tDO MoveToFreeSpace\n\t\tEND\n\tEND\n"
 }

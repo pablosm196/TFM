@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach and grab it. Then perform task and return to start. Else, scan or move. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ReturnToStart    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToRandomLocation    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectDetected    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach and grab it. Then perform task and return to start. Else, scan or move. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ReturnToStart    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToRandomLocation    /> <SubTree ID = PerformTask    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectDetected    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,53 +9,56 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ReturnToStart",
-                    "Name": "ReturnToStart"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ReturnToStart",
+                        "Name": "ReturnToStart"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO PerformTask\n\t\tEND\n\t\tDO ReturnToStart\n\tEND\n"
 }

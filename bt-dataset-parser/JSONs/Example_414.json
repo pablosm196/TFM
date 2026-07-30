@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then approach it, pick it up, check its weight. If not, move to target. list of available nodes: <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveToTarget    /> <Action ID = RefreshSensors    /> <Action ID = PickupObject    /> <Condition ID = IsBatteryLevelHigh    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then approach it, pick it up, check its weight. If not, move to target. list of available nodes: <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveToTarget    /> <Action ID = RefreshSensors    /> <Action ID = PickupObject    /> <Condition ID = IsBatteryLevelHigh    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsBatteryLevelHigh": "Boolean"
+                "IsObjectDetected": "Boolean"
             },
             {
-                "IsObjectDetected": "Boolean"
+                "IsBatteryLevelHigh": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickupObject",
-                            "Name": "PickupObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectWeight",
-                            "Name": "CheckObjectWeight"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsBatteryLevelHigh?": "IsBatteryLevelHigh"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "RefreshSensors",
-                    "Name": "RefreshSensors"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickupObject",
+                                "Name": "PickupObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectWeight",
+                                "Name": "CheckObjectWeight"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsBatteryLevelHigh?": "IsBatteryLevelHigh"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "RefreshSensors",
+                        "Name": "RefreshSensors"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO PickupObject\n\t\t\tDO CheckObjectWeight\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsBatteryLevelHigh? THEN\n\t\t\t\tDO MoveToTarget\n\t\tEND\n\t\tDO RefreshSensors\n\tEND\n"
 }

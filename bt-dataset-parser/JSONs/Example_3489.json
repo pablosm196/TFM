@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object found, pick up and process it. Move to destination and place it. Otherwise, approach or scan.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <Action ID = PlaceObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object found, pick up and process it. Move to destination and place it. Otherwise, approach or scan.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <Action ID = PlaceObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsDestinationReached": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsDestinationReached": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsDestinationReached?": "IsDestinationReached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PlaceObject",
-                    "Name": "PlaceObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsDestinationReached?": "IsDestinationReached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PlaceObject",
+                        "Name": "PlaceObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO PickUpObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\tELSE\n\t\tDO MoveToDestination\n\t\t\tIF IsDestinationReached? THEN\n\t\t\tDO PlaceObject\n\tEND\n"
 }

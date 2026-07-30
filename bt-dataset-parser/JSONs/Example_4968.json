@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Retrieve object if detected, approach and check it, move to base. Avoid obstacles and search if necessary. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToBase    /> <Action ID = RetrieveObject    /> <Action ID = SearchForObject    /> <Action ID = AvoidObstacle    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObstacleDetected    /> <SubTree ID = ObjectPropertyCheck    /> <SubTree ID = ...    /> (specific task)",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Retrieve object if detected, approach and check it, move to base. Avoid obstacles and search if necessary. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToBase    /> <Action ID = RetrieveObject    /> <Action ID = SearchForObject    /> <Action ID = AvoidObstacle    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObstacleDetected    /> <SubTree ID = ObjectPropertyCheck    /> <SubTree ID = ...    /> (specific task)\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,46 +9,49 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "RetrieveObject",
-                            "Name": "RetrieveObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ObjectPropertyCheck",
-                            "Name": "ObjectPropertyCheck"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToBase",
-                    "Name": "MoveToBase"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "RetrieveObject",
+                                "Name": "RetrieveObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ObjectPropertyCheck",
+                                "Name": "ObjectPropertyCheck"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToBase",
+                        "Name": "MoveToBase"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO RetrieveObject\n\t\t\tELSE\n\t\t\t\tDO ObjectPropertyCheck\n\t\t\tEND\n\tELSE\n\t\tDO MoveToBase\n\tEND\n"
 }

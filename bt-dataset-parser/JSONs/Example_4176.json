@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and grabs object, checks its properties, moves, performs specific task or scans area. list of available nodes: <Action ID = GraspObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTaskSubtree    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsDestinationSet    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Robot finds and grabs object, checks its properties, moves, performs specific task or scans area. list of available nodes: <Action ID = GraspObject    /> <Action ID = MoveToDestination    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTaskSubtree    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsDestinationSet    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,63 +12,66 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GraspObject",
-                            "Name": "GraspObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDestinationSet?": "IsDestinationSet"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTaskSubtree",
-                    "Name": "SpecificTaskSubtree"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GraspObject",
+                                "Name": "GraspObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDestinationSet?": "IsDestinationSet"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTaskSubtree",
+                        "Name": "SpecificTaskSubtree"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO GraspObject\n\t\t\tEND\n\tELSE\n\t\tDO CheckObjectProperties\n\t\tSEQUENCE\n\t\t\t\tIF IsDestinationSet? THEN\n\t\t\t\tDO MoveToDestination\n\t\tEND\n\t\tDO SpecificTaskSubtree\n\tEND\n"
 }

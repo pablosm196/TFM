@@ -1,9 +1,9 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach and grab. If red, sort to red bin, blue to blue bin, or drop. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = SortObjectToRedBin    /> <Action ID = SortObjectToBlueBin    /> <Action ID = DropObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectBlue    /> <SubTree ID = RobotTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach and grab. If red, sort to red bin, blue to blue bin, or drop. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = SortObjectToRedBin    /> <Action ID = SortObjectToBlueBin    /> <Action ID = DropObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectBlue    /> <SubTree ID = RobotTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectBlue": "Boolean"
+                "IsObjectRed": "Boolean"
             },
             {
                 "IsObjectGrabbable": "Boolean"
@@ -12,83 +12,86 @@
                 "IsObjectNearby": "Boolean"
             },
             {
-                "IsObjectRed": "Boolean"
+                "IsObjectBlue": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectGrabbable?": "IsObjectGrabbable"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectRed?": "IsObjectRed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SortObjectToRedBin",
-                                    "Name": "SortObjectToRedBin"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectBlue?": "IsObjectBlue"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SortObjectToBlueBin",
-                                    "Name": "SortObjectToBlueBin"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DropObject",
-                            "Name": "DropObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectGrabbable?": "IsObjectGrabbable"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectRed?": "IsObjectRed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SortObjectToRedBin",
+                                        "Name": "SortObjectToRedBin"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectBlue?": "IsObjectBlue"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SortObjectToBlueBin",
+                                        "Name": "SortObjectToBlueBin"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DropObject",
+                                "Name": "DropObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectGrabbable? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectRed? THEN\n\t\t\t\t\tDO SortObjectToRedBin\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectBlue? THEN\n\t\t\t\t\tDO SortObjectToBlueBin\n\t\t\tEND\n\t\t\tDO DropObject\n\t\tEND\n\tEND\n"
 }

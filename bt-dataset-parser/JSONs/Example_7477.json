@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. If object heavy, check weight. Move to location, drop off object, scan area. list of available nodes: <Action ID = PickUpObject    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveToLocation    /> <Action ID = DropOffObject    /> <Action ID = ScanArea    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsAtTargetLocation    /> <Condition ID = IsObjectHeavy    /> <Action ID = ApproachObject    /> <SubTree ID = MobileRobotTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. If object heavy, check weight. Move to location, drop off object, scan area. list of available nodes: <Action ID = PickUpObject    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveToLocation    /> <Action ID = DropOffObject    /> <Action ID = ScanArea    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsAtTargetLocation    /> <Condition ID = IsObjectHeavy    /> <Action ID = ApproachObject    /> <SubTree ID = MobileRobotTask    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,99 +9,102 @@
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsAtTargetLocation": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsAtTargetLocation": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CheckObjectWeight",
-                            "Name": "CheckObjectWeight"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToLocation",
-                    "Name": "MoveToLocation"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAtTargetLocation?": "IsAtTargetLocation"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "DropOffObject",
-                            "Name": "DropOffObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectVisible?": "IsObjectVisible"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CheckObjectWeight",
+                                "Name": "CheckObjectWeight"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToLocation",
+                        "Name": "MoveToLocation"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAtTargetLocation?": "IsAtTargetLocation"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "DropOffObject",
+                                "Name": "DropOffObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectVisible?": "IsObjectVisible"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO PickUpObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CheckObjectWeight\n\t\tEND\n\t\tDO MoveToLocation\n\t\tSEQUENCE\n\t\t\t\tIF IsAtTargetLocation? THEN\n\t\t\t\tDO DropOffObject\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\t\tDO ApproachObject\n\t\t\tEND\n\t\t\tDO ScanArea\n\t\tEND\n\tEND\n"
 }

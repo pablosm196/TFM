@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If you see object, move to it and pick it up. Check weight & execute task, then return it. Else, scan area or stop. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GraspObject    /> <Action ID = CheckObjectWeight    /> <Action ID = ExecuteTask    /> <Action ID = ReturnObject    /> <Action ID = ScanArea    /> <Action ID = StopMoving    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If you see object, move to it and pick it up. Check weight & execute task, then return it. Else, scan area or stop. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GraspObject    /> <Action ID = CheckObjectWeight    /> <Action ID = ExecuteTask    /> <Action ID = ReturnObject    /> <Action ID = ScanArea    /> <Action ID = StopMoving    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectGraspable": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectGraspable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGraspable?": "IsObjectGraspable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GraspObject",
-                            "Name": "GraspObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectWeight",
-                            "Name": "CheckObjectWeight"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ExecuteTask",
-                            "Name": "ExecuteTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ReturnObject",
-                    "Name": "ReturnObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGraspable?": "IsObjectGraspable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GraspObject",
+                                "Name": "GraspObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectWeight",
+                                "Name": "CheckObjectWeight"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ExecuteTask",
+                                "Name": "ExecuteTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ReturnObject",
+                        "Name": "ReturnObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectGraspable? THEN\n\t\t\t\tDO GraspObject\n\t\tELSE\n\t\t\tDO CheckObjectWeight\n\t\t\tDO ExecuteTask\n\t\tEND\n\t\tDO ReturnObject\n\tEND\n"
 }

@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is close, take it; move to destination; if safe, perform task, otherwise, find alternate destination.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectApproached    /> <Action ID = PerformTask    /> <Condition ID = IsDestinationSafe    /> <SubTree ID = FindAlternateDestination    /> <Action ID = MoveToAlternateDestination    /> <Action ID = FindAlternateDestination    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is close, take it; move to destination; if safe, perform task, otherwise, find alternate destination.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectApproached    /> <Action ID = PerformTask    /> <Condition ID = IsDestinationSafe    /> <SubTree ID = FindAlternateDestination    /> <Action ID = MoveToAlternateDestination    /> <Action ID = FindAlternateDestination    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsDestinationOccupied": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsDestinationOccupied": "Boolean"
             },
             {
                 "IsDestinationSafe": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsDestinationSafe?": "IsDestinationSafe"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformTask",
-                                    "Name": "PerformTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsDestinationOccupied?": "IsDestinationOccupied"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FindAlternateDestination",
-                                    "Name": "FindAlternateDestination"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToAlternateDestination",
-                                    "Name": "MoveToAlternateDestination"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsDestinationSafe?": "IsDestinationSafe"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformTask",
+                                        "Name": "PerformTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsDestinationOccupied?": "IsDestinationOccupied"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FindAlternateDestination",
+                                        "Name": "FindAlternateDestination"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToAlternateDestination",
+                                        "Name": "MoveToAlternateDestination"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO MoveToDestination\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsDestinationSafe? THEN\n\t\t\t\t\tDO PerformTask\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsDestinationOccupied? THEN\n\t\t\t\t\tDO FindAlternateDestination\n\t\t\tELSE\n\t\t\t\tDO MoveToAlternateDestination\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

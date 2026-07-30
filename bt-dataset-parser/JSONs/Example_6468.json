@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, move and take it, then sort by color, in order to explore area. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = ExploreArea    /> <Action ID = SortObjectInRedBox    /> <Action ID = SortObjectInBlueBox    /> <Action ID = MoveToGrabObject    /> <Action ID = GrabObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectBlue    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, move and take it, then sort by color, in order to explore area. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = ExploreArea    /> <Action ID = SortObjectInRedBox    /> <Action ID = SortObjectInBlueBox    /> <Action ID = MoveToGrabObject    /> <Action ID = GrabObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectBlue    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectRed": "Boolean"
+            },
             {
                 "IsObjectBlue": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
-            },
-            {
-                "IsObjectRed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToGrabObject",
-                            "Name": "MoveToGrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectRed?": "IsObjectRed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SortObjectInRedBox",
-                                    "Name": "SortObjectInRedBox"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectBlue?": "IsObjectBlue"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SortObjectInBlueBox",
-                                    "Name": "SortObjectInBlueBox"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanForObjects",
-                    "Name": "ScanForObjects"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreArea",
-                    "Name": "ExploreArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToGrabObject",
+                                "Name": "MoveToGrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectRed?": "IsObjectRed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SortObjectInRedBox",
+                                        "Name": "SortObjectInRedBox"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectBlue?": "IsObjectBlue"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SortObjectInBlueBox",
+                                        "Name": "SortObjectInBlueBox"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanForObjects",
+                        "Name": "ScanForObjects"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreArea",
+                        "Name": "ExploreArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tDO MoveToGrabObject\n\t\tELSE\n\t\t\tDO GrabObject\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectRed? THEN\n\t\t\t\t\tDO SortObjectInRedBox\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectBlue? THEN\n\t\t\t\t\tDO SortObjectInBlueBox\n\t\t\tEND\n\t\tEND\n\t\tDO ScanForObjects\n\t\tDO ExploreArea\n\tEND\n"
 }

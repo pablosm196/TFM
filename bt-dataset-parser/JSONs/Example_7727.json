@@ -1,54 +1,57 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Sequence of moves to find, take, check and process object. If object visible - approach, take and process it. If not - scan area. Finally, move and put object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = PutObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInReach    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectGreen    /> <Condition ID = IsObjectAtLocation2    /> <Condition ID = IsObjectAtLocation4    /> <Action ID = MoveToLocation1    /> <Action ID = MoveToLocation2    /> <Action ID = MoveToLocation3    /> <Action ID = MoveToLocation4    /> <Action ID = ScanArea    /> <SubTree ID = ProcessObject    /> <SubTree ID = ProcessRedObject    /> <SubTree ID = ProcessGreenObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Sequence of moves to find, take, check and process object. If object visible - approach, take and process it. If not - scan area. Finally, move and put object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = PutObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInReach    /> <Condition ID = IsObjectRed    /> <Condition ID = IsObjectGreen    /> <Condition ID = IsObjectAtLocation2    /> <Condition ID = IsObjectAtLocation4    /> <Action ID = MoveToLocation1    /> <Action ID = MoveToLocation2    /> <Action ID = MoveToLocation3    /> <Action ID = MoveToLocation4    /> <Action ID = ScanArea    /> <SubTree ID = ProcessObject    /> <SubTree ID = ProcessRedObject    /> <SubTree ID = ProcessGreenObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectRed": "Boolean"
             },
             {
-                "IsObjectRed": "Boolean"
+                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectRed?": "IsObjectRed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessRedObject",
-                            "Name": "ProcessRedObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectRed?": "IsObjectRed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessRedObject",
+                                "Name": "ProcessRedObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\tDO TakeObject\n\t\t\t\t\tIF IsObjectRed? THEN\n\t\t\t\t\tDO ProcessRedObject\n\t\t\tEND\n\tEND\n"
 }

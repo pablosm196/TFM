@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find movable object, reach it, pick it up, check weight. Complete subtask. Avoid obstacles.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Action ID = CheckObjectWeight    /> <Action ID = TurnLeft    /> <Action ID = TurnRight    /> <Action ID = MoveForward    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectMovable    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObstacleAhead    /> <Condition ID = IsObstacleOnRight    /> <SubTree ID = SpecificSubTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find movable object, reach it, pick it up, check weight. Complete subtask. Avoid obstacles.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Action ID = CheckObjectWeight    /> <Action ID = TurnLeft    /> <Action ID = TurnRight    /> <Action ID = MoveForward    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectMovable    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObstacleAhead    /> <Condition ID = IsObstacleOnRight    /> <SubTree ID = SpecificSubTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectMovable": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectMovable": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectMovable?": "IsObjectMovable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CheckObjectWeight",
-                            "Name": "CheckObjectWeight"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificSubTask",
-                    "Name": "SpecificSubTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectMovable?": "IsObjectMovable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CheckObjectWeight",
+                                "Name": "CheckObjectWeight"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificSubTask",
+                        "Name": "SpecificSubTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectMovable? THEN\n\t\t\t\t\tDO MoveToObject\n\t\t\tELSE\n\t\t\t\tDO PickUpObject\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CheckObjectWeight\n\t\t\tEND\n\tELSE\n\t\tDO SpecificSubTask\n\tEND\n"
 }

@@ -1,10 +1,7 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach then pick up. If heavy, call for assistant. If processed deliver, else process or dispose it. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickupObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectRotten    /> <SubTree ID = ProcessObject    /> <Action ID = DisposeObject    /> <Action ID = DeliverObject    /> <Action ID = CallForAssistant    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach then pick up. If heavy, call for assistant. If processed deliver, else process or dispose it. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickupObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectRotten    /> <SubTree ID = ProcessObject    /> <Action ID = DisposeObject    /> <Action ID = DeliverObject    /> <Action ID = CallForAssistant    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectProcessed": "Boolean"
-            },
             {
                 "IsObjectHeavy": "Boolean"
             },
@@ -12,96 +9,102 @@
                 "IsObjectRotten": "Boolean"
             },
             {
+                "IsObjectProcessed": "Boolean"
+            },
+            {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PickupObject",
-                    "Name": "PickupObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallForAssistant",
-                            "Name": "CallForAssistant"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectRotten?": "IsObjectRotten"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DisposeObject",
-                                    "Name": "DisposeObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectProcessed?": "IsObjectProcessed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DeliverObject",
-                                    "Name": "DeliverObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PickupObject",
+                        "Name": "PickupObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallForAssistant",
+                                "Name": "CallForAssistant"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectRotten?": "IsObjectRotten"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DisposeObject",
+                                        "Name": "DisposeObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectProcessed?": "IsObjectProcessed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DeliverObject",
+                                        "Name": "DeliverObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO PickupObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CallForAssistant\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectRotten? THEN\n\t\t\t\t\tDO DisposeObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectProcessed? THEN\n\t\t\t\t\tDO DeliverObject\n\t\t\tEND\n\t\t\tDO ProcessObject\n\t\tEND\n\tEND\n"
 }

@@ -1,93 +1,96 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach and grab it. Then check properties and complete subtask. list of available nodes: <Action ID = MoveToLocation    /> <Action ID = TakeObject    /> <Action ID = CheckObjectColor    /> <Action ID = PerformTask1    /> <Action ID = CheckObjectSize    /> <Action ID = PerformTask2    /> <SubTree ID = SpecialTask    /> <Condition ID = ObjectFound    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach and grab it. Then check properties and complete subtask. list of available nodes: <Action ID = MoveToLocation    /> <Action ID = TakeObject    /> <Action ID = CheckObjectColor    /> <Action ID = PerformTask1    /> <Action ID = CheckObjectSize    /> <Action ID = PerformTask2    /> <SubTree ID = SpecialTask    /> <Condition ID = ObjectFound    />\"",
     "BT": {
         "Blackboard": [
             {
                 "CheckObjectSize": "Boolean"
             },
             {
-                "CheckObjectColor": "Boolean"
+                "ObjectFound": "Boolean"
             },
             {
-                "ObjectFound": "Boolean"
+                "CheckObjectColor": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "ObjectFound?": "ObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "CheckObjectColor?": "CheckObjectColor"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformTask1",
-                                    "Name": "PerformTask1"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "CheckObjectSize?": "CheckObjectSize"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformTask2",
-                                    "Name": "PerformTask2"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecialTask",
-                            "Name": "SpecialTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "ObjectFound?": "ObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "CheckObjectColor?": "CheckObjectColor"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformTask1",
+                                        "Name": "PerformTask1"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "CheckObjectSize?": "CheckObjectSize"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformTask2",
+                                        "Name": "PerformTask2"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecialTask",
+                                "Name": "SpecialTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToLocation\n\t\t\t\tDO TakeObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF CheckObjectColor? THEN\n\t\t\t\t\tDO PerformTask1\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF CheckObjectSize? THEN\n\t\t\t\t\tDO PerformTask2\n\t\t\tEND\n\t\t\tDO SpecialTask\n\t\tEND\n\tEND\n"
 }

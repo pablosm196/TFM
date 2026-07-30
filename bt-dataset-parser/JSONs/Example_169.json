@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible: approach, if not visible: scan. If approached: grab, move, check properties, then do specific task. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveObjectToNewLocation    /> <Action ID = DisplayMessageOnScreen    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectColorRed    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible: approach, if not visible: scan. If approached: grab, move, check properties, then do specific task. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveObjectToNewLocation    /> <Action ID = DisplayMessageOnScreen    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectColorRed    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectColorRed": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectColorRed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToNewLocation",
-                    "Name": "MoveObjectToNewLocation"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectColorRed?": "IsObjectColorRed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "DisplayMessageOnScreen",
-                            "Name": "DisplayMessageOnScreen"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToNewLocation",
+                        "Name": "MoveObjectToNewLocation"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectColorRed?": "IsObjectColorRed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "DisplayMessageOnScreen",
+                                "Name": "DisplayMessageOnScreen"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO PickUpObject\n\tELSE\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToNewLocation\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectColorRed? THEN\n\t\t\t\tDO DisplayMessageOnScreen\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

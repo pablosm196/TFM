@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and grab it. Then check its properties. If it's heavy, do special task. list of available nodes: <Action ID = MoveForward    /> <Action ID = GrabObject    /> <Action ID = CheckObjectWeight    /> <Action ID = TakeObjectToGoal    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <SubTree ID = SpecialTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and grab it. Then check its properties. If it's heavy, do special task. list of available nodes: <Action ID = MoveForward    /> <Action ID = GrabObject    /> <Action ID = CheckObjectWeight    /> <Action ID = TakeObjectToGoal    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <SubTree ID = SpecialTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectLight": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectLight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveForward",
-                    "Name": "MoveForward"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectWeight",
-                    "Name": "CheckObjectWeight"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SpecialTask",
-                                    "Name": "SpecialTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectLight?": "IsObjectLight"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObjectToGoal",
-                                    "Name": "TakeObjectToGoal"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveForward",
+                        "Name": "MoveForward"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectWeight",
+                        "Name": "CheckObjectWeight"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SpecialTask",
+                                        "Name": "SpecialTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectLight?": "IsObjectLight"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObjectToGoal",
+                                        "Name": "TakeObjectToGoal"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveForward\n\tELSE\n\t\tDO GrabObject\n\t\tDO CheckObjectWeight\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO SpecialTask\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectLight? THEN\n\t\t\t\t\tDO TakeObjectToGoal\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

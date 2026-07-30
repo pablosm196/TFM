@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible and approached, then take it or check weight, and do specific task. Move to next position. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Action ID = TakeObject    /> <Action ID = CheckObjectWeight    /> <SubTree ID = ObjectSpecificTask    /> <Action ID = MoveToNextPosition    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible and approached, then take it or check weight, and do specific task. Move to next position. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Action ID = TakeObject    /> <Action ID = CheckObjectWeight    /> <SubTree ID = ObjectSpecificTask    /> <Action ID = MoveToNextPosition    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,59 +9,62 @@
                 "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectWeight",
-                                    "Name": "CheckObjectWeight"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ObjectSpecificTask",
-                                    "Name": "ObjectSpecificTask"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToNextPosition",
-                    "Name": "MoveToNextPosition"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectWeight",
+                                        "Name": "CheckObjectWeight"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ObjectSpecificTask",
+                                        "Name": "ObjectSpecificTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToNextPosition",
+                        "Name": "MoveToNextPosition"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\t\tSELECTOR\n\t\t\t\t\t\tDO TakeObject\n\t\t\t\t\t\tDO CheckObjectWeight\n\t\t\t\t\t\tDO ObjectSpecificTask\n\t\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO MoveToNextPosition\n\tEND\n"
 }

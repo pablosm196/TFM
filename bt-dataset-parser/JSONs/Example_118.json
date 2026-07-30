@@ -1,102 +1,105 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object, move and clean it, do specific task if reached. Or move around if blocked.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = MoveObject    /> <Action ID = CleanObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectReached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectClean    /> <Condition ID = IsAreaBlocked    /> <Action ID = MoveAroundArea    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object, move and clean it, do specific task if reached. Or move around if blocked.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = MoveObject    /> <Action ID = CleanObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectReached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectClean    /> <Condition ID = IsAreaBlocked    /> <Action ID = MoveAroundArea    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
-            },
-            {
-                "IsObjectClean": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectReached": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectClean": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
             },
             {
                 "IsAreaBlocked": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectReached?": "IsObjectReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObject",
-                            "Name": "MoveObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectClean?": "IsObjectClean"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CleanObject",
-                            "Name": "CleanObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAreaBlocked?": "IsAreaBlocked"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveAroundArea",
-                            "Name": "MoveAroundArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReached?": "IsObjectReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObject",
+                                "Name": "MoveObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectClean?": "IsObjectClean"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CleanObject",
+                                "Name": "CleanObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAreaBlocked?": "IsAreaBlocked"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveAroundArea",
+                                "Name": "MoveAroundArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectReached? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObject\n\t\tELSE\n\t\t\t\tIF IsObjectClean? THEN\n\t\t\t\tDO CleanObject\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsAreaBlocked? THEN\n\t\t\t\tDO MoveAroundArea\n\t\tEND\n\tEND\n"
 }

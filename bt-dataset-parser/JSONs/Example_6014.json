@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible: move, take, process. If task specific then perform. Finally, scan area. list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = PerformSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWithinGrasp    />  <Condition ID = IsTaskSpecificConditionMet    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible: move, take, process. If task specific then perform. Finally, scan area. list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = PerformSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWithinGrasp    />  <Condition ID = IsTaskSpecificConditionMet    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinGrasp": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
                 "IsTaskSpecificConditionMet": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectWithinGrasp": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsObject",
-                            "Name": "MoveTowardsObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinGrasp?": "IsObjectWithinGrasp"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTaskSpecificConditionMet?": "IsTaskSpecificConditionMet"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsObject",
+                                "Name": "MoveTowardsObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinGrasp?": "IsObjectWithinGrasp"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTaskSpecificConditionMet?": "IsTaskSpecificConditionMet"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveTowardsObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinGrasp? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsTaskSpecificConditionMet? THEN\n\t\t\t\tDO PerformSpecificTask\n\t\tEND\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

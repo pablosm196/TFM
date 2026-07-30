@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected then move and take it. Check properties and perform task. Otherwise, scan or move randomly. list of available nodes: <Action ID = ScanForObject    /> <Action ID = MoveRandomly    /> <Condition ID = IsObjectDetected    /> <Action ID = MoveToDetectedObject    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallForHelp    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is detected then move and take it. Check properties and perform task. Otherwise, scan or move randomly. list of available nodes: <Action ID = ScanForObject    /> <Action ID = MoveRandomly    /> <Condition ID = IsObjectDetected    /> <Action ID = MoveToDetectedObject    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectHeavy    /> <Action ID = CallForHelp    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinRange": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectWithinRange": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToDetectedObject",
-                    "Name": "MoveToDetectedObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinRange?": "IsObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallForHelp",
-                                    "Name": "CallForHelp"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanForObject",
-                            "Name": "ScanForObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveRandomly",
-                            "Name": "MoveRandomly"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToDetectedObject",
+                        "Name": "MoveToDetectedObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinRange?": "IsObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallForHelp",
+                                        "Name": "CallForHelp"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanForObject",
+                                "Name": "ScanForObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveRandomly",
+                                "Name": "MoveRandomly"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO MoveToDetectedObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectWithinRange? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CallForHelp\n\t\t\tEND\n\t\t\tDO CheckObjectProperties\n\t\t\tDO PerformSpecificTask\n\t\tEND\n\t\tSELECTOR\n\t\t\tDO ScanForObject\n\t\t\tDO MoveRandomly\n\t\tEND\n\tEND\n"
 }

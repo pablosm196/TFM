@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and collect object, deliver it. Move forward, avoid obstacles. Scan repeatedly. list of available nodes: <Action ID = FindObject    /> <Action ID = PickUpObject    /> <Action ID = DeliverObject    /> <Action ID = MoveForward    /> <Action ID = AvoidObstacle    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectInReach    /> <Condition ID = ObstacleDetected    /> <SubTree ID = ProcessObjectData    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and collect object, deliver it. Move forward, avoid obstacles. Scan repeatedly. list of available nodes: <Action ID = FindObject    /> <Action ID = PickUpObject    /> <Action ID = DeliverObject    /> <Action ID = MoveForward    /> <Action ID = AvoidObstacle    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectInReach    /> <Condition ID = ObstacleDetected    /> <SubTree ID = ProcessObjectData    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,86 +9,89 @@
                 "ObstacleDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindObject",
-                    "Name": "FindObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInReach?": "IsObjectInReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectData",
-                            "Name": "ProcessObjectData"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DeliverObject",
-                            "Name": "DeliverObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveForward",
-                                    "Name": "MoveForward"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObstacleDetected?": "ObstacleDetected"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "AvoidObstacle",
-                                    "Name": "AvoidObstacle"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindObject",
+                        "Name": "FindObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInReach?": "IsObjectInReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectData",
+                                "Name": "ProcessObjectData"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DeliverObject",
+                                "Name": "DeliverObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveForward",
+                                        "Name": "MoveForward"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObstacleDetected?": "ObstacleDetected"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "AvoidObstacle",
+                                        "Name": "AvoidObstacle"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInReach? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO ProcessObjectData\n\t\t\tDO DeliverObject\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveForward\n\t\t\t\t\tIF ObstacleDetected? THEN\n\t\t\t\t\tDO AvoidObstacle\n\t\t\tEND\n\t\t\tDO ScanAreaForObject\n\t\tEND\n\tEND\n"
 }

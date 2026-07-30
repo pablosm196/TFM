@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and approach object, check properties, perform specific task, move to storage and release, or scan. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToObjectStorage    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectInGripper    /> <Condition ID = isObjectPropertiesMet    /> <Action ID = ReleaseObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and approach object, check properties, perform specific task, move to storage and release, or scan. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToObjectStorage    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectInGripper    /> <Condition ID = isObjectPropertiesMet    /> <Action ID = ReleaseObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectInGripper": "Boolean"
+                "isObjectPropertiesMet": "Boolean"
             },
             {
-                "isObjectPropertiesMet": "Boolean"
+                "IsObjectInGripper": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInGripper?": "IsObjectInGripper"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObjectStorage",
-                            "Name": "MoveToObjectStorage"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ReleaseObject",
-                            "Name": "ReleaseObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "isObjectPropertiesMet?": "isObjectPropertiesMet"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInGripper?": "IsObjectInGripper"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObjectStorage",
+                                "Name": "MoveToObjectStorage"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ReleaseObject",
+                                "Name": "ReleaseObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "isObjectPropertiesMet?": "isObjectPropertiesMet"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInGripper? THEN\n\t\t\t\tDO MoveToObjectStorage\n\t\tELSE\n\t\t\tDO ReleaseObject\n\t\tEND\n\t\t\tIF isObjectPropertiesMet? THEN\n\t\t\tDO SpecificTask\n\tEND\n"
 }

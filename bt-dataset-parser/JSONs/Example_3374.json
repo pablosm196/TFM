@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, move to it. If not, scan. Approach, grab, check color, task, finally finish.     list of available nodes: <Action ID = GrabObject    /> <Action ID = CheckObjectColor    /> <Action ID = PerformDefaultTask    /> <Action ID = ScanAreaForObject    /> <Action ID = IsObjectNearby    /> <Action ID = MoveToObject    /> <Action ID = IsObjectVisible    /> <Action ID = MoveToVisibleObject    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, move to it. If not, scan. Approach, grab, check color, task, finally finish.     list of available nodes: <Action ID = GrabObject    /> <Action ID = CheckObjectColor    /> <Action ID = PerformDefaultTask    /> <Action ID = ScanAreaForObject    /> <Action ID = IsObjectNearby    /> <Action ID = MoveToObject    /> <Action ID = IsObjectVisible    /> <Action ID = MoveToVisibleObject    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,80 +9,83 @@
                 "IsObjectNearby": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectColor",
-                            "Name": "CheckObjectColor"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToVisibleObject",
-                            "Name": "MoveToVisibleObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformDefaultTask",
-                    "Name": "PerformDefaultTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectColor",
+                                "Name": "CheckObjectColor"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToVisibleObject",
+                                "Name": "MoveToVisibleObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformDefaultTask",
+                        "Name": "PerformDefaultTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO GrabObject\n\t\t\tDO CheckObjectColor\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\tDO ScanAreaForObject\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveToVisibleObject\n\t\tEND\n\t\tDO PerformDefaultTask\n\tEND\n"
 }

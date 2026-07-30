@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find & grab object: If approached, grab, process and drop object. If visible, approach object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = IsObjectVisible    /> <Action ID = IsObjectApproached    /> <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = DropObject    /> <SubTree ID = ProcessObject    /> <Action ID = WanderAround    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find & grab object: If approached, grab, process and drop object. If visible, approach object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = IsObjectVisible    /> <Action ID = IsObjectApproached    /> <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = DropObject    /> <SubTree ID = ProcessObject    /> <Action ID = WanderAround    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInGripper": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectInGripper": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInGripper?": "IsObjectInGripper"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DropObject",
-                            "Name": "DropObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ScanAreaForObject",
-                                    "Name": "ScanAreaForObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "WanderAround",
-                            "Name": "WanderAround"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInGripper?": "IsObjectInGripper"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DropObject",
+                                "Name": "DropObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ScanAreaForObject",
+                                        "Name": "ScanAreaForObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "WanderAround",
+                                "Name": "WanderAround"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\t\tIF IsObjectInGripper? THEN\n\t\t\t\t\tDO MoveToDestination\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\t\tDO DropObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\tDO ScanAreaForObject\n\t\t\tEND\n\t\t\tDO WanderAround\n\t\tEND\n\tEND\n"
 }

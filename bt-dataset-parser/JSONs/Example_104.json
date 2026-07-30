@@ -1,97 +1,100 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach it, then process it. Move towards destination, scan area. Finally, put object down or check battery level.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveForwards    /> <Action ID = PutObjectDown    /> <Action ID = CheckBatteryLevel    /> <Action ID = ScanArea    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObstacleFree    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectVisible    /> <Condition ID = isObjectInHand    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach it, then process it. Move towards destination, scan area. Finally, put object down or check battery level.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveForwards    /> <Action ID = PutObjectDown    /> <Action ID = CheckBatteryLevel    /> <Action ID = ScanArea    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObstacleFree    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectVisible    /> <Condition ID = isObjectInHand    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsDestinationReached": "Boolean"
             },
             {
-                "isObjectInHand": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "isObjectInHand": "Boolean"
             },
             {
                 "IsObstacleFree": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleFree?": "IsObstacleFree"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveForwards",
-                            "Name": "MoveForwards"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectInHand?": "isObjectInHand"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PutObjectDown",
-                            "Name": "PutObjectDown"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckBatteryLevel",
-                    "Name": "CheckBatteryLevel"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleFree?": "IsObstacleFree"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveForwards",
+                                "Name": "MoveForwards"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectInHand?": "isObjectInHand"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PutObjectDown",
+                                "Name": "PutObjectDown"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckBatteryLevel",
+                        "Name": "CheckBatteryLevel"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleFree? THEN\n\t\t\t\tDO MoveForwards\n\t\tEND\n\t\tDO ScanArea\n\t\tSEQUENCE\n\t\t\t\tIF isObjectInHand? THEN\n\t\t\t\tDO PutObjectDown\n\t\tEND\n\t\tDO CheckBatteryLevel\n\tEND\n"
 }

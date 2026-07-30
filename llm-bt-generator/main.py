@@ -340,11 +340,17 @@ from pathlib import Path
 from langchain_mistralai import ChatMistralAI
 from langchain_ollama import ChatOllama
 
+from langchain_core.documents import Document
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
+
 from dataclasses import dataclass, field
 from typing import List, Optional
 import re
 import json
 import sys, getopt, os
+
+
 
 class Node:
     pass
@@ -355,12 +361,19 @@ class Composite(Node):
     type : str = ""
     children: List[Node] = field(default_factory=list)
     decorator: Optional[str] = None
+    decoratorEntry: list[str] = field(default_factory=list)
+
+    id : int = -1
 
 
 @dataclass
 class Action(Node):
     name: str = ""
     decorator: Optional[str] = None
+    decoratorEntry: list[str] = field(default_factory=list)
+    blackboardEntries: list[str] = field(default_factory=list)
+
+    id: int = -1
 
 class ParserError(Exception):
     pass
@@ -461,22 +474,20 @@ class BehaviorTreeParser:
         if root is None:
             raise ParserError("No root node generated")
 
+        agent = BlackboardAssignmentAgent()
+
+        agent.assignBlackboard(root, bbactions, conditionals, BBEntries, prompt)
+
         return self._toJSON(root, bbactions, conditionals, BBEntries, pseudocode, prompt)
     
     def _toJSON(self, root : Node, bbactions : str, conditionals : str, BBEntries : list[dict], pseudocode : str, prompt : str) -> dict:
         decorator = []
         if root.decorator is not None:
-            dec = self._get_action_and_description(conditionals, root.decorator)
-            entry = self._addBBEntry(dec, BBEntries, pseudocode, prompt).split()[0]
-            if(entry.lower() != "none"):
-                decorator.append({root.decorator : entry})
-        if isinstance(root, Action):
-            entry = []
-            if root.name in bbactions:
-                action = self._get_action_and_description(bbactions, root.name)
-                entries = self._addBBEntry(action, BBEntries, pseudocode, prompt).split()
-                entry = [x.strip() for x in entries if x.lower() != "none"]
+            if len(root.decoratorEntry) > 0:
+                decorator.append({root.decorator: root.decoratorEntry[0]})
 
+        if isinstance(root, Action):
+            entry = root.blackboardEntries
 
             return {
                 "Node": {
@@ -519,102 +530,418 @@ class BehaviorTreeParser:
 
         return None
 
-    def _addBBEntry(self, action : str, BBEntries : list[dict], pseudocode : str, prompt : str) -> str:
-        system_prompt = f"""
-You are an AI assistant specialized in analyzing behavior-tree pseudocode and determining which input/output variables are relevant to a specific action.
+#     def _addBBEntry(self, action : str, BBEntries : list[dict], pseudocode : str, prompt : str) -> str:
+#         system_prompt = f"""
+# You are an AI assistant specialized in analyzing behavior-tree pseudocode and determining which input/output variables are relevant to a specific action.
 
-You will receive:
-1) A specific action paired with its natural-language description.
-2) A list of variables in the format: [{{"VariableName" : "VariableType"}}, ...]
-3) A block of pseudocode describing a behavior.
-4) The description of the global task from which the pseudocode comes.
+# You will receive:
+# 1) A specific action paired with its natural-language description.
+# 2) A list of variables in the format: [{{"VariableName" : "VariableType"}}, ...]
+# 3) A block of pseudocode describing a behavior.
+# 4) The description of the global task from which the pseudocode comes.
 
-Your task is to determine which variables from the list are required or relevant
-for performing that specific action.
+# Your task is to determine which variables from the list are required or relevant
+# for performing that specific action.
 
-Follow this reasoning protocol:
-- First, think step-by-step internally about the meaning of the action,
-its description, and how it would logically use or depend on the variables.
-- Consider semantic relationships: objects referenced, entities manipulated,
-positions, states, or resources implied by the action.
-- If some action needs a variable of a certain type, you HAVE TO keep that in mind.
-- Do NOT invent variables or infer new ones not present in the "Variables" list.
-- Do NOT output your reasoning.
+# Follow this reasoning protocol:
+# - First, think step-by-step internally about the meaning of the action,
+# its description, and how it would logically use or depend on the variables.
+# - Consider semantic relationships: objects referenced, entities manipulated,
+# positions, states, or resources implied by the action.
+# - If some action needs a variable of a certain type, you HAVE TO keep that in mind.
+# - Do NOT invent variables or infer new ones not present in the "Variables" list.
+# - Do NOT output your reasoning.
 
-Output format:
-Return ONLY the names of the variables from the "Variables" list that are relevant to the action.
-If multiple variables apply, return them separated by commas.
-If only one variable applies, return only that variable.
-If none apply, return "none".
+# Output format:
+# Return ONLY the names of the variables from the "Variables" list that are relevant to the action.
+# If multiple variables apply, return them separated by commas.
+# If only one variable applies, return only that variable.
+# If none apply, return "none".
 
-Example input:
-Action : grab_key : Stores the key in the inventory
+# Example input:
+# Action : grab_key : Stores the key in the inventory
+# Variables: ["Key" : "Object", "Door" : "Object", "Enemy_position" : "Vector3"]
+# Pseudocode:
+# ``
+#     SEQUENCE
+#         IF has_key THEN
+#             DO move_to
+#             DO open_door
+#         ELSE
+#             SEQUENCE
+#                 DO find_key
+#                 DO grab_key
+#                 DO move_to
+#                 DO open_door
+#             END
+#     END
+# ``
+# Global task: NPC that has to open the door if he has the key. In case of not having it, it has to find the key. In order to open the door it has to be in front of it.
+
+# Example output:
+# Key
+#         """
+
+#         prompt = f"""
+# Action : {action}
+# Variables: {BBEntries}
+# Pseudocode:
+# ``
+# {pseudocode}
+# ``
+# Global task: {prompt}
+# """
+
+#         #llm = ChatMistralAI(model="mistral-large-latest", temperature=0.0, timeout=10) //Demasiadas requests, no lo puedo usar.
+#         llm = ChatOllama(model = "llama3:8b", temperature= 0.0, timeout = 10)
+
+#         messages = [
+#             ("system", system_prompt),
+#             ("human", prompt)
+#         ]
+
+#         key = llm.invoke(messages).content
+
+#         isInList = False
+#         for value in BBEntries:
+#             for k in value.keys():
+#                 if key == k:
+#                     isInList = True
+#                     break
+
+#         if not isInList:
+#             messages.append(("assistant", key))
+#             messages.append(("human", "The key you gave me is not in the \"Variables\" list. Give me ONLY a key from that list, DO NOT invent a new one. Respond me ONLY with the key, respecting the output format"))
+
+#             key = llm.invoke(messages).content
+
+#         print(f"Action : {action}, key: {key}\n")
+
+#         return key
+
+class BlackboardAssignmentAgent:
+
+    def __init__(self):
+
+        self.llm = ChatOllama(
+            model="llama3:8b",
+            temperature=0.0,
+            timeout=20
+        )
+
+    def buildSystemPrompt(self):
+
+        return """
+You are an expert in Unreal Engine Behavior Trees.
+
+Your task is NOT to understand the whole game.
+
+Your ONLY task is assigning Blackboard variables to Behavior Tree nodes.
+
+You will receive
+
+- the complete behavior tree
+- the description of every action that needs a Blackboard variable
+- the Blackboard variables
+
+Your goal is assigning Blackboard variables to every action that needs them.
+
+Rules
+
+1. Never invent variables.
+2. Variables MUST belong to the Blackboard list.
+3. An action usually consumes the variable produced by previous actions.
+4. If two variables have the same type, choose the one that best matches the previous actions.
+5. Use the whole tree to infer data flow.
+6. Do not assign variables to actions that do not require them.
+7. Decorators should receive exactly one Blackboard key if they need one.
+
+Output ONLY valid JSON.
+
+Example Input:
+Actions : grab_key : Stores the key in the inventory, move_to : Moves to a position, open_door: Open a door
 Variables: ["Key" : "Object", "Door" : "Object", "Enemy_position" : "Vector3"]
-Pseudocode:
-``
-    SEQUENCE
-        IF has_key THEN
-            DO move_to
-            DO open_door
-        ELSE
-            SEQUENCE
-                DO find_key
-                DO grab_key
-                DO move_to
-                DO open_door
-            END
-    END
-``
-Global task: NPC that has to open the door if he has the key. In case of not having it, it has to find the key. In order to open the door it has to be in front of it.
+Tree:
+SEQUENCE
+    DO move_to#1
+    DO grab_key#1
+    DO move_to#2
+    DO open_door#1 [Decorator=IsNear?#1]
+    DO wave#1
 
-Example output:
-Key
-        """
+Output format: 
+{
+    "Actions": {
+        "move_to#1":["Key"],
+        "grab_key#1":["Key"],
+        "move_to#2":["Door"],
+        "open_door#1":["Door"]
+    },
 
-        prompt = f"""
-Action : {action}
-Variables: {BBEntries}
-Pseudocode:
-``
-{pseudocode}
-``
-Global task: {prompt}
+    "Decorators": {
+        "IsNear?#1":["Door"]
+    }
+}
+
+No explanations.
 """
 
-        #llm = ChatMistralAI(model="mistral-large-latest", temperature=0.0, timeout=10) //Demasiadas requests, no lo puedo usar.
-        llm = ChatOllama(model = "llama3:8b", temperature= 0.0, timeout = 10)
+    def serializeTree(self, node, depth=0, actionCounters = None, decoratorCounters = None, lines=None):
+
+            if actionCounters is None or decoratorCounters is None:
+                actionCounters = {}
+                decoratorCounters = {}
+
+            if lines is None:
+                lines = []
+
+            tabs = "    " * depth
+
+            if isinstance(node, Composite):
+                decorator = ""
+                if node.decorator is not None:
+                    count = decoratorCounters.get(node.decorator, 0) + 1
+                    decoratorCounters[node.decorator] = count
+
+                    node.id = count
+
+                    decorator = f" [Decorator={node.decorator}#{count}]"
+
+                lines.append(f"{tabs}{node.type}{decorator}")
+
+                for child in node.children:
+                    self.serializeTree(child, depth + 1, actionCounters, decoratorCounters, lines)
+
+                return "\n".join(lines)
+
+            if isinstance(node, Action):
+                count = actionCounters.get(node.name, 0) + 1
+                actionCounters[node.name] = count
+
+                node.id = count
+
+                decorator = ""
+
+                if node.decorator is not None:
+
+                    decCount = decoratorCounters.get(node.decorator, 0) + 1
+                    decoratorCounters[node.decorator] = decCount
+
+                    decorator = f" [Decorator={node.decorator}#{decCount}]"
+
+                lines.append(f"{tabs}DO {node.name}#{count}{decorator}")
+
+                return "\n".join(lines)
+
+    def buildActionDescriptions(self, bbactions, conditionals):
+
+            txt = []
+
+            for pair in bbactions.split(","):
+
+                pair = pair.strip()
+
+                if " : " in pair:
+
+                    txt.append(pair)
+
+            txt.append("")
+
+            txt.append("Decorators")
+
+            for pair in conditionals.split(","):
+
+                pair = pair.strip()
+
+                if " : " in pair:
+
+                    txt.append(pair)
+
+            return "\n".join(txt)
+
+    def buildUserPrompt(self, root, bbactions, decorators, blackboard, actionPrompt):
+
+        tree = self.serializeTree(root)
+
+        actions = self.buildActionDescriptions(
+            bbactions,
+            decorators
+        )
+
+        return f"""
+GLOBAL TASK
+
+{actionPrompt}
+
+----------------------
+
+BEHAVIOR TREE
+
+{tree}
+
+----------------------
+
+AVAILABLE ACTIONS
+
+{actions}
+
+----------------------
+
+BLACKBOARD
+
+{json.dumps(blackboard, indent=4)}
+
+Return ONLY JSON.
+"""
+
+    def assignBlackboard(self, root, bbactions, decorators, blackboard, globalPrompt):
+
+        system = self.buildSystemPrompt()
+
+        user = self.buildUserPrompt(root, bbactions, decorators, blackboard, globalPrompt)
 
         messages = [
-            ("system", system_prompt),
-            ("human", prompt)
+            ("system", system),
+            ("human", user)
         ]
 
-        key = llm.invoke(messages).content
+        response = self.llm.invoke(messages).content
 
-        isInList = False
-        for value in BBEntries:
-            for k in value.keys():
-                if key == k:
-                    isInList = True
-                    break
+        result = self._parseJSON(response)
 
-        if not isInList:
-            messages.append(("assistant", key))
-            messages.append(("human", "The key you gave me is not in the \"Variables\" list. Give me ONLY a key from that list, DO NOT invent a new one. Respond me ONLY with the key, respecting the output format"))
+        retries = 0
 
-            key = llm.invoke(messages).content
+        while (not self._validateResult(result, blackboard) and retries < 3):
 
-        print(f"Action : {action}, key: {key}\n")
+            retries += 1
 
-        return key
+            messages.append(("assistant", response))
+
+            messages.append((
+                "human",
+                "The previous answer is invalid. "
+                "Return ONLY valid JSON. "
+                "Do not invent Blackboard variables."
+            ))
+
+            response = self.llm.invoke(messages).content
+
+            result = self._parseJSON(response)
+
+        if result is None:
+            raise RuntimeError("Impossible to assign Blackboard variables.")
+
+        print("BB response: ", response)
+
+        self._applyRecursive(root, result)
+
+    def _parseJSON(self, text):
+        match = re.search(r"\{.*\}", text,re.DOTALL)
+
+        if match is None:
+            return None
+
+        try:
+            return json.loads(match.group())
+        except:
+            return None
+
+    def _validateResult(self, result, blackboard):
+
+        if result is None:
+            return False
+
+        if "Actions" not in result:
+            return False
+
+        if "Decorators" not in result:
+            return False
+
+        validNames = set()
+
+        for bb in blackboard:
+            for key in bb.keys():
+                validNames.add(key)
+
+        for variables in result["Actions"].values():
+            if not isinstance(variables, list):
+                return False
+
+            for v in variables:
+                if v not in validNames:
+                    return False
+
+        for variables in result["Decorators"].values():
+            if not isinstance(variables, list):
+                return False
+            
+            for v in variables:
+                if v not in validNames:
+                    return False
+
+        return True
+
+    def _applyRecursive(self, node, result):
+        if isinstance(node, Composite):
+            key = ""   
+            if node.decorator is not None:
+                key = f"{node.decorator}#{node.id}"
+
+            node.decoratorEntry = result["Decorators"].get(key, [])
+
+            for child in node.children:
+                self._applyRecursive(child, result)
+
+            return
+
+        key = f"{node.name}#{node.id}"
+
+        node.blackboardEntries = result["Actions"].get(key,[])
+    
+def load_vector_store() -> FAISS:
+
+    examples_path = os.getenv('EXAMPLES_ROOT')
+
+    files = []
+    if os.path.exists(examples_path):
+        files = [os.path.join(dirpath,f) for (dirpath, _, filenames) in os.walk(examples_path) for f in filenames]
+    
+    docs = []
+    for f in files:
+        e = open(f, 'r')
+        j = json.load(e)
+        e.close()
+
+        j.pop("BT")
+
+        j = json.dumps(j, indent = 4)
+
+        docs.append(Document(page_content = j, metadata = {'source' : f}))
+
+    model_kwargs = {"device": "cuda"}
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2", model_kwargs = model_kwargs)
+    vector_store = FAISS.from_documents(docs, embeddings)
+    
+    return vector_store
+
+def retrieve_examples(vector_store : FAISS, query : str, k : int = 3) -> str:
+    if vector_store is None:
+            return ""
+
+    docs = vector_store.similarity_search(query, k=k)
+    context = "\n\n".join([doc.page_content for doc in docs])
+    return context
 
 def main():
-    # tasks = "ChasePlayer : Chases the player, PickRedFlower : Pick a red flower, PickYellowFlower : Pick a yellow flower, PickBlueFlower : Pick a blue flower, PickBlackFlower : Pick a black flower, "
-    # bbtasks = "MoveTo : Moves to the target position, RotateToFaceBBEntry : Rotate until facing the target, FindRandomPatrol : Choose a random point from the map and stores in the target, Wait : Does nothing for a while, ChooseRedFlower : Choose one red flower as a target, ChooseYellowFlower : Choose one yellow flower as a target, ChooseBlueFlower : Choose one blue flower as a target, ChooseBlackFlower : Choose one black flower as a target, "
-    # decorators = "HasLineOfSight? : True if the player is in the line of sight, false if not"
-    # prompt = "NPC that has to choose and pick one flower red, one flower yellow, and one flower blue, regardless the order. In order to pick a flower it has to be in the position of the flower"
-    # path = "Flowers_1"
-    # BBEntries = [{"Flower" : "Object"}]
+#     tasks = "ChasePlayer : Chases the player, PickRedFlower : Pick a red flower, PickYellowFlower : Pick a yellow flower, PickBlueFlower : Pick a blue flower, PickBlackFlower : Pick a black flower, Wait : Does nothing for a while, Attack : It launches an attack on whoever is nearby, "
+#     bbtasks = "MoveTo : Moves to the target position. The target position MUST BE an Object type, RotateToFaceBBEntry : Rotate until facing the target, FindRandomPatrol : Choose a random point from the map and stores in the target, ChooseRedFlower : Choose one red flower as a target, ChooseYellowFlower : Choose one yellow flower as a target, ChooseBlueFlower : Choose one blue flower as a target, ChooseBlackFlower : Choose one black flower as a target, SelectWaypoint : Choose a random waypoint as a target. It needs and Object type, "
+#     decorators = "HasLineOfSight? : True if the player is in the line of sight, false if not, IsItNear?: True if the distance between the executor and the objective is less or equal than a certain number, false if not. The objective NEEDS to be an Object type"
+#     prompt = """NPC that has to do one of this two options:
+# - If the objective is at his line of sight it has to: 1. chase him 2. move to his position 3. if is near the objective, it has to attack him.
+# - Otherwise, it has to: 1. select a waypoint 2. move to the waypoint"""
+#     path = "Attack_RAG"
+#     BBEntries = [{"HasLineOfSight" : "Bool"}, {"Objective" : "Object"}, {"Waypoint" : "Object"}]
+
     tasks = sys.argv[1]
     bbtasks = sys.argv[2]
     decorators = sys.argv[3]
@@ -623,6 +950,12 @@ def main():
     entries = sys.argv[6]
 
     BBEntries = json.loads(entries)
+
+    load_dotenv()
+
+    vector_store = load_vector_store()
+
+    examples = retrieve_examples(vector_store, prompt, 5)
 
     system_prompt = f"""
 You are an expert in behavior trees and algorithm design.
@@ -638,7 +971,7 @@ Requirements:
     * The structure must be easy to parse programmatically.
     * Explicitly represent:
         - Sequence (ordered execution)
-        - Selector (fallback / OR logic)
+        - Selector (fallback / OR logic / conditionals)
         - Conditions (checks)
         - Actions (leaf nodes)
     * Avoid natural language ambiguity. Use a strict format.
@@ -679,6 +1012,9 @@ SEQUENCE
         END
 END
 ```
+Here you have some examples in JSON format, where de "prompt" field is the user prompt, and the "code" field is the `pseudocode generated by that user prompt:
+
+{examples}
 
 List of actions ("actions" list): {tasks + bbtasks}
 
@@ -687,7 +1023,6 @@ List of conditions ("conditions" list) : {decorators}
 Think step by step all the decisions made by you in order to give me the minimum algorithm with only the necessary instructions.
 """
 
-    load_dotenv()
     llm = ChatMistralAI(model="mistral-large-latest", temperature=0.0, timeout=10)
 
     messages = [
@@ -729,6 +1064,7 @@ Think step by step all the decisions made by you in order to give me the minimum
             except:
                 llm_fallback = ChatOllama(model = "llama3:8b", temperature= 0.0, timeout = 10)
                 response = llm_fallback.invoke(messages)
+                print(response.content)
 
             code = re.search(r"```(.*?)```", response.content, re.DOTALL).group(1)
             

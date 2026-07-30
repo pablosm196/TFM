@@ -1,107 +1,110 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is close, take it. If visible, approach it. Scan area. Then pick up or use lifter arm. list of available nodes: <Action ID = TakeObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = UseLifterArm    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is close, take it. If visible, approach it. Scan area. Then pick up or use lifter arm. list of available nodes: <Action ID = TakeObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = UseLifterArm    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
+                "IsObjectVisible": "Boolean"
+            },
+            {
                 "ObjectIsHeavy": "Boolean"
             },
             {
                 "ObjectIsSmall": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectIsSmall?": "ObjectIsSmall"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectIsHeavy?": "ObjectIsHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "UseLifterArm",
-                            "Name": "UseLifterArm"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectIsSmall?": "ObjectIsSmall"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectIsHeavy?": "ObjectIsHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "UseLifterArm",
+                                "Name": "UseLifterArm"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tEND\n\t\tDO ScanAreaForObject\n\t\tSEQUENCE\n\t\t\t\tIF ObjectIsSmall? THEN\n\t\t\t\tDO PickUpObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF ObjectIsHeavy? THEN\n\t\t\t\tDO UseLifterArm\n\t\tEND\n\tEND\n"
 }

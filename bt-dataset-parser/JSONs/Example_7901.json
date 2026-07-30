@@ -1,93 +1,96 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, pick up if in range. Check properties or return to base. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <Action ID = ReturnObjectToBase    /> <SubTree ID = CheckObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, pick up if in range. Check properties or return to base. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <Action ID = ReturnObjectToBase    /> <SubTree ID = CheckObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectLight": "Boolean"
-            },
-            {
-                "IsObjectInRange": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectLight": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInRange?": "IsObjectInRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "ReturnObjectToBase",
-                                            "Name": "ReturnObjectToBase"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectLight?": "IsObjectLight"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "CheckObjectProperties",
-                                            "Name": "CheckObjectProperties"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInRange?": "IsObjectInRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "ReturnObjectToBase",
+                                                "Name": "ReturnObjectToBase"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectLight?": "IsObjectLight"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "CheckObjectProperties",
+                                                "Name": "CheckObjectProperties"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInRange? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO ReturnObjectToBase\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectLight? THEN\n\t\t\t\t\t\tDO CheckObjectProperties\n\t\t\t\tEND\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

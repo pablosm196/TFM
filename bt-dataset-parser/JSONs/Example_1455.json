@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, take, transport, and process it in order. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = NavigateToTransportationArea    /> <Action ID = TransportObject    /> <Action ID = IsTransportationAreaReached    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, take, transport, and process it in order. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = NavigateToTransportationArea    /> <Action ID = TransportObject    /> <Action ID = IsTransportationAreaReached    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTransportationAreaReached": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsTransportationAreaReached": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTransportationAreaReached?": "IsTransportationAreaReached"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TransportObject",
-                                    "Name": "TransportObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "NavigateToTransportationArea",
-                            "Name": "NavigateToTransportationArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTransportationAreaReached?": "IsTransportationAreaReached"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TransportObject",
+                                        "Name": "TransportObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "NavigateToTransportationArea",
+                                "Name": "NavigateToTransportationArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO TakeObject\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTransportationAreaReached? THEN\n\t\t\t\t\tDO TransportObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\t\tDO NavigateToTransportationArea\n\t\tEND\n\tEND\n"
 }

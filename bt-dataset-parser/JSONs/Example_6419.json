@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. If not visible, then scan area. Move to destination, check object, perform task. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = PerformSpecificTask    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObstacleDetected    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsTaskComplete    /> <SubTree ID = CheckObject    /> <SubTree ID = ProcessObject    /> <Action ID = AvoidObstacle    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. If not visible, then scan area. Move to destination, check object, perform task. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToDestination    /> <Action ID = PerformSpecificTask    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObstacleDetected    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsTaskComplete    /> <SubTree ID = CheckObject    /> <SubTree ID = ProcessObject    /> <Action ID = AvoidObstacle    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsTaskComplete": "Boolean"
-            },
             {
                 "IsObjectFound": "Boolean"
             },
             {
                 "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsTaskComplete": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObject",
-                            "Name": "CheckObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTaskComplete?": "IsTaskComplete"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleDetected?": "IsObstacleDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObject",
+                                "Name": "CheckObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTaskComplete?": "IsTaskComplete"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleDetected?": "IsObstacleDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO MoveToDestination\n\t\t\tDO CheckObject\n\t\t\t\tIF IsTaskComplete? THEN\n\t\t\t\tDO PerformSpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleDetected? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tEND\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

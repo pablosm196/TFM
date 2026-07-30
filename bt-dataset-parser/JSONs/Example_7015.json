@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to it. If can pick up, check properties, perform subtask, and move to destination. Else, scan or move. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = MoveToObject    /> <Action ID = MoveToDestination    /> <Action ID = MoveToRandomLocation    /> <Action ID = PickUpObject    /> <Condition ID = CanPickUpObject    /> <Condition ID = IsObjectInSight    /> <SubTree ID = CheckObjectProperties    /> <Action ID = PerformSubtask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to it. If can pick up, check properties, perform subtask, and move to destination. Else, scan or move. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = MoveToObject    /> <Action ID = MoveToDestination    /> <Action ID = MoveToRandomLocation    /> <Action ID = PickUpObject    /> <Condition ID = CanPickUpObject    /> <Condition ID = IsObjectInSight    /> <SubTree ID = CheckObjectProperties    /> <Action ID = PerformSubtask    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,60 +9,63 @@
                 "IsObjectInSight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInSight?": "IsObjectInSight"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CanPickUpObject?": "CanPickUpObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSubtask",
-                            "Name": "PerformSubtask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInSight?": "IsObjectInSight"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CanPickUpObject?": "CanPickUpObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSubtask",
+                                "Name": "PerformSubtask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInSight? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF CanPickUpObject? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO PerformSubtask\n\t\tEND\n\t\tDO MoveToDestination\n\tEND\n"
 }

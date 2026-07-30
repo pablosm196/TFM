@@ -1,60 +1,63 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Search for object. If detected, pick it up. Else move to object. Finally, scan area.     list of available nodes: <Action ID = MoveToLocation    /> <Action ID = ScanArea    /> <Condition ID = ObjectWithinRange    /> <Condition ID = ObjectDetected    /> <SubTree ID = PickUpObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Search for object. If detected, pick it up. Else move to object. Finally, scan area.     list of available nodes: <Action ID = MoveToLocation    /> <Action ID = ScanArea    /> <Condition ID = ObjectWithinRange    /> <Condition ID = ObjectDetected    /> <SubTree ID = PickUpObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "ObjectDetected": "Boolean"
+                "ObjectWithinRange": "Boolean"
             },
             {
-                "ObjectWithinRange": "Boolean"
+                "ObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectDetected?": "ObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectWithinRange?": "ObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectDetected?": "ObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectWithinRange?": "ObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF ObjectDetected? THEN\n\t\t\t\tDO PickUpObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF ObjectWithinRange? THEN\n\t\t\t\tDO MoveToLocation\n\t\tEND\n\t\tDO ScanArea\n\tEND\n"
 }

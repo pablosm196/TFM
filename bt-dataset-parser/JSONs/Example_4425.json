@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move and grab it. Check weight. Perform task. Else backtrack or scan. list of available nodes: <Action ID = ApproachObject    /> <Action ID = Backtrack    /> <Action ID = CheckObjectWeight    /> <Action ID = GrabObject    /> <Action ID = MoveTowardsObject    /> <Action ID = PerformTask    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsPathBlocked    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move and grab it. Check weight. Perform task. Else backtrack or scan. list of available nodes: <Action ID = ApproachObject    /> <Action ID = Backtrack    /> <Action ID = CheckObjectWeight    /> <Action ID = GrabObject    /> <Action ID = MoveTowardsObject    /> <Action ID = PerformTask    /> <Action ID = ScanAreaForObjects    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsPathBlocked    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInSight": "Boolean"
+                "IsPathBlocked": "Boolean"
             },
             {
-                "IsPathBlocked": "Boolean"
+                "IsObjectInSight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInSight?": "IsObjectInSight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsObject",
-                            "Name": "MoveTowardsObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectWeight",
-                            "Name": "CheckObjectWeight"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsPathBlocked?": "IsPathBlocked"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "Backtrack",
-                            "Name": "Backtrack"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInSight?": "IsObjectInSight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsObject",
+                                "Name": "MoveTowardsObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectWeight",
+                                "Name": "CheckObjectWeight"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsPathBlocked?": "IsPathBlocked"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "Backtrack",
+                                "Name": "Backtrack"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInSight? THEN\n\t\t\t\tDO MoveTowardsObject\n\t\tELSE\n\t\t\tDO GrabObject\n\t\t\tDO CheckObjectWeight\n\t\t\tDO PerformTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsPathBlocked? THEN\n\t\t\t\tDO Backtrack\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

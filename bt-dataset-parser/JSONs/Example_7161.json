@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, move, grab it, move it and scan area. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = GrabObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = ScanForObjects    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, move, grab it, move it and scan area. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = GrabObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = ScanForObjects    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedArea",
-                            "Name": "MoveObjectToDesignatedArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanForObjects",
-                    "Name": "ScanForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedArea",
+                                "Name": "MoveObjectToDesignatedArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanForObjects",
+                        "Name": "ScanForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToTarget\n\t\t\t\tDO GrabObject\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDesignatedArea\n\t\t\tEND\n\tELSE\n\t\tDO ScanForObjects\n\tEND\n"
 }

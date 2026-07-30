@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, move and pick up. If heavy, then carry or roll. Finally, perform specific task. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToLocation    /> <SubTree ID = PerformSpecificTask    /> <Action ID = RollObjectToDestination    /> <Action ID = CarryObjectToDestination    /> <Condition ID = isObjectNearby    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectRound    /> <Condition ID = isObjectSquare    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, move and pick up. If heavy, then carry or roll. Finally, perform specific task. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToLocation    /> <SubTree ID = PerformSpecificTask    /> <Action ID = RollObjectToDestination    /> <Action ID = CarryObjectToDestination    /> <Condition ID = isObjectNearby    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectRound    /> <Condition ID = isObjectSquare    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "isObjectSquare": "Boolean"
             },
             {
-                "isObjectSquare": "Boolean"
+                "isObjectRound": "Boolean"
             },
             {
                 "isObjectNearby": "Boolean"
             },
             {
-                "isObjectRound": "Boolean"
+                "isObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "isObjectNearby?": "isObjectNearby"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "isObjectHeavy?": "isObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "isObjectRound?": "isObjectRound"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "RollObjectToDestination",
-                                            "Name": "RollObjectToDestination"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "isObjectSquare?": "isObjectSquare"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "CarryObjectToDestination",
-                                            "Name": "CarryObjectToDestination"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "isObjectNearby?": "isObjectNearby"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "isObjectHeavy?": "isObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "isObjectRound?": "isObjectRound"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "RollObjectToDestination",
+                                                "Name": "RollObjectToDestination"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "isObjectSquare?": "isObjectSquare"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "CarryObjectToDestination",
+                                                "Name": "CarryObjectToDestination"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF isObjectNearby? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToLocation\n\t\t\t\tDO PickUpObject\n\t\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\t\tSELECTOR\n\t\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\t\tIF isObjectRound? THEN\n\t\t\t\t\t\t\t\tDO RollObjectToDestination\n\t\t\t\t\t\tEND\n\t\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\t\tIF isObjectSquare? THEN\n\t\t\t\t\t\t\t\tDO CarryObjectToDestination\n\t\t\t\t\t\tEND\n\t\t\t\t\tEND\n\t\t\tELSE\n\t\t\t\tDO PerformSpecificTask\n\t\t\tEND\n\tEND\n"
 }

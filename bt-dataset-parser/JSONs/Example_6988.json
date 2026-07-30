@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach and retrieve it; otherwise scan for objects. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = ApproachObject    /> <Action ID = RetrieveObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectInGrasp    /> <SubTree ID = FindAndRetrieveObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach and retrieve it; otherwise scan for objects. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = ApproachObject    /> <Action ID = RetrieveObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectInGrasp    /> <SubTree ID = FindAndRetrieveObject    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,52 +9,55 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectInGrasp?": "IsObjectInGrasp"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "RetrieveObject",
-                                    "Name": "RetrieveObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanForObjects",
-                    "Name": "ScanForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectInGrasp?": "IsObjectInGrasp"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "RetrieveObject",
+                                        "Name": "RetrieveObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanForObjects",
+                        "Name": "ScanForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO ApproachObject\n\t\t\t\t\t\tIF IsObjectInGrasp? THEN\n\t\t\t\t\t\tDO RetrieveObject\n\t\t\t\tEND\n\t\tEND\n\t\tDO ScanForObjects\n\tEND\n"
 }

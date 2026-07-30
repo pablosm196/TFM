@@ -1,7 +1,13 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach it, then grab it, and process its properties, finally do specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToSafeLocation    /> <Action ID = PlaceObject    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = DoSpecificTask    /> <Action ID = MoveAwayFromObject    /> <SubTree ID = ProcessObjectProperties    /> <Condition ID = IsObjectVisible    /> <Sequence>     <Condition ID = IsObjectInRange    />     <Fallback>         <Sequence>             <Condition ID = IsObjectLight    />             <Action ID = MoveAwayFromObject    />         </Sequence>         <Sequence>             <Condition ID = IsObjectHeavy    />             <Action ID = GrabObject    />             <SubTree ID = ProcessObjectProperties    />         </Sequence>         <Sequence>             <Condition ID = IsObjectFragile    />             <Action ID = GrabObject    />             <Action ID = MoveToSafeLocation    />             <Action ID = PlaceObject    />         </Sequence>         <Action ID = GrabObject    />         <SubTree ID = ProcessObjectProperties    />     </Fallback> </Sequence> <Condition ID = IsObjectApproached    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, approach it, then grab it, and process its properties, finally do specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToSafeLocation    /> <Action ID = PlaceObject    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = DoSpecificTask    /> <Action ID = MoveAwayFromObject    /> <SubTree ID = ProcessObjectProperties    /> <Condition ID = IsObjectVisible    /> <Sequence>     <Condition ID = IsObjectInRange    />     <Fallback>         <Sequence>             <Condition ID = IsObjectLight    />             <Action ID = MoveAwayFromObject    />         </Sequence>         <Sequence>             <Condition ID = IsObjectHeavy    />             <Action ID = GrabObject    />             <SubTree ID = ProcessObjectProperties    />         </Sequence>         <Sequence>             <Condition ID = IsObjectFragile    />             <Action ID = GrabObject    />             <Action ID = MoveToSafeLocation    />             <Action ID = PlaceObject    />         </Sequence>         <Action ID = GrabObject    />         <SubTree ID = ProcessObjectProperties    />     </Fallback> </Sequence> <Condition ID = IsObjectApproached    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "IsObjectLight": "Boolean"
             },
@@ -10,139 +16,136 @@
             },
             {
                 "IsObjectFragile": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "IsObjectInRange?": "IsObjectInRange"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectLight?": "IsObjectLight"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "MoveAwayFromObject",
-                                            "Name": "MoveAwayFromObject"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "GrabObject",
-                                            "Name": "GrabObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "ProcessObjectProperties",
-                                            "Name": "ProcessObjectProperties"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectFragile?": "IsObjectFragile"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "GrabObject",
-                                            "Name": "GrabObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "MoveToSafeLocation",
-                                            "Name": "MoveToSafeLocation"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "PlaceObject",
-                                            "Name": "PlaceObject"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObjectProperties",
-                                    "Name": "ProcessObjectProperties"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoSpecificTask",
-                    "Name": "DoSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInRange?": "IsObjectInRange"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectLight?": "IsObjectLight"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "MoveAwayFromObject",
+                                                "Name": "MoveAwayFromObject"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "GrabObject",
+                                                "Name": "GrabObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "ProcessObjectProperties",
+                                                "Name": "ProcessObjectProperties"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectFragile?": "IsObjectFragile"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "GrabObject",
+                                                "Name": "GrabObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "MoveToSafeLocation",
+                                                "Name": "MoveToSafeLocation"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "PlaceObject",
+                                                "Name": "PlaceObject"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObjectProperties",
+                                        "Name": "ProcessObjectProperties"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoSpecificTask",
+                        "Name": "DoSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInRange? THEN\n\t\t\t\tSELECTOR\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectLight? THEN\n\t\t\t\t\t\t\tDO MoveAwayFromObject\n\t\t\t\t\tEND\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\t\tDO GrabObject\n\t\t\t\t\tELSE\n\t\t\t\t\t\tDO ProcessObjectProperties\n\t\t\t\t\tEND\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\t\tDO GrabObject\n\t\t\t\t\tELSE\n\t\t\t\t\t\tDO MoveToSafeLocation\n\t\t\t\t\t\tDO PlaceObject\n\t\t\t\t\tEND\n\t\t\t\t\tDO GrabObject\n\t\t\t\t\tDO ProcessObjectProperties\n\t\t\t\tEND\n\t\tEND\n\t\tDO DoSpecificTask\n\tEND\n"
 }

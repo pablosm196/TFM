@@ -1,12 +1,12 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is within reach, pick it up, check color and shape, move and perform task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <SubTree ID = CheckObject>     <Sequence>         <Condition ID = IsObjectColorRed    />         <Condition ID = IsObjectShapeRectangle    />     </Sequence> </SubTree> <Action ID = MoveToDestination    /> <SubTree ID = PerformTask    /> <Action ID = ScanArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is within reach, pick it up, check color and shape, move and perform task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <SubTree ID = CheckObject>     <Sequence>         <Condition ID = IsObjectColorRed    />         <Condition ID = IsObjectShapeRectangle    />     </Sequence> </SubTree> <Action ID = MoveToDestination    /> <SubTree ID = PerformTask    /> <Action ID = ScanArea    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectColorRed": "Boolean"
+                "IsObjectShapeRectangle": "Boolean"
             },
             {
-                "IsObjectShapeRectangle": "Boolean"
+                "IsObjectColorRed": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
@@ -15,65 +15,68 @@
                 "IsObjectInSight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInSight?": "IsObjectInSight"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": []
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInSight?": "IsObjectInSight"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": []
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInSight? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\tEND\n\t\t\tDO MoveToDestination\n\t\t\tDO PerformTask\n\t\tEND\n\t\tDO ScanArea\n\tEND\n"
 }

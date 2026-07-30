@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach to it, pick it up, check its properties, do task and move to destination. Else, scan area. list of available nodes: <Action ID = ScanArea    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = DoSpecificTask    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectCloseEnough    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach to it, pick it up, check its properties, do task and move to destination. Else, scan area. list of available nodes: <Action ID = ScanArea    /> <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = DoSpecificTask    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectCloseEnough    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectCloseEnough": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectCloseEnough": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectCloseEnough?": "IsObjectCloseEnough"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DoSpecificTask",
-                            "Name": "DoSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectCloseEnough?": "IsObjectCloseEnough"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DoSpecificTask",
+                                "Name": "DoSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectCloseEnough? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO DoSpecificTask\n\t\tEND\n\t\tDO MoveToDestination\n\tEND\n"
 }

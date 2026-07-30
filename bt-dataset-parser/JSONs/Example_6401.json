@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If the object is nearby, pick it up and inspect it, move it to designated area if it is heavy, then scan the area. list of available nodes: <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If the object is nearby, pick it up and inspect it, move it to designated area if it is heavy, then scan the area. list of available nodes: <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "isObjectHeavy": "Boolean"
-            },
             {
                 "isPathClear": "Boolean"
             },
             {
                 "isObjectNearby": "Boolean"
+            },
+            {
+                "isObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectNearby?": "isObjectNearby"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "isObjectHeavy?": "isObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToDesignatedArea",
-                                    "Name": "MoveObjectToDesignatedArea"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isPathClear?": "isPathClear"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsObject",
-                            "Name": "MoveTowardsObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectNearby?": "isObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "isObjectHeavy?": "isObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToDesignatedArea",
+                                        "Name": "MoveObjectToDesignatedArea"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isPathClear?": "isPathClear"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsObject",
+                                "Name": "MoveTowardsObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF isObjectNearby? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDesignatedArea\n\t\t\tEND\n\t\t\tDO InspectObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isPathClear? THEN\n\t\t\t\tDO MoveTowardsObject\n\t\tEND\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

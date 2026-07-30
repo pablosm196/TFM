@@ -1,93 +1,96 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, if seen approach and grab it, if heavy move towards destination, if light carry it to destination, finally check object properties. list of available nodes: <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = MoveTowardsDestination    /> <Action ID = CarryObjectToDestination    /> <SubTree ID = CheckObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object, if seen approach and grab it, if heavy move towards destination, if light carry it to destination, finally check object properties. list of available nodes: <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectLight    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = MoveTowardsDestination    /> <Action ID = CarryObjectToDestination    /> <SubTree ID = CheckObjectProperties    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectLight": "Boolean"
-            },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
+            },
+            {
+                "IsObjectLight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveTowardsDestination",
-                                    "Name": "MoveTowardsDestination"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectLight?": "IsObjectLight"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CarryObjectToDestination",
-                                    "Name": "CarryObjectToDestination"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveTowardsDestination",
+                                        "Name": "MoveTowardsDestination"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectLight?": "IsObjectLight"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CarryObjectToDestination",
+                                        "Name": "CarryObjectToDestination"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\tDO GrabObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveTowardsDestination\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectLight? THEN\n\t\t\t\t\tDO CarryObjectToDestination\n\t\t\tEND\n\t\tEND\n\t\tDO CheckObjectProperties\n\tEND\n"
 }

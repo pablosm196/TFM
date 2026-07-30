@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object approached, grab it. Then, if weight low, move it. Inspect for red/green color. Finally, do specific task. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObject    /> <Action ID = InspectObject    /> <Action ID = SpecificTask    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWeightLow    /> <Condition ID = IsObjectColorRed    /> <Condition ID = IsObjectColorGreen    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object approached, grab it. Then, if weight low, move it. Inspect for red/green color. Finally, do specific task. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveObject    /> <Action ID = InspectObject    /> <Action ID = SpecificTask    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWeightLow    /> <Condition ID = IsObjectColorRed    /> <Condition ID = IsObjectColorGreen    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
+                "IsObjectWeightLow": "Boolean"
+            },
+            {
                 "IsObjectColorGreen": "Boolean"
             },
             {
                 "IsObjectColorRed": "Boolean"
-            },
-            {
-                "IsObjectWeightLow": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectWeightLow?": "IsObjectWeightLow"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObject",
-                    "Name": "MoveObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectColorRed?": "IsObjectColorRed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectColorGreen?": "IsObjectColorGreen"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectWeightLow?": "IsObjectWeightLow"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObject",
+                        "Name": "MoveObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectColorRed?": "IsObjectColorRed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectColorGreen?": "IsObjectColorGreen"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\t\tIF IsObjectWeightLow? THEN\n\t\t\tDO MoveObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectColorRed? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectColorGreen? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object approached, then grab it. If object heavy, then move. Finally, process or drop object. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveWithObject    /> <Action ID = DropObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsNearTargetLocation    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object approached, then grab it. If object heavy, then move. Finally, process or drop object. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveWithObject    /> <Action ID = DropObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsNearTargetLocation    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsNearTargetLocation": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsNearTargetLocation": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveWithObject",
-                    "Name": "MoveWithObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsNearTargetLocation?": "IsNearTargetLocation"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DropObject",
-                            "Name": "DropObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveWithObject",
+                        "Name": "MoveWithObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsNearTargetLocation?": "IsNearTargetLocation"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DropObject",
+                                "Name": "DropObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveWithObject\n\tELSE\n\t\t\tIF IsNearTargetLocation? THEN\n\t\t\tSELECTOR\n\t\t\t\tDO ProcessObject\n\t\t\t\tDO DropObject\n\t\t\tEND\n\tEND\n"
 }

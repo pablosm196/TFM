@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Search for the visible object, approach and retrieve it. Handle with care if fragile, else move to storage. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToStorage    /> <Action ID = CallForHelp    /> <Action ID = HandleObjectWithCare    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Search for the visible object, approach and retrieve it. Handle with care if fragile, else move to storage. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToStorage    /> <Action ID = CallForHelp    /> <Action ID = HandleObjectWithCare    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectFragile": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectGrabbed": "Boolean"
+                "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectGrabbed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbed?": "IsObjectGrabbed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToStorage",
-                            "Name": "MoveToStorage"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallForHelp",
-                                    "Name": "CallForHelp"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectFragile?": "IsObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "HandleObjectWithCare",
-                                    "Name": "HandleObjectWithCare"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbed?": "IsObjectGrabbed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToStorage",
+                                "Name": "MoveToStorage"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallForHelp",
+                                        "Name": "CallForHelp"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectFragile?": "IsObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "HandleObjectWithCare",
+                                        "Name": "HandleObjectWithCare"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectGrabbed? THEN\n\t\t\t\tDO MoveToStorage\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CallForHelp\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\tDO HandleObjectWithCare\n\t\t\tEND\n\t\t\tDO PerformSpecificTask\n\t\tEND\n\tEND\n"
 }

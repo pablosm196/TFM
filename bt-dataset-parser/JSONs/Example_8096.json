@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, pick it up, check its properties, move it and process; else, scan the area. list of available nodes: <Condition ID = IsObjectFound    /> <Condition ID = isObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is found, pick it up, check its properties, move it and process; else, scan the area. list of available nodes: <Condition ID = IsObjectFound    /> <Condition ID = isObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "isObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectHeavy?": "isObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToLocation",
-                            "Name": "MoveObjectToLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectHeavy?": "isObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToLocation",
+                                "Name": "MoveObjectToLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO PickUpObject\n\t\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToLocation\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\tELSE\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

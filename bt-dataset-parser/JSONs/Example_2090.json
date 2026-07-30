@@ -1,10 +1,7 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, then move and grab it. Check criteria, then do task 1 or task 2.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = DoesObjectFitCriteria    /> <Action ID = Task1    /> <Action ID = Task2    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object visible, then move and grab it. Check criteria, then do task 1 or task 2.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = DoesObjectFitCriteria    /> <Action ID = Task1    /> <Action ID = Task2    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsTask2Enabled": "Boolean"
-            },
             {
                 "IsTask1Enabled": "Boolean"
             },
@@ -13,75 +10,81 @@
             },
             {
                 "DoesObjectFitCriteria": "Boolean"
+            },
+            {
+                "IsTask2Enabled": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "DoesObjectFitCriteria?": "DoesObjectFitCriteria"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTask1Enabled?": "IsTask1Enabled"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "Task1",
-                                    "Name": "Task1"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTask2Enabled?": "IsTask2Enabled"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "Task2",
-                                    "Name": "Task2"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "DoesObjectFitCriteria?": "DoesObjectFitCriteria"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTask1Enabled?": "IsTask1Enabled"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "Task1",
+                                        "Name": "Task1"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTask2Enabled?": "IsTask2Enabled"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "Task2",
+                                        "Name": "Task2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tDO GrabObject\n\t\t\tIF DoesObjectFitCriteria? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsTask1Enabled? THEN\n\t\t\t\t\t\tDO Task1\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsTask2Enabled? THEN\n\t\t\t\t\t\tDO Task2\n\t\t\t\tEND\n\t\t\tEND\n\tEND\n"
 }

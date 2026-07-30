@@ -1,75 +1,78 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and grab it. If held, check properties, move it and perform the task. Else, scan the area.     list of available nodes: <Action ID = GrabObject    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeld    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectImportant    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and grab it. If held, check properties, move it and perform the task. Else, scan the area.     list of available nodes: <Action ID = GrabObject    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeld    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectImportant    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence>\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectHeld": "Boolean"
-            },
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectImportant": "Boolean"
+                "IsObjectHeld": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
+            },
+            {
+                "IsObjectImportant": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectHeld?": "IsObjectHeld"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedLocation",
-                            "Name": "MoveObjectToDesignatedLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectImportant?": "IsObjectImportant"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectHeld?": "IsObjectHeld"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedLocation",
+                                "Name": "MoveObjectToDesignatedLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectImportant?": "IsObjectImportant"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\t\tIF IsObjectHeld? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDesignatedLocation\n\t\t\tELSE\n\t\t\t\tDO PerformSpecificTask\n\t\t\tEND\n\tELSE\n\t\t\tIF IsObjectImportant? THEN\n\t\t\tDO CheckObjectProperties\n\tEND\n"
 }

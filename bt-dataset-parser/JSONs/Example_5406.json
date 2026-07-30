@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and pick it. If heavy, call for help. Finally, do task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickingObject    /> <Action ID = CallForHelp    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectNear    /> <SubTree ID = DoTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and pick it. If heavy, call for help. Finally, do task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickingObject    /> <Action ID = CallForHelp    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectNear    /> <SubTree ID = DoTask    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
                 "IsObjectNear": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectNear?": "IsObjectNear"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickingObject",
-                    "Name": "PickingObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallForHelp",
-                            "Name": "CallForHelp"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoTask",
-                    "Name": "DoTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectNear?": "IsObjectNear"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickingObject",
+                        "Name": "PickingObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallForHelp",
+                                "Name": "CallForHelp"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoTask",
+                        "Name": "DoTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectNear? THEN\n\t\t\tDO PickingObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CallForHelp\n\t\tEND\n\t\tDO DoTask\n\tEND\n"
 }

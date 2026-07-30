@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, take, move it. If shiny, inspect, else perform task subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectShiny    /> <Action ID = InspectObject    /> <SubTree ID = ContinueTaskAsSubtree    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach, take, move it. If shiny, inspect, else perform task subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectShiny    /> <Action ID = InspectObject    /> <SubTree ID = ContinueTaskAsSubtree    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInRange": "Boolean"
-            },
-            {
-                "IsObjectShiny": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectShiny": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInRange?": "IsObjectInRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObject",
-                            "Name": "MoveObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectShiny?": "IsObjectShiny"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ContinueTaskAsSubtree",
-                            "Name": "ContinueTaskAsSubtree"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInRange?": "IsObjectInRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObject",
+                                "Name": "MoveObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectShiny?": "IsObjectShiny"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ContinueTaskAsSubtree",
+                                "Name": "ContinueTaskAsSubtree"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInRange? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObject\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectShiny? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\t\tDO ContinueTaskAsSubtree\n\t\tEND\n\tEND\n"
 }

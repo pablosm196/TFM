@@ -1,9 +1,9 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object seen, move then grab it, check its weight and do task. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = IsObjectReachable    /> <Action ID = GrabObject    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveToObject    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectHeavy    /> <Action ID = IsObjectGrabbable    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object seen, move then grab it, check its weight and do task. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = IsObjectReachable    /> <Action ID = GrabObject    /> <Action ID = CheckObjectWeight    /> <Action ID = MoveToObject    /> <SubTree ID = PerformSpecificTask    /> <Condition ID = IsObjectHeavy    /> <Action ID = IsObjectGrabbable    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectReachable": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
@@ -12,82 +12,85 @@
                 "IsObjectGrabbable": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "IsObjectReachable?": "IsObjectReachable"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "GrabObject",
-                                            "Name": "GrabObject"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToObject",
-                                    "Name": "MoveToObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectWeight",
-                                    "Name": "CheckObjectWeight"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReachable?": "IsObjectReachable"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "GrabObject",
+                                                "Name": "GrabObject"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToObject",
+                                        "Name": "MoveToObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectWeight",
+                                        "Name": "CheckObjectWeight"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectReachable? THEN\n\t\t\t\t\tSELECTOR\n\t\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\t\t\t\t\tDO GrabObject\n\t\t\t\t\t\tEND\n\t\t\t\t\t\tDO MoveToObject\n\t\t\t\t\tEND\n\t\t\tELSE\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO CheckObjectWeight\n\t\t\t\tEND\n\t\t\t\tDO PerformSpecificTask\n\t\t\tEND\n\tEND\n"
 }

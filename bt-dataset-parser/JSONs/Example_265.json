@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, take and move it to destination. Then check properties and do task. If not, approach or scan area. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectApproached    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    /> <Action ID = CheckObjectProperties    /> <Action ID = ApproachObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, take and move it to destination. Then check properties and do task. If not, approach or scan area. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectApproached    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    /> <Action ID = CheckObjectProperties    /> <Action ID = ApproachObject    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,53 +9,56 @@
                 "IsObjectValid": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectValid?": "IsObjectValid"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectValid?": "IsObjectValid"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO MoveToDestination\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectValid? THEN\n\t\t\t\tDO CheckObjectProperties\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\tEND\n"
 }

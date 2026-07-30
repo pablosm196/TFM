@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Search object, take it if reachable, move to destination, perform task. Else, move to destination. list of available nodes: <Action ID = SearchForObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = PerformSubTask    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsDestinationReached    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Search object, take it if reachable, move to destination, perform task. Else, move to destination. list of available nodes: <Action ID = SearchForObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDestination    /> <Action ID = PerformSubTask    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsDestinationReached    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsDestinationReached": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SearchForObject",
-                    "Name": "SearchForObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDestination",
-                            "Name": "MoveObjectToDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsDestinationReached?": "IsDestinationReached"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformSubTask",
-                                    "Name": "PerformSubTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SearchForObject",
+                        "Name": "SearchForObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDestination",
+                                "Name": "MoveObjectToDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsDestinationReached?": "IsDestinationReached"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformSubTask",
+                                        "Name": "PerformSubTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO SearchForObject\n\t\t\tIF IsObjectWithinReach? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO TakeObject\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDestination\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsDestinationReached? THEN\n\t\t\t\t\tDO PerformSubTask\n\t\t\tEND\n\t\t\tDO MoveToDestination\n\t\tEND\n\tEND\n"
 }

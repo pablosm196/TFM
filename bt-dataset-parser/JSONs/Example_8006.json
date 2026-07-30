@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach it. If in gripper, release. If blocked, rotate. Check object properties. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ReleaseObject    /> <Action ID = RotateAndTryAgain    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectInGripper    /> <Condition ID = IsPathBlocked    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, approach it. If in gripper, release. If blocked, rotate. Check object properties. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ReleaseObject    /> <Action ID = RotateAndTryAgain    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectInGripper    /> <Condition ID = IsPathBlocked    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInGripper": "Boolean"
+                "IsPathBlocked": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
             },
             {
-                "IsPathBlocked": "Boolean"
+                "IsObjectInGripper": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInGripper?": "IsObjectInGripper"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ReleaseObject",
-                            "Name": "ReleaseObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsPathBlocked?": "IsPathBlocked"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "RotateAndTryAgain",
-                            "Name": "RotateAndTryAgain"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInGripper?": "IsObjectInGripper"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ReleaseObject",
+                                "Name": "ReleaseObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsPathBlocked?": "IsPathBlocked"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "RotateAndTryAgain",
+                                "Name": "RotateAndTryAgain"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tDO ApproachObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInGripper? THEN\n\t\t\t\tDO ReleaseObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsPathBlocked? THEN\n\t\t\t\tDO RotateAndTryAgain\n\t\tEND\n\t\tDO CheckObjectProperties\n\tEND\n"
 }

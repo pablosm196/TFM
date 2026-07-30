@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object nearby, approach and take if appealing. Then check if heavy. Complete specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectAppealing    /> <Condition ID = IsObjectHeavy    /> <Action ID = CheckObjectWeight    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object nearby, approach and take if appealing. Then check if heavy. Complete specific task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectAppealing    /> <Condition ID = IsObjectHeavy    /> <Action ID = CheckObjectWeight    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectAppealing": "Boolean"
-            },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
+            },
+            {
+                "IsObjectAppealing": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectAppealing?": "IsObjectAppealing"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectWeight",
-                                    "Name": "CheckObjectWeight"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectAppealing?": "IsObjectAppealing"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectWeight",
+                                        "Name": "CheckObjectWeight"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\t\tIF IsObjectAppealing? THEN\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\tDO TakeObject\n\t\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\t\tDO CheckObjectWeight\n\t\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO SpecificTask\n\tEND\n"
 }

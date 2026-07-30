@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, grab it. If not, move and explore while avoiding obstacles. list of available nodes: <SubTree ID = ProcessObjectProperties     /> <Action ID = MoveToDestination     /> <Action ID = RandomlyExploreArea     /> <Condition ID = IsObjectWithinReach     /> <Action ID = GrabObject     /> <Condition ID = IsSensorBlocked     /> <Action ID = AvoidObstacle     /> <Condition ID = IsRobotAtDestination     /> <Condition ID = IsObjectFound     />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object found, grab it. If not, move and explore while avoiding obstacles. list of available nodes: <SubTree ID = ProcessObjectProperties     /> <Action ID = MoveToDestination     /> <Action ID = RandomlyExploreArea     /> <Condition ID = IsObjectWithinReach     /> <Action ID = GrabObject     /> <Condition ID = IsSensorBlocked     /> <Action ID = AvoidObstacle     /> <Condition ID = IsRobotAtDestination     /> <Condition ID = IsObjectFound     />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsSensorBlocked": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsRobotAtDestination": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
             },
             {
-                "IsRobotAtDestination": "Boolean"
+                "IsSensorBlocked": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsRobotAtDestination?": "IsRobotAtDestination"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsSensorBlocked?": "IsSensorBlocked"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "AvoidObstacle",
-                                    "Name": "AvoidObstacle"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "RandomlyExploreArea",
-                            "Name": "RandomlyExploreArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsRobotAtDestination?": "IsRobotAtDestination"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsSensorBlocked?": "IsSensorBlocked"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "AvoidObstacle",
+                                        "Name": "AvoidObstacle"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "RandomlyExploreArea",
+                                "Name": "RandomlyExploreArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO GrabObject\n\t\t\tEND\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsRobotAtDestination? THEN\n\t\t\t\tDO MoveToDestination\n\t\tELSE\n\t\t\tDO ProcessObjectProperties\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsSensorBlocked? THEN\n\t\t\t\t\tDO AvoidObstacle\n\t\t\tEND\n\t\t\tDO RandomlyExploreArea\n\t\tEND\n\tEND\n"
 }

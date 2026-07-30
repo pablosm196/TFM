@@ -1,96 +1,99 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, then move to it, grab it, check properties, follow specific task, then place it. list of available nodes: <SubTree ID = ProcessObject    /> <Action ID = GrabObject    /> <Action ID = StopRobot    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsObjectClose    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectDetected    /> <Action ID = PlaceObject    /> <Action ID = MoveTowardsObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, then move to it, grab it, check properties, follow specific task, then place it. list of available nodes: <SubTree ID = ProcessObject    /> <Action ID = GrabObject    /> <Action ID = StopRobot    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsObjectClose    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectDetected    /> <Action ID = PlaceObject    /> <Action ID = MoveTowardsObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsPathClear": "Boolean"
+                "IsObjectClose": "Boolean"
             },
             {
-                "IsObjectClose": "Boolean"
+                "IsPathClear": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectClose?": "IsObjectClose"
-                                        }
-                                    ],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "StopRobot",
-                                            "Name": "StopRobot"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "GrabObject",
-                                            "Name": "GrabObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "ProcessObject",
-                                            "Name": "ProcessObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "PlaceObject",
-                                            "Name": "PlaceObject"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveTowardsObject",
-                                    "Name": "MoveTowardsObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectClose?": "IsObjectClose"
+                                            }
+                                        ],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "StopRobot",
+                                                "Name": "StopRobot"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "GrabObject",
+                                                "Name": "GrabObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "ProcessObject",
+                                                "Name": "ProcessObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "PlaceObject",
+                                                "Name": "PlaceObject"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveTowardsObject",
+                                        "Name": "MoveTowardsObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectClose? THEN\n\t\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tDO StopRobot\n\t\t\t\t\t\t\tDO GrabObject\n\t\t\t\t\t\t\tDO ProcessObject\n\t\t\t\t\t\t\tDO PlaceObject\n\t\t\t\t\t\tEND\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO MoveTowardsObject\n\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO CheckObjectProperties\n\tEND\n"
 }

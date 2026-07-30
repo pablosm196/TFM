@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. Inspect it, move to new area if none found. Idle otherwise. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <SubTree ID = InspectObject    /> <Condition ID = IsObjectWithinReach    /> <Action ID = ScanAreaForObjects    /> <Action ID = Idle    /> <Action ID = IsObjectFound    /> <Condition ID = IsAreaScanned    /> <Action ID = MoveToNewArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab object. Inspect it, move to new area if none found. Idle otherwise. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <SubTree ID = InspectObject    /> <Condition ID = IsObjectWithinReach    /> <Action ID = ScanAreaForObjects    /> <Action ID = Idle    /> <Action ID = IsObjectFound    /> <Condition ID = IsAreaScanned    /> <Action ID = MoveToNewArea    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsAreaScanned": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsAreaScanned": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAreaScanned?": "IsAreaScanned"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToNewArea",
-                            "Name": "MoveToNewArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObjects",
-                            "Name": "ScanAreaForObjects"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "Idle",
-                    "Name": "Idle"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAreaScanned?": "IsAreaScanned"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToNewArea",
+                                "Name": "MoveToNewArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObjects",
+                                "Name": "ScanAreaForObjects"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "Idle",
+                        "Name": "Idle"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO InspectObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsAreaScanned? THEN\n\t\t\t\tDO MoveToNewArea\n\t\tELSE\n\t\t\tDO ScanAreaForObjects\n\t\tEND\n\t\tDO Idle\n\tEND\n"
 }

@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is seen, move to it, take and adjust grip, check properties, perform task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectInView    /> <Action ID = AdjustGrip    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is seen, move to it, take and adjust grip, check properties, perform task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectInView    /> <Action ID = AdjustGrip    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinRange": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectWithinRange": "Boolean"
             },
             {
                 "IsObjectInView": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectInView?": "IsObjectInView"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinRange?": "IsObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "AdjustGrip",
-                                    "Name": "AdjustGrip"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformSpecificTask",
-                    "Name": "PerformSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectInView?": "IsObjectInView"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinRange?": "IsObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "AdjustGrip",
+                                        "Name": "AdjustGrip"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformSpecificTask",
+                        "Name": "PerformSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInView? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToObject\n\t\t\t\t\tIF IsObjectWithinRange? THEN\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\tDO TakeObject\n\t\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\t\tDO AdjustGrip\n\t\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO CheckObjectProperties\n\t\tDO PerformSpecificTask\n\tEND\n"
 }

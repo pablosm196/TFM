@@ -1,67 +1,70 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, approach, take it. If grabbed, move to designated location, and process object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToDesignatedLocation    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, approach, take it. If grabbed, move to designated location, and process object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToDesignatedLocation    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectGrabbed": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectGrabbed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectGrabbed?": "IsObjectGrabbed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveToDesignatedLocation",
-                                    "Name": "MoveToDesignatedLocation"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectGrabbed?": "IsObjectGrabbed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveToDesignatedLocation",
+                                        "Name": "MoveToDesignatedLocation"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectGrabbed? THEN\n\t\t\t\t\tDO MoveToDesignatedLocation\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\t\tDO GrabObject\n\t\tEND\n\tEND\n"
 }

@@ -1,7 +1,10 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object near, move to it. Then grab it. In order to process, adjust or handle it. Finally, conduct designated task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = AdjustGrip    /> <Action ID = HandleObjectGently    /> <Action ID = ProcessObjectTask    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object near, move to it. Then grab it. In order to process, adjust or handle it. Finally, conduct designated task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GrabObject    /> <Action ID = AdjustGrip    /> <Action ID = HandleObjectGently    /> <Action ID = ProcessObjectTask    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectFragile": "Boolean"
             },
@@ -10,91 +13,91 @@
             },
             {
                 "IsObjectNearby": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "AdjustGrip",
-                                            "Name": "AdjustGrip"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectFragile?": "IsObjectFragile"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "HandleObjectGently",
-                                            "Name": "HandleObjectGently"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectTask",
-                            "Name": "ProcessObjectTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "AdjustGrip",
+                                                "Name": "AdjustGrip"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectFragile?": "IsObjectFragile"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "HandleObjectGently",
+                                                "Name": "HandleObjectGently"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectTask",
+                                "Name": "ProcessObjectTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO AdjustGrip\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\tDO HandleObjectGently\n\t\t\t\tEND\n\t\t\tEND\n\t\t\tDO ProcessObjectTask\n\t\tEND\n\tEND\n"
 }

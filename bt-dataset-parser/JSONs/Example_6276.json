@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach it, take it, move it to location, do task. Otherwise, scan area or wander around.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHidden    /> <Condition ID = IsObjectHeavy    /> <Action ID = ScanArea    /> <Action ID = WanderAround    /> <SubTree ID = DoTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach it, take it, move it to location, do task. Otherwise, scan area or wander around.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectHidden    /> <Condition ID = IsObjectHeavy    /> <Action ID = ScanArea    /> <Action ID = WanderAround    /> <SubTree ID = DoTask    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectHidden": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToLocation",
-                            "Name": "MoveObjectToLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DoTask",
-                            "Name": "DoTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHidden?": "IsObjectHidden"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "WanderAround",
-                    "Name": "WanderAround"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToLocation",
+                                "Name": "MoveObjectToLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DoTask",
+                                "Name": "DoTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHidden?": "IsObjectHidden"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "WanderAround",
+                        "Name": "WanderAround"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToLocation\n\t\tELSE\n\t\t\tDO DoTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHidden? THEN\n\t\t\t\tDO ScanArea\n\t\tEND\n\t\tDO WanderAround\n\tEND\n"
 }

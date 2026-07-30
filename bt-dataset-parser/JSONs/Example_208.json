@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Robot, approach visible object, grab, move to storage. Avoid obstacles. Randomly move as fallback.     list of available nodes: <Action ID = ApproachObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = MoveToObjectStorage    /> <Condition ID = IsObstacleDetected    /> <Action ID = AvoidObstacle    /> <Action ID = RandomMovement    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Robot, approach visible object, grab, move to storage. Avoid obstacles. Randomly move as fallback.     list of available nodes: <Action ID = ApproachObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = MoveToObjectStorage    /> <Condition ID = IsObstacleDetected    /> <Action ID = AvoidObstacle    /> <Action ID = RandomMovement    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectGrabbed": "Boolean"
-            },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
                 "IsObstacleDetected": "Boolean"
+            },
+            {
+                "IsObjectGrabbed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbed?": "IsObjectGrabbed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObjectStorage",
-                            "Name": "MoveToObjectStorage"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleDetected?": "IsObstacleDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "RandomMovement",
-                    "Name": "RandomMovement"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbed?": "IsObjectGrabbed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObjectStorage",
+                                "Name": "MoveToObjectStorage"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleDetected?": "IsObstacleDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "RandomMovement",
+                        "Name": "RandomMovement"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectGrabbed? THEN\n\t\t\t\tDO MoveToObjectStorage\n\t\tELSE\n\t\t\tDO ProcessObjectProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleDetected? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tEND\n\t\tDO RandomMovement\n\tEND\n"
 }

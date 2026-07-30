@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object. If in range, approach and take it. Check properties. Return. Else, scan area or move.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = CallForHelper    /> <Action ID = ReturnObject    /> <Action ID = ScanAreaForObjects    /> <Action ID = MoveToRandomLocation    /> <SubTree ID = ProcessObjectProperties    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find object. If in range, approach and take it. Check properties. Return. Else, scan area or move.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = CallForHelper    /> <Action ID = ReturnObject    /> <Action ID = ScanAreaForObjects    /> <Action ID = MoveToRandomLocation    /> <SubTree ID = ProcessObjectProperties    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectInRange": "Boolean"
-            },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInRange?": "IsObjectInRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallForHelper",
-                            "Name": "CallForHelper"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ProcessObjectProperties",
-                    "Name": "ProcessObjectProperties"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ReturnObject",
-                    "Name": "ReturnObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInRange?": "IsObjectInRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallForHelper",
+                                "Name": "CallForHelper"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ProcessObjectProperties",
+                        "Name": "ProcessObjectProperties"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ReturnObject",
+                        "Name": "ReturnObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectInRange? THEN\n\t\t\t\t\tDO ApproachObject\n\t\t\tEND\n\tELSE\n\t\tDO TakeObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CallForHelper\n\t\tEND\n\t\tDO ProcessObjectProperties\n\t\tDO ReturnObject\n\tEND\n"
 }

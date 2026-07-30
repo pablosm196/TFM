@@ -1,54 +1,57 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, approach it. If it is graspable then take it, in order to process it. Finally, scan the area for another object.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGraspable    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If an object is visible, approach it. If it is graspable then take it, in order to process it. Finally, scan the area for another object.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGraspable    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectGraspable": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectGraspable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGraspable?": "IsObjectGraspable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGraspable?": "IsObjectGraspable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectGraspable? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\tEND\n"
 }

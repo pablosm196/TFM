@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object within reach, take it, move it if necessary, check it, do specific task. Else approach object, scan area.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = CheckObjectProperties    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavierThanX    /> <Condition ID = IsDesignatedLocationReached    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object within reach, take it, move it if necessary, check it, do specific task. Else approach object, scan area.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = CheckObjectProperties    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavierThanX    /> <Condition ID = IsDesignatedLocationReached    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectHeavierThanX": "Boolean"
+                "IsDesignatedLocationReached": "Boolean"
             },
             {
-                "IsDesignatedLocationReached": "Boolean"
+                "IsObjectHeavierThanX": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavierThanX?": "IsObjectHeavierThanX"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedLocation",
-                            "Name": "MoveObjectToDesignatedLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDesignatedLocationReached?": "IsDesignatedLocationReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavierThanX?": "IsObjectHeavierThanX"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedLocation",
+                                "Name": "MoveObjectToDesignatedLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDesignatedLocationReached?": "IsDesignatedLocationReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavierThanX? THEN\n\t\t\t\tDO MoveObjectToDesignatedLocation\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsDesignatedLocationReached? THEN\n\t\t\t\tDO CheckObjectProperties\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

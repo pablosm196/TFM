@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it, move and check quality, do task, or scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = Move    /> <Action ID = ObjectQualityCheck    /> <Action ID = ScanAreaForObjects    /> <Action ID = ObjectTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it, move and check quality, do task, or scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = Move    /> <Action ID = ObjectQualityCheck    /> <Action ID = ScanAreaForObjects    /> <Action ID = ObjectTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "ObjectQualityCheck": "Boolean"
             },
             {
                 "IsObjectGrabbed": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbed?": "IsObjectGrabbed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "Move",
-                            "Name": "Move"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectQualityCheck?": "ObjectQualityCheck"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ObjectTask",
-                            "Name": "ObjectTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbed?": "IsObjectGrabbed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "Move",
+                                "Name": "Move"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectQualityCheck?": "ObjectQualityCheck"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ObjectTask",
+                                "Name": "ObjectTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectGrabbed? THEN\n\t\t\t\tDO Move\n\t\tELSE\n\t\t\t\tIF ObjectQualityCheck? THEN\n\t\t\t\tDO ObjectTask\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

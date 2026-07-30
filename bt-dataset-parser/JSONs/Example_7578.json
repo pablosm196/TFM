@@ -1,12 +1,12 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it. If not, perform available task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = PerformTask1    /> <Action ID = PerformTask2    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsTask1Available    /> <Condition ID = IsTask2Available    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it. If not, perform available task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = PerformTask1    /> <Action ID = PerformTask2    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsTask1Available    /> <Condition ID = IsTask2Available    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTask1Available": "Boolean"
+                "IsTask2Available": "Boolean"
             },
             {
-                "IsTask2Available": "Boolean"
+                "IsTask1Available": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
@@ -15,86 +15,89 @@
                 "IsObjectGrabbable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTask1Available?": "IsTask1Available"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformTask1",
-                                    "Name": "PerformTask1"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTask2Available?": "IsTask2Available"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformTask2",
-                                    "Name": "PerformTask2"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTask1Available?": "IsTask1Available"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformTask1",
+                                        "Name": "PerformTask1"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTask2Available?": "IsTask2Available"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformTask2",
+                                        "Name": "PerformTask2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTask1Available? THEN\n\t\t\t\t\tDO PerformTask1\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTask2Available? THEN\n\t\t\t\t\tDO PerformTask2\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

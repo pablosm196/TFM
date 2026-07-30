@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, move to object, take object, check properties. If heavy, grip and lift. Do specific task. list of available nodes: <Action ID = MoveToObjectsLocation    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = FindStrongGrip    /> <Action ID = LiftObject    /> <Action ID = ScanObjectProperties    /> <SubTree ID = SpecificTask    />  <Condition ID = IsObjectDetected    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, move to object, take object, check properties. If heavy, grip and lift. Do specific task. list of available nodes: <Action ID = MoveToObjectsLocation    /> <Action ID = TakeObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = FindStrongGrip    /> <Action ID = LiftObject    /> <Action ID = ScanObjectProperties    /> <SubTree ID = SpecificTask    />  <Condition ID = IsObjectDetected    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,73 +9,76 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObjectsLocation",
-                    "Name": "MoveToObjectsLocation"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FindStrongGrip",
-                                    "Name": "FindStrongGrip"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "LiftObject",
-                                    "Name": "LiftObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanObjectProperties",
-                            "Name": "ScanObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObjectsLocation",
+                        "Name": "MoveToObjectsLocation"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FindStrongGrip",
+                                        "Name": "FindStrongGrip"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "LiftObject",
+                                        "Name": "LiftObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanObjectProperties",
+                                "Name": "ScanObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO MoveToObjectsLocation\n\tELSE\n\t\tDO TakeObject\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO FindStrongGrip\n\t\t\tELSE\n\t\t\t\tDO LiftObject\n\t\t\tEND\n\t\t\tDO ScanObjectProperties\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. If within reach, take it. Move or store it. If object is charged, do task. Else, charge object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = ChargeObject    /> <Action ID = DoSpecificTask    /> <Action ID = MoveObjectToStorage    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectCharged    /> <SubTree ID = MobileRobot    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. If within reach, take it. Move or store it. If object is charged, do task. Else, charge object. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = ChargeObject    /> <Action ID = DoSpecificTask    /> <Action ID = MoveObjectToStorage    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectCharged    /> <SubTree ID = MobileRobot    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectCharged": "Boolean"
-            },
-            {
-                "IsObjectWithinReach": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectCharged": "Boolean"
+            },
+            {
+                "IsObjectWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToStorage",
-                            "Name": "MoveObjectToStorage"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectCharged?": "IsObjectCharged"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DoSpecificTask",
-                                    "Name": "DoSpecificTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ChargeObject",
-                            "Name": "ChargeObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToStorage",
+                                "Name": "MoveObjectToStorage"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectCharged?": "IsObjectCharged"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DoSpecificTask",
+                                        "Name": "DoSpecificTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ChargeObject",
+                                "Name": "ChargeObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectWithinReach? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToStorage\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectCharged? THEN\n\t\t\t\t\tDO DoSpecificTask\n\t\t\tEND\n\t\t\tDO ChargeObject\n\t\tEND\n\tEND\n"
 }

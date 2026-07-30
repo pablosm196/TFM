@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object seen, move to it. Process it, take it. If not, scan area. Complete task.     list of available nodes: <Action ID = MoveToObj    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForObject    /> <Action ID = DoSpecificTask    /> <Condition ID = IsObjectSeen    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsObjectInReach    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object seen, move to it. Process it, take it. If not, scan area. Complete task.     list of available nodes: <Action ID = MoveToObj    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForObject    /> <Action ID = DoSpecificTask    /> <Condition ID = IsObjectSeen    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsObjectInReach    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectInReach": "Boolean"
             },
             {
-                "IsTaskComplete": "Boolean"
+                "IsObjectSeen": "Boolean"
             },
             {
-                "IsObjectSeen": "Boolean"
+                "IsTaskComplete": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectSeen?": "IsObjectSeen"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObj",
-                            "Name": "MoveToObj"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInReach?": "IsObjectInReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTaskComplete?": "IsTaskComplete"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "DoSpecificTask",
-                            "Name": "DoSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectSeen?": "IsObjectSeen"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObj",
+                                "Name": "MoveToObj"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInReach?": "IsObjectInReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTaskComplete?": "IsTaskComplete"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "DoSpecificTask",
+                                "Name": "DoSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectSeen? THEN\n\t\t\t\tDO MoveToObj\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\t\tDO TakeObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInReach? THEN\n\t\t\t\tDO TakeObject\n\t\tEND\n\t\tDO ScanAreaForObject\n\t\tSEQUENCE\n\t\t\t\tIF IsTaskComplete? THEN\n\t\t\t\tDO DoSpecificTask\n\t\tEND\n\tEND\n"
 }

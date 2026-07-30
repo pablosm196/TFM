@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan surroundings, if object found then take it, if heavy and clear path, move it to location. list of available nodes: <Action ID = ScanForObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = MoveToLocation    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Scan surroundings, if object found then take it, if heavy and clear path, move it to location. list of available nodes: <Action ID = ScanForObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = MoveToLocation    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsPathClear": "Boolean"
             },
             {
-                "IsPathClear": "Boolean"
+                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToLocation",
-                                    "Name": "MoveObjectToLocation"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsPathClear?": "IsPathClear"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanForObject",
-                    "Name": "ScanForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToLocation",
+                                        "Name": "MoveObjectToLocation"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsPathClear?": "IsPathClear"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanForObject",
+                        "Name": "ScanForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToLocation\n\t\t\tEND\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsPathClear? THEN\n\t\t\t\tDO MoveToLocation\n\t\tEND\n\t\tDO ScanForObject\n\tEND\n"
 }

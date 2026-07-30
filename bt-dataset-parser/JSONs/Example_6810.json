@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan area, if object is found, approach it, take it, process it, move or perform task. list of available nodes: <Action ID = ScanArea    /> <Action ID = MoveTowardsDestination    /> <Action ID = PerformTask    /> <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectEncountered    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Scan area, if object is found, approach it, take it, process it, move or perform task. list of available nodes: <Action ID = ScanArea    /> <Action ID = MoveTowardsDestination    /> <Action ID = PerformTask    /> <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsPathClear    /> <Condition ID = IsObjectEncountered    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,79 +9,82 @@
                 "IsPathClear": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectEncountered?": "IsObjectEncountered"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsPathClear?": "IsPathClear"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveTowardsDestination",
-                                    "Name": "MoveTowardsDestination"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectEncountered?": "IsObjectEncountered"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsPathClear?": "IsPathClear"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveTowardsDestination",
+                                        "Name": "MoveTowardsDestination"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO ScanArea\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectEncountered? THEN\n\t\t\t\t\tDO ApproachObject\n\t\t\tELSE\n\t\t\t\tDO TakeObject\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsPathClear? THEN\n\t\t\t\t\tDO MoveTowardsDestination\n\t\t\tEND\n\t\tEND\n\t\tDO PerformTask\n\tEND\n"
 }

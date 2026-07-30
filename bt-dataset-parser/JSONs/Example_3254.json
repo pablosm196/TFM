@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, take it. Then, if object is lighter, move and perform task. If heavier, call for help. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Action ID = SpecificTask    /> <Action ID = CallForHelp    /> <Action ID = WaitForHelp    /> <Action ID = ScanArea    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectLighterThan10kg    /> <Condition ID = IsObjectHeavierThan10kg    /> <Action ID = ApproachObject    /> <Action ID = SearchForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, take it. Then, if object is lighter, move and perform task. If heavier, call for help. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Action ID = SpecificTask    /> <Action ID = CallForHelp    /> <Action ID = WaitForHelp    /> <Action ID = ScanArea    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectLighterThan10kg    /> <Condition ID = IsObjectHeavierThan10kg    /> <Action ID = ApproachObject    /> <Action ID = SearchForObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectLighterThan10kg": "Boolean"
+                "IsObjectHeavierThan10kg": "Boolean"
             },
             {
-                "IsObjectHeavierThan10kg": "Boolean"
+                "IsObjectLighterThan10kg": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectLighterThan10kg?": "IsObjectLighterThan10kg"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavierThan10kg?": "IsObjectHeavierThan10kg"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallForHelp",
-                            "Name": "CallForHelp"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "WaitForHelp",
-                            "Name": "WaitForHelp"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectLighterThan10kg?": "IsObjectLighterThan10kg"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavierThan10kg?": "IsObjectHeavierThan10kg"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallForHelp",
+                                "Name": "CallForHelp"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "WaitForHelp",
+                                "Name": "WaitForHelp"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectLighterThan10kg? THEN\n\t\t\t\tDO MoveToDestination\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavierThan10kg? THEN\n\t\t\t\tDO CallForHelp\n\t\tELSE\n\t\t\tDO WaitForHelp\n\t\tEND\n\t\tDO ScanArea\n\tEND\n"
 }

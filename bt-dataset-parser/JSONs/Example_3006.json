@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object meets criteria, take it and move to destination. Otherwise, scan area for objects. list of available nodes: <Action ID = MoveRobotToDestination    /> <Action ID = MoveRobotToNewDestination    /> <Action ID = StopRobot    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForObjects    /> <Condition ID = DoesObjectMeetCriteria    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsDestinationReached    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object meets criteria, take it and move to destination. Otherwise, scan area for objects. list of available nodes: <Action ID = MoveRobotToDestination    /> <Action ID = MoveRobotToNewDestination    /> <Action ID = StopRobot    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForObjects    /> <Condition ID = DoesObjectMeetCriteria    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsDestinationReached    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "DoesObjectMeetCriteria": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "DoesObjectMeetCriteria": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "DoesObjectMeetCriteria?": "DoesObjectMeetCriteria"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveRobotToDestination",
-                            "Name": "MoveRobotToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "DoesObjectMeetCriteria?": "DoesObjectMeetCriteria"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveRobotToDestination",
+                                "Name": "MoveRobotToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF DoesObjectMeetCriteria? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tELSE\n\t\t\t\tDO MoveRobotToDestination\n\t\t\t\tDO SpecificTask\n\t\t\tEND\n\tELSE\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

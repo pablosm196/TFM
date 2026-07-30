@@ -1,73 +1,76 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to target, pick it up or scan its properties. Else, search for object. list of available nodes: <Action ID = MoveToTarget    /> <Condition ID = IsObjectSighted    /> <Action ID = PickUpTarget    /> <Sequence>     <Condition ID = IsTargetWithinArmReach    />     <Action ID = PickUpTarget    /> </Sequence> <Action ID = ScanForObjectProperties    /> <Action ID = SearchForObject    /> <Condition ID = IsTargetWithinArmReach    /> <Fallback>     <Sequence>         <Condition ID = IsObjectSighted    />         <Action ID = MoveToTarget    />         <SubTree ID = PickUpTarget    />         <SubTree ID = ScanForObjectProperties    />     </Sequence>     <SubTree ID = SearchForObject    /> </Fallback>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object in sight, move to target, pick it up or scan its properties. Else, search for object. list of available nodes: <Action ID = MoveToTarget    /> <Condition ID = IsObjectSighted    /> <Action ID = PickUpTarget    /> <Sequence>     <Condition ID = IsTargetWithinArmReach    />     <Action ID = PickUpTarget    /> </Sequence> <Action ID = ScanForObjectProperties    /> <Action ID = SearchForObject    /> <Condition ID = IsTargetWithinArmReach    /> <Fallback>     <Sequence>         <Condition ID = IsObjectSighted    />         <Action ID = MoveToTarget    />         <SubTree ID = PickUpTarget    />         <SubTree ID = ScanForObjectProperties    />     </Sequence>     <SubTree ID = SearchForObject    /> </Fallback>\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTargetWithinArmReach": "Boolean"
+                "IsObjectSighted": "Boolean"
             },
             {
-                "IsObjectSighted": "Boolean"
+                "IsTargetWithinArmReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectSighted?": "IsObjectSighted"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsTargetWithinArmReach?": "IsTargetWithinArmReach"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PickUpTarget",
-                                            "Name": "PickUpTarget"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ScanForObjectProperties",
-                                    "Name": "ScanForObjectProperties"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SearchForObject",
-                    "Name": "SearchForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectSighted?": "IsObjectSighted"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsTargetWithinArmReach?": "IsTargetWithinArmReach"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PickUpTarget",
+                                                "Name": "PickUpTarget"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ScanForObjectProperties",
+                                        "Name": "ScanForObjectProperties"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SearchForObject",
+                        "Name": "SearchForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectSighted? THEN\n\t\t\t\tDO MoveToTarget\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsTargetWithinArmReach? THEN\n\t\t\t\t\t\tDO PickUpTarget\n\t\t\t\tEND\n\t\t\t\tDO ScanForObjectProperties\n\t\t\tEND\n\t\tEND\n\t\tDO SearchForObject\n\tEND\n"
 }

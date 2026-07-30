@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Approach and take visible objects. If done, process its properties. Perform final task.     list of available nodes: <Action ID = MoveToObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinRange    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Action ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Approach and take visible objects. If done, process its properties. Perform final task.     list of available nodes: <Action ID = MoveToObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinRange    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObject    /> <Action ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectWithinRange": "Boolean"
             },
             {
-                "DoesObjectHaveProperty": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "DoesObjectHaveProperty": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinRange?": "IsObjectWithinRange"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "DoesObjectHaveProperty?": "DoesObjectHaveProperty"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinRange?": "IsObjectWithinRange"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "DoesObjectHaveProperty?": "DoesObjectHaveProperty"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinRange? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF DoesObjectHaveProperty? THEN\n\t\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\tEND\n\t\tDO PerformTask\n\tEND\n"
 }

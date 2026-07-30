@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then move and take it, check properties, perform specific task, finally scan area. list of available nodes: <Action ID = MoveToObj    /> <Action ID = TakeObj    /> <Action ID = ScanAreaForObj    /> <Action ID = CheckObjProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjWithinReach    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then move and take it, check properties, perform specific task, finally scan area. list of available nodes: <Action ID = MoveToObj    /> <Action ID = TakeObj    /> <Action ID = ScanAreaForObj    /> <Action ID = CheckObjProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjWithinReach    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjWithinReach": "Boolean"
+                "IsObjectDetected": "Boolean"
             },
             {
-                "IsObjectDetected": "Boolean"
+                "IsObjWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObj",
-                    "Name": "MoveToObj"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjWithinReach?": "IsObjWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObj",
-                            "Name": "TakeObj"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjProperties",
-                            "Name": "CheckObjProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObj",
+                        "Name": "MoveToObj"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjWithinReach?": "IsObjWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObj",
+                                "Name": "TakeObj"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjProperties",
+                                "Name": "CheckObjProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO MoveToObj\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjWithinReach? THEN\n\t\t\t\tDO TakeObj\n\t\tELSE\n\t\t\tDO CheckObjProperties\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

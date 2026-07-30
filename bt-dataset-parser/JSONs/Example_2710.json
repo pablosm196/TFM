@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find, pick up, transport and analyze object. If visible, approach, then pick up and analyze. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = AnalyzeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsWithinReach    /> <SubTree ID = TransportObject    /> <Action ID = SearchForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find, pick up, transport and analyze object. If visible, approach, then pick up and analyze. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = AnalyzeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsWithinReach    /> <SubTree ID = TransportObject    /> <Action ID = SearchForObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
+                "IsWithinReach": "Boolean"
             },
             {
-                "IsWithinReach": "Boolean"
+                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsWithinReach?": "IsWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "AnalyzeObject",
-                            "Name": "AnalyzeObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TransportObject",
-                    "Name": "TransportObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsWithinReach?": "IsWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "AnalyzeObject",
+                                "Name": "AnalyzeObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TransportObject",
+                        "Name": "TransportObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsWithinReach? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO AnalyzeObject\n\t\tEND\n\t\tDO TransportObject\n\tEND\n"
 }

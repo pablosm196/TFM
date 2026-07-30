@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach it. Take it, call help if heavy, do task. If none, scan area and move. list of available nodes: <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToNextArea    /> <Action ID = CallHelp    /> <Condition ID = ScanAreaForObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectReached    /> <Condition ID = IsObjectVisible    /> <SubTree ID = DoSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach it. Take it, call help if heavy, do task. If none, scan area and move. list of available nodes: <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = MoveToNextArea    /> <Action ID = CallHelp    /> <Condition ID = ScanAreaForObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectReached    /> <Condition ID = IsObjectVisible    /> <SubTree ID = DoSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectReached": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "ScanAreaForObject": "Boolean"
+                "IsObjectReached": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "ScanAreaForObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectReached?": "IsObjectReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallHelp",
-                                    "Name": "CallHelp"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DoSpecificTask",
-                            "Name": "DoSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ScanAreaForObject?": "ScanAreaForObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToNextArea",
-                            "Name": "MoveToNextArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReached?": "IsObjectReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallHelp",
+                                        "Name": "CallHelp"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DoSpecificTask",
+                                "Name": "DoSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ScanAreaForObject?": "ScanAreaForObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToNextArea",
+                                "Name": "MoveToNextArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectReached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CallHelp\n\t\t\tEND\n\t\t\tDO DoSpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF ScanAreaForObject? THEN\n\t\t\t\tDO MoveToNextArea\n\t\tEND\n\tEND\n"
 }

@@ -1,60 +1,63 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is in range, then if object is touchable, grab it, process it, otherwise move. Do it now.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence> <Fallback>     <Sequence>         <Condition ID = IsObjectApproached    />         <Action ID = GrabObject    />         <SubTree ID = ProcessObject    />     </Sequence>     <Sequence>         <Condition ID = IsObjectVisible    />         <Action ID = ApproachObject    />     </Sequence>     <Action ID = ScanAreaForObject    /> </Fallback> <Action ID = MoveToObject    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is in range, then if object is touchable, grab it, process it, otherwise move. Do it now.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence> <Fallback>     <Sequence>         <Condition ID = IsObjectApproached    />         <Action ID = GrabObject    />         <SubTree ID = ProcessObject    />     </Sequence>     <Sequence>         <Condition ID = IsObjectVisible    />         <Action ID = ApproachObject    />     </Sequence>     <Action ID = ScanAreaForObject    /> </Fallback> <Action ID = MoveToObject    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInRange": "Boolean"
+                "IsObjectTouchable": "Boolean"
             },
             {
-                "IsObjectTouchable": "Boolean"
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectInRange?": "IsObjectInRange"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectTouchable?": "IsObjectTouchable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectInRange?": "IsObjectInRange"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectTouchable?": "IsObjectTouchable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInRange? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectTouchable? THEN\n\t\t\t\t\t\tDO GrabObject\n\t\t\t\tELSE\n\t\t\t\t\tDO ProcessObject\n\t\t\t\tEND\n\t\t\t\tDO MoveToObject\n\t\t\tEND\n\tEND\n"
 }

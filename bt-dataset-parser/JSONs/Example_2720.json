@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, move to it, take it, check strength, lift it, do specific task. If object unseen, scan. Move randomly if failing.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsObjectFound    /> <Action ID = IsObjectVisible    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = ApproachObject    /> <Action ID = CheckStrength    /> <Action ID = LiftObject    /> <Action ID = SpecificTask    /> <Action ID = MoveToRandomLocation    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find object, move to it, take it, check strength, lift it, do specific task. If object unseen, scan. Move randomly if failing.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsObjectFound    /> <Action ID = IsObjectVisible    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = ApproachObject    /> <Action ID = CheckStrength    /> <Action ID = LiftObject    /> <Action ID = SpecificTask    /> <Action ID = MoveToRandomLocation    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "isObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectHeavy?": "isObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CheckStrength",
-                            "Name": "CheckStrength"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "LiftObject",
-                            "Name": "LiftObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectHeavy?": "isObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CheckStrength",
+                                "Name": "CheckStrength"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "LiftObject",
+                                "Name": "LiftObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tDO TakeObject\n\t\tSEQUENCE\n\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\tDO CheckStrength\n\t\tELSE\n\t\t\tDO LiftObject\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

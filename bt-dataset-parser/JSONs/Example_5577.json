@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and Grab Object    : If nearby object then approach, grab, process or scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectDetected    /> <Condition ID = isObjectHeavy    /> <Action ID = MoveToSpecificArea    /> <Action ID = AvoidObstacle    /> <Action ID = ResumeMovement    /> <Action ID = ExploreEnvironment    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and Grab Object    : If nearby object then approach, grab, process or scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectDetected    /> <Condition ID = isObjectHeavy    /> <Action ID = MoveToSpecificArea    /> <Action ID = AvoidObstacle    /> <Action ID = ResumeMovement    /> <Action ID = ExploreEnvironment    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "isObstacleDetected": "Boolean"
             },
             {
-                "isObstacleDetected": "Boolean"
+                "isObjectHeavy": "Boolean"
             },
             {
                 "isObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectDetected?": "isObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectHeavy?": "isObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToSpecificArea",
-                            "Name": "MoveToSpecificArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObstacleDetected?": "isObstacleDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ResumeMovement",
-                            "Name": "ResumeMovement"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreEnvironment",
-                    "Name": "ExploreEnvironment"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectDetected?": "isObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectHeavy?": "isObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToSpecificArea",
+                                "Name": "MoveToSpecificArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObstacleDetected?": "isObstacleDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ResumeMovement",
+                                "Name": "ResumeMovement"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreEnvironment",
+                        "Name": "ExploreEnvironment"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF isObjectDetected? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\tDO MoveToSpecificArea\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isObstacleDetected? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tELSE\n\t\t\tDO ResumeMovement\n\t\tEND\n\t\tDO ExploreEnvironment\n\tEND\n"
 }

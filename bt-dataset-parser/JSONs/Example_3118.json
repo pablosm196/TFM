@@ -1,67 +1,70 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is approached, pick it up and check its properties. Otherwise, move to the visible object, or scan the area. Perform a specific task.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <Sequence>     <Condition ID = IsObjectApproached    />     <Action ID = GrabObject    />     <SubTree ID = ProcessObject    /> </Sequence> <Sequence>                 <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence> <Action ID = ScanAreaForObject    />  <Action ID = PickUpItem    /> <Action ID = ScanAreaForItem    /> <Condition ID = IsItemVisible    /> <Action ID = MoveToItem    /> <SubTree ID = CheckItemProperties    /> <Sequence>     <Condition ID = IsItemApproached    />     <Action ID = PickUpItem    />     <SubTree ID = CheckItemProperties    /> </Sequence> <Sequence>     <Condition ID = IsItemVisible    />     <Action ID = MoveToItem    /> </Sequence> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If an object is approached, pick it up and check its properties. Otherwise, move to the visible object, or scan the area. Perform a specific task.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <Sequence>     <Condition ID = IsObjectApproached    />     <Action ID = GrabObject    />     <SubTree ID = ProcessObject    /> </Sequence> <Sequence>                 <Condition ID = IsObjectVisible    />     <Action ID = ApproachObject    /> </Sequence> <Action ID = ScanAreaForObject    />  <Action ID = PickUpItem    /> <Action ID = ScanAreaForItem    /> <Condition ID = IsItemVisible    /> <Action ID = MoveToItem    /> <SubTree ID = CheckItemProperties    /> <Sequence>     <Condition ID = IsItemApproached    />     <Action ID = PickUpItem    />     <SubTree ID = CheckItemProperties    /> </Sequence> <Sequence>     <Condition ID = IsItemVisible    />     <Action ID = MoveToItem    /> </Sequence> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsItemVisible": "Boolean"
+                "IsItemApproached": "Boolean"
             },
             {
-                "IsItemApproached": "Boolean"
+                "IsItemVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsItemApproached?": "IsItemApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpItem",
-                            "Name": "PickUpItem"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckItemProperties",
-                            "Name": "CheckItemProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsItemVisible?": "IsItemVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToItem",
-                            "Name": "MoveToItem"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForItem",
-                    "Name": "ScanAreaForItem"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsItemApproached?": "IsItemApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpItem",
+                                "Name": "PickUpItem"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckItemProperties",
+                                "Name": "CheckItemProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsItemVisible?": "IsItemVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToItem",
+                                "Name": "MoveToItem"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForItem",
+                        "Name": "ScanAreaForItem"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsItemApproached? THEN\n\t\t\t\tDO PickUpItem\n\t\tELSE\n\t\t\tDO CheckItemProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsItemVisible? THEN\n\t\t\t\tDO MoveToItem\n\t\tEND\n\t\tDO ScanAreaForItem\n\tEND\n"
 }

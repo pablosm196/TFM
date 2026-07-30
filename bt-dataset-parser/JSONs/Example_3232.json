@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, check properties, take it, avoid obstacles. Perform task if needed, roam. list of available nodes: <Action ID = MoveToTargetObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = GrabTargetObject    /> <Condition ID = IsObstacleAhead    /> <Action ID = AvoidObstacle    /> <Condition ID = HasTask    /> <SubTree ID = PerformTask    /> <Action ID = RoamRandomly    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, check properties, take it, avoid obstacles. Perform task if needed, roam. list of available nodes: <Action ID = MoveToTargetObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = GrabTargetObject    /> <Condition ID = IsObstacleAhead    /> <Action ID = AvoidObstacle    /> <Condition ID = HasTask    /> <SubTree ID = PerformTask    /> <Action ID = RoamRandomly    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObstacleAhead": "Boolean"
             },
             {
-                "HasTask": "Boolean"
+                "IsObjectNearby": "Boolean"
             },
             {
-                "IsObjectNearby": "Boolean"
+                "HasTask": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToTargetObject",
-                                    "Name": "MoveToTargetObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "GrabTargetObject",
-                                    "Name": "GrabTargetObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObjectProperties",
-                                    "Name": "ProcessObjectProperties"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleAhead?": "IsObstacleAhead"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "HasTask?": "HasTask"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "RoamRandomly",
-                    "Name": "RoamRandomly"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToTargetObject",
+                                        "Name": "MoveToTargetObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "GrabTargetObject",
+                                        "Name": "GrabTargetObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObjectProperties",
+                                        "Name": "ProcessObjectProperties"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleAhead?": "IsObstacleAhead"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "HasTask?": "HasTask"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "RoamRandomly",
+                        "Name": "RoamRandomly"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO MoveToTargetObject\n\t\t\t\t\tDO GrabTargetObject\n\t\t\t\t\tDO ProcessObjectProperties\n\t\t\t\tEND\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleAhead? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF HasTask? THEN\n\t\t\t\tDO PerformTask\n\t\tEND\n\t\tDO RoamRandomly\n\tEND\n"
 }

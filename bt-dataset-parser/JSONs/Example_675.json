@@ -1,9 +1,9 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach it. If in range, take it. If fragile, move carefully. Perform task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveSlowly    /> <Action ID = MoveCarefully    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach it. If in range, take it. If fragile, move carefully. Perform task.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveSlowly    /> <Action ID = MoveCarefully    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInRange": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectFragile": "Boolean"
@@ -12,71 +12,74 @@
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInRange?": "IsObjectInRange"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveSlowly",
-                            "Name": "MoveSlowly"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFragile?": "IsObjectFragile"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveCarefully",
-                            "Name": "MoveCarefully"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInRange?": "IsObjectInRange"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveSlowly",
+                                "Name": "MoveSlowly"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFragile?": "IsObjectFragile"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveCarefully",
+                                "Name": "MoveCarefully"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectInRange? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSELECTOR\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveSlowly\n\t\tELSE\n\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\tDO MoveCarefully\n\t\tEND\n\t\tDO PerformTask\n\tEND\n"
 }

@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it, or else scan area. Move object to spot, inspect it and do specific task. list of available nodes: <Action ID = MoveToObjectSpot    /> <Action ID = InspectObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = SpecificTask    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectInRightSpot    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectStable    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it, or else scan area. Move object to spot, inspect it and do specific task. list of available nodes: <Action ID = MoveToObjectSpot    /> <Action ID = InspectObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = SpecificTask    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectInRightSpot    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectStable    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectInRightSpot": "Boolean"
             },
             {
-                "IsObjectStable": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectStable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInRightSpot?": "IsObjectInRightSpot"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObjectSpot",
-                            "Name": "MoveToObjectSpot"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectStable?": "IsObjectStable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInRightSpot?": "IsObjectInRightSpot"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObjectSpot",
+                                "Name": "MoveToObjectSpot"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectStable?": "IsObjectStable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO ApproachObject\n\t\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\t\tDO GrabObject\n\t\t\t\tEND\n\t\t\t\tDO ScanAreaForObject\n\t\t\tEND\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInRightSpot? THEN\n\t\t\t\tDO MoveToObjectSpot\n\t\tELSE\n\t\t\t\tIF IsObjectStable? THEN\n\t\t\t\tDO InspectObject\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\tEND\n"
 }

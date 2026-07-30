@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Explore, find and pickup object. Check if heavy. Call for assistance if needed. Process object.     list of available nodes: <Action ID = ExploreArea    /> <Action ID = PickupObject    /> <Action ID = CallForAssistance    /> <Action ID = ApproachObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = CanPickupObject    /> <Condition ID = IsBatteryCharged    /> <Condition ID = IsObjectVisible    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Explore, find and pickup object. Check if heavy. Call for assistance if needed. Process object.     list of available nodes: <Action ID = ExploreArea    /> <Action ID = PickupObject    /> <Action ID = CallForAssistance    /> <Action ID = ApproachObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectHeavy    /> <Condition ID = CanPickupObject    /> <Condition ID = IsBatteryCharged    /> <Condition ID = IsObjectVisible    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "CanPickupObject": "Boolean"
-            },
-            {
-                "IsBatteryCharged": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "CanPickupObject": "Boolean"
+            },
+            {
+                "IsBatteryCharged": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsBatteryCharged?": "IsBatteryCharged"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectVisible?": "IsObjectVisible"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ExploreArea",
-                            "Name": "ExploreArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CanPickupObject?": "CanPickupObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickupObject",
-                            "Name": "PickupObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallForAssistance",
-                                    "Name": "CallForAssistance"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsBatteryCharged?": "IsBatteryCharged"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectVisible?": "IsObjectVisible"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ExploreArea",
+                                "Name": "ExploreArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CanPickupObject?": "CanPickupObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickupObject",
+                                "Name": "PickupObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallForAssistance",
+                                        "Name": "CallForAssistance"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsBatteryCharged? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\t\t\tDO ApproachObject\n\t\t\t\tEND\n\t\t\t\tDO ExploreArea\n\t\t\tEND\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF CanPickupObject? THEN\n\t\t\t\tDO PickupObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CallForAssistance\n\t\t\tEND\n\t\t\tDO ProcessObject\n\t\tEND\n\tEND\n"
 }

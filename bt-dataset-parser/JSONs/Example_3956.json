@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, move towards it, pick it up, and process it. Otherwise, scan the area. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Action ID = ProcessObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectDetected    /> <Condition ID = ObjectWithinRange    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, move towards it, pick it up, and process it. Otherwise, scan the area. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Action ID = ProcessObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectDetected    /> <Condition ID = ObjectWithinRange    />\"",
     "BT": {
         "Blackboard": [
             {
                 "NoObjectDetected": "Boolean"
             },
             {
-                "ObjectDetected": "Boolean"
+                "ObjectWithinRange": "Boolean"
             },
             {
-                "ObjectWithinRange": "Boolean"
+                "ObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectDetected?": "ObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsObject",
-                            "Name": "MoveTowardsObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectWithinRange?": "ObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "NoObjectDetected?": "NoObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectDetected?": "ObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsObject",
+                                "Name": "MoveTowardsObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectWithinRange?": "ObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "NoObjectDetected?": "NoObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF ObjectDetected? THEN\n\t\t\t\tDO MoveTowardsObject\n\t\tELSE\n\t\t\t\tIF ObjectWithinRange? THEN\n\t\t\t\tDO PickUpObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF NoObjectDetected? THEN\n\t\t\t\tDO ScanArea\n\t\tEND\n\tEND\n"
 }

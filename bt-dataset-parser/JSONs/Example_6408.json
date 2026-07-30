@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Retrieve object. If object in sight, approach and grab it. Process object. Move object to destination.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabTargetObject    /> <Action ID = InspectTargetObject    /> <Action ID = LookForAssistance    /> <Action ID = MoveToDestination    /> <Action ID = MoveToTargetObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectTooHeavy    /> <Condition ID = IsObjectWithinReach    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Retrieve object. If object in sight, approach and grab it. Process object. Move object to destination.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabTargetObject    /> <Action ID = InspectTargetObject    /> <Action ID = LookForAssistance    /> <Action ID = MoveToDestination    /> <Action ID = MoveToTargetObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectTooHeavy    /> <Condition ID = IsObjectWithinReach    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,83 +12,86 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToTargetObject",
-                    "Name": "MoveToTargetObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "GrabTargetObject",
-                                    "Name": "GrabTargetObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectTooHeavy?": "IsObjectTooHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "LookForAssistance",
-                                    "Name": "LookForAssistance"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectTargetObject",
-                            "Name": "InspectTargetObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToTargetObject",
+                        "Name": "MoveToTargetObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "GrabTargetObject",
+                                        "Name": "GrabTargetObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectTooHeavy?": "IsObjectTooHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "LookForAssistance",
+                                        "Name": "LookForAssistance"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectTargetObject",
+                                "Name": "InspectTargetObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO MoveToTargetObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO GrabTargetObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectTooHeavy? THEN\n\t\t\t\t\tDO LookForAssistance\n\t\t\tEND\n\t\t\tDO InspectTargetObject\n\t\tEND\n\t\tDO MoveToDestination\n\tEND\n"
 }

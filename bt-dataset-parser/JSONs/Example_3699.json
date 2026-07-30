@@ -1,93 +1,96 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, either move to or escape obstacle. Grab object, check properties, perform task. list of available nodes: <Action ID = IsObjectFound    /> <Action ID = EscapeObstacle    /> <Action ID = CheckObjectProperties    /> <Action ID = PerformTask    /> <Condition ID = IsObjectReachable    /> <Action ID = GrabObject    /> <Action ID = IsRobotStuck    /> <Action ID = MoveToTarget    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object found, either move to or escape obstacle. Grab object, check properties, perform task. list of available nodes: <Action ID = IsObjectFound    /> <Action ID = EscapeObstacle    /> <Action ID = CheckObjectProperties    /> <Action ID = PerformTask    /> <Condition ID = IsObjectReachable    /> <Action ID = GrabObject    /> <Action ID = IsRobotStuck    /> <Action ID = MoveToTarget    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectReachable": "Boolean"
+                "IsRobotStuck": "Boolean"
             },
             {
-                "IsRobotStuck": "Boolean"
+                "IsObjectReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectReachable?": "IsObjectReachable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveToTarget",
-                                    "Name": "MoveToTarget"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsRobotStuck?": "IsRobotStuck"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "EscapeObstacle",
-                                    "Name": "EscapeObstacle"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectReachable?": "IsObjectReachable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveToTarget",
+                                        "Name": "MoveToTarget"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsRobotStuck?": "IsRobotStuck"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "EscapeObstacle",
+                                        "Name": "EscapeObstacle"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectReachable? THEN\n\t\t\t\t\t\tDO MoveToTarget\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsRobotStuck? THEN\n\t\t\t\t\t\tDO EscapeObstacle\n\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tSEQUENCE\n\t\t\tDO GrabObject\n\t\t\tDO CheckObjectProperties\n\t\tEND\n\t\tDO PerformTask\n\tEND\n"
 }

@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in range, approach and take it, process it in different ways, and move it accordingly. list of available nodes: <Action ID = FindObject    /> <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = MoveObjectWithCare    /> <Condition ID = IsObjectInRange    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectFragile    /> <SubTree ID = ProcessObjectTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object in range, approach and take it, process it in different ways, and move it accordingly. list of available nodes: <Action ID = FindObject    /> <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = MoveObjectWithCare    /> <Condition ID = IsObjectInRange    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectFragile    /> <SubTree ID = ProcessObjectTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "isObjectHeavy": "Boolean"
             },
             {
-                "IsObjectInRange": "Boolean"
+                "isObjectFragile": "Boolean"
             },
             {
-                "isObjectFragile": "Boolean"
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindObject",
-                    "Name": "FindObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInRange?": "IsObjectInRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "isObjectHeavy?": "isObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToDesignatedArea",
-                                    "Name": "MoveObjectToDesignatedArea"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "isObjectFragile?": "isObjectFragile"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectWithCare",
-                                    "Name": "MoveObjectWithCare"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectTask",
-                            "Name": "ProcessObjectTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindObject",
+                        "Name": "FindObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInRange?": "IsObjectInRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "isObjectHeavy?": "isObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToDesignatedArea",
+                                        "Name": "MoveObjectToDesignatedArea"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "isObjectFragile?": "isObjectFragile"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectWithCare",
+                                        "Name": "MoveObjectWithCare"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectTask",
+                                "Name": "ProcessObjectTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInRange? THEN\n\t\t\t\tDO ApproachObject\n\t\tEND\n\t\tDO TakeObject\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\t\tDO MoveObjectToDesignatedArea\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF isObjectFragile? THEN\n\t\t\t\t\tDO MoveObjectWithCare\n\t\t\tEND\n\t\t\tDO ProcessObjectTask\n\t\tEND\n\tEND\n"
 }

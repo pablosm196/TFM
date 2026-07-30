@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, pick it up, secure it, move it, process its properties or find assistance. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <Action ID = FindAssistance    /> <Action ID = IsObjectNearby    /> <Action ID = IsObjectSecureInGripper    /> <Action ID = ProcessObjectProperties    /> <Condition ID = IsObjectTooHeavy    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is nearby, pick it up, secure it, move it, process its properties or find assistance. list of available nodes: <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <Action ID = FindAssistance    /> <Action ID = IsObjectNearby    /> <Action ID = IsObjectSecureInGripper    /> <Action ID = ProcessObjectProperties    /> <Condition ID = IsObjectTooHeavy    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectTooHeavy": "Boolean"
             },
             {
-                "IsObjectSecureInGripper": "Boolean"
+                "IsObjectNearby": "Boolean"
             },
             {
-                "IsObjectNearby": "Boolean"
+                "IsObjectSecureInGripper": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectSecureInGripper?": "IsObjectSecureInGripper"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectTooHeavy?": "IsObjectTooHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FindAssistance",
-                                    "Name": "FindAssistance"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectSecureInGripper?": "IsObjectSecureInGripper"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectTooHeavy?": "IsObjectTooHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FindAssistance",
+                                        "Name": "FindAssistance"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO PickUpObject\n\t\t\t\t\tIF IsObjectSecureInGripper? THEN\n\t\t\t\t\tDO MoveToDestination\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectTooHeavy? THEN\n\t\t\t\t\tDO FindAssistance\n\t\t\tEND\n\t\t\tDO ProcessObjectProperties\n\t\tEND\n\tEND\n"
 }

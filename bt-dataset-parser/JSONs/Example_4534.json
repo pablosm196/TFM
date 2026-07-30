@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object nearby, then grab it, check its properties, move it to destination. Otherwise, scan area for locating object or avoid obstacles.     list of available nodes: <Action ID = ScanArea    /> <Action ID = MoveToDestination    /> <Action ID = GrabObject    /> <Condition ID = IsObstacleAhead    /> <Action ID = AvoidObstacle    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectNearby    /> <SubTree ID = CheckObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object nearby, then grab it, check its properties, move it to destination. Otherwise, scan area for locating object or avoid obstacles.     list of available nodes: <Action ID = ScanArea    /> <Action ID = MoveToDestination    /> <Action ID = GrabObject    /> <Condition ID = IsObstacleAhead    /> <Action ID = AvoidObstacle    /> <Condition ID = IsObjectGrabbable    /> <Condition ID = IsObjectNearby    /> <SubTree ID = CheckObject    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,76 +12,79 @@
                 "IsObjectNearby": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectGrabbable?": "IsObjectGrabbable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObject",
-                                    "Name": "CheckObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToDestination",
-                                    "Name": "MoveToDestination"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleAhead?": "IsObstacleAhead"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectGrabbable?": "IsObjectGrabbable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObject",
+                                        "Name": "CheckObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToDestination",
+                                        "Name": "MoveToDestination"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleAhead?": "IsObstacleAhead"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\t\t\tDO GrabObject\n\t\t\t\tELSE\n\t\t\t\t\tDO CheckObject\n\t\t\t\t\tDO MoveToDestination\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO ScanArea\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleAhead? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tEND\n\tEND\n"
 }

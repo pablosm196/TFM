@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If Object visible, approach it, grab and check it. If heavy, store it. Clean if needed.     list of available nodes: <Action ID = FindObject    /> <Action ID = ApproachObject    />     <Action ID = TakeObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveToObjectStorageLocation    />     <Action ID = PlaceObject    />     <Condition ID = IsObjectClean    />     <Action ID = InspectObject    />     <Action ID = CleanObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If Object visible, approach it, grab and check it. If heavy, store it. Clean if needed.     list of available nodes: <Action ID = FindObject    /> <Action ID = ApproachObject    />     <Action ID = TakeObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveToObjectStorageLocation    />     <Action ID = PlaceObject    />     <Condition ID = IsObjectClean    />     <Action ID = InspectObject    />     <Action ID = CleanObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectClean": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectClean": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindObject",
-                    "Name": "FindObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToObjectStorageLocation",
-                            "Name": "MoveToObjectStorageLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PlaceObject",
-                            "Name": "PlaceObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectClean?": "IsObjectClean"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CleanObject",
-                            "Name": "CleanObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindObject",
+                        "Name": "FindObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToObjectStorageLocation",
+                                "Name": "MoveToObjectStorageLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PlaceObject",
+                                "Name": "PlaceObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectClean?": "IsObjectClean"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CleanObject",
+                                "Name": "CleanObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindObject\n\t\tDO ApproachObject\n\t\tDO TakeObject\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToObjectStorageLocation\n\t\t\t\tDO PlaceObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectClean? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\t\tDO CleanObject\n\t\tEND\n\tEND\n"
 }

@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find, take and process object. If approached, take object and process it. Move to storage and deposit object. list of available nodes: <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToStorage    /> <Action ID = DepositObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Condition ID = HasObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find, take and process object. If approached, take object and process it. Move to storage and deposit object. list of available nodes: <Action ID = TakeObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToStorage    /> <Action ID = DepositObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Condition ID = HasObject    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "HasObject": "Boolean"
-            },
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsStorageReached": "Boolean"
+                "HasObject": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsStorageReached": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "HasObject?": "HasObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToStorage",
-                            "Name": "MoveToStorage"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsStorageReached?": "IsStorageReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "DepositObject",
-                            "Name": "DepositObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "HasObject?": "HasObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToStorage",
+                                "Name": "MoveToStorage"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsStorageReached?": "IsStorageReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "DepositObject",
+                                "Name": "DepositObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tEND\n\t\tDO ScanAreaForObject\n\t\tSEQUENCE\n\t\t\t\tIF HasObject? THEN\n\t\t\t\tDO MoveToStorage\n\t\tELSE\n\t\t\t\tIF IsStorageReached? THEN\n\t\t\t\tDO DepositObject\n\t\tEND\n\tEND\n"
 }

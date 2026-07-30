@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move and grasp it, then inspect it. If not detected, then scan area. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectWithinGraspingRange    /> <SubTree ID = InspectObject    /> <Action ID = MoveToNewArea    /> <Condition ID = IsObjectDetected    /> <Action ID = GraspObject    /> <Action ID = ScanArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, move and grasp it, then inspect it. If not detected, then scan area. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectWithinGraspingRange    /> <SubTree ID = InspectObject    /> <Action ID = MoveToNewArea    /> <Condition ID = IsObjectDetected    /> <Action ID = GraspObject    /> <Action ID = ScanArea    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinGraspingRange": "Boolean"
+                "IsAreaScanned": "Boolean"
             },
             {
-                "IsAreaScanned": "Boolean"
+                "IsObjectWithinGraspingRange": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveTowardsObject",
-                                    "Name": "MoveTowardsObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinGraspingRange?": "IsObjectWithinGraspingRange"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PickUpObject",
-                                    "Name": "PickUpObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAreaScanned?": "IsAreaScanned"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToNewArea",
-                            "Name": "MoveToNewArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveTowardsObject",
+                                        "Name": "MoveTowardsObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinGraspingRange?": "IsObjectWithinGraspingRange"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PickUpObject",
+                                        "Name": "PickUpObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAreaScanned?": "IsAreaScanned"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToNewArea",
+                                "Name": "MoveToNewArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO MoveTowardsObject\n\t\t\t\t\t\tIF IsObjectWithinGraspingRange? THEN\n\t\t\t\t\t\tDO PickUpObject\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO InspectObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsAreaScanned? THEN\n\t\t\t\tDO MoveToNewArea\n\t\tEND\n\tEND\n"
 }

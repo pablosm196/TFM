@@ -1,73 +1,76 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and pick it up. If not, scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectIsVisible    /> <Condition ID = RobotIsCloseToObject    /> <Condition ID = ObjectIsNotVisible    /> <SubTree ID = FindAndPickUpObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and pick it up. If not, scan area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectIsVisible    /> <Condition ID = RobotIsCloseToObject    /> <Condition ID = ObjectIsNotVisible    /> <SubTree ID = FindAndPickUpObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "RobotIsCloseToObject": "Boolean"
+                "ObjectIsNotVisible": "Boolean"
             },
             {
                 "ObjectIsVisible": "Boolean"
             },
             {
-                "ObjectIsNotVisible": "Boolean"
+                "RobotIsCloseToObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectIsVisible?": "ObjectIsVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "RobotIsCloseToObject?": "RobotIsCloseToObject"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PickUpObject",
-                                    "Name": "PickUpObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectIsNotVisible?": "ObjectIsNotVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectIsVisible?": "ObjectIsVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "RobotIsCloseToObject?": "RobotIsCloseToObject"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PickUpObject",
+                                        "Name": "PickUpObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectIsNotVisible?": "ObjectIsNotVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF ObjectIsVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF RobotIsCloseToObject? THEN\n\t\t\t\t\tDO PickUpObject\n\t\t\tEND\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF ObjectIsNotVisible? THEN\n\t\t\t\tDO ScanArea\n\t\tEND\n\tEND\n"
 }

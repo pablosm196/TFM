@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach it - if not scan area, then sequence pick up, move, clean or inspect it. list of available nodes: <Action ID = FindAndApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Condition ID = IsObjectSmelly    /> <Action ID = CleanObject    /> <Condition ID = IsObjectShiny    /> <Action ID = InspectObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach it - if not scan area, then sequence pick up, move, clean or inspect it. list of available nodes: <Action ID = FindAndApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Condition ID = IsObjectSmelly    /> <Action ID = CleanObject    /> <Condition ID = IsObjectShiny    /> <Action ID = InspectObject    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectSmelly": "Boolean"
-            },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectShiny": "Boolean"
+            },
+            {
+                "IsObjectSmelly": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindAndApproachObject",
-                    "Name": "FindAndApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToDestination",
-                    "Name": "MoveObjectToDestination"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectSmelly?": "IsObjectSmelly"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CleanObject",
-                                    "Name": "CleanObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectShiny?": "IsObjectShiny"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindAndApproachObject",
+                        "Name": "FindAndApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToDestination",
+                        "Name": "MoveObjectToDestination"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectSmelly?": "IsObjectSmelly"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CleanObject",
+                                        "Name": "CleanObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectShiny?": "IsObjectShiny"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindAndApproachObject\n\t\tDO PickUpObject\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToDestination\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectSmelly? THEN\n\t\t\t\t\tDO CleanObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectShiny? THEN\n\t\t\t\t\tDO InspectObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

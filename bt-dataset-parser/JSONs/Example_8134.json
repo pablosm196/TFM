@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. 1) If object is visible and not obstructed, 2) then move and grab the object. 3) If the object is heavy, 4) then move it to the designated area. 5) If object properties unknown, 6) then inspect and perform specific task. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = PerformSpecificTask    /> <Condition ID = IsObjectInView    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = InspectObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. 1) If object is visible and not obstructed, 2) then move and grab the object. 3) If the object is heavy, 4) then move it to the designated area. 5) If object properties unknown, 6) then inspect and perform specific task. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = GrabObject    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = PerformSpecificTask    /> <Condition ID = IsObjectInView    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = InspectObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,60 +9,63 @@
                 "IsObjectInView": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInView?": "IsObjectInView"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveTowardsObject",
-                    "Name": "MoveTowardsObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToDesignatedArea",
-                    "Name": "MoveObjectToDesignatedArea"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObjectProperties",
-                            "Name": "InspectObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInView?": "IsObjectInView"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveTowardsObject",
+                        "Name": "MoveTowardsObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToDesignatedArea",
+                        "Name": "MoveObjectToDesignatedArea"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObjectProperties",
+                                "Name": "InspectObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInView? THEN\n\t\t\tDO MoveTowardsObject\n\tELSE\n\t\tDO GrabObject\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToDesignatedArea\n\tELSE\n\t\tSELECTOR\n\t\t\tDO InspectObjectProperties\n\t\t\tDO PerformSpecificTask\n\t\tEND\n\tEND\n"
 }

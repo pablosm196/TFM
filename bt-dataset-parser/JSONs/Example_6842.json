@@ -1,7 +1,10 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Observe object, move to it, pickup object, check object properties, do specific task or store object. list of available nodes: <Action ID = MoveToObject    /> <Action ID = PickupObject    /> <Action ID = PutObjectOnTheGround    /> <Action ID = PutObjectInSafeArea    /> <SubTree ID = SpecificObjectTask    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectNear    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Observe object, move to it, pickup object, check object properties, do specific task or store object. list of available nodes: <Action ID = MoveToObject    /> <Action ID = PickupObject    /> <Action ID = PutObjectOnTheGround    /> <Action ID = PutObjectInSafeArea    /> <SubTree ID = SpecificObjectTask    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectNear    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectFragile": "Boolean"
             },
@@ -10,91 +13,91 @@
             },
             {
                 "IsObjectNear": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNear?": "IsObjectNear"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickupObject",
-                            "Name": "PickupObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PutObjectOnTheGround",
-                                            "Name": "PutObjectOnTheGround"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectFragile?": "IsObjectFragile"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PutObjectInSafeArea",
-                                            "Name": "PutObjectInSafeArea"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "SpecificObjectTask",
-                                    "Name": "SpecificObjectTask"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNear?": "IsObjectNear"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickupObject",
+                                "Name": "PickupObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PutObjectOnTheGround",
+                                                "Name": "PutObjectOnTheGround"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectFragile?": "IsObjectFragile"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PutObjectInSafeArea",
+                                                "Name": "PutObjectInSafeArea"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "SpecificObjectTask",
+                                        "Name": "SpecificObjectTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNear? THEN\n\t\t\t\tDO PickupObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO PutObjectOnTheGround\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\tDO PutObjectInSafeArea\n\t\t\t\tEND\n\t\t\t\tDO SpecificObjectTask\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

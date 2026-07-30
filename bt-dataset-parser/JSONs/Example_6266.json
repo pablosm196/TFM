@@ -1,7 +1,10 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, take it. If object properties met, do specific task. Otherwise, avoid obstacle or approach object. list of available nodes: <Action ID = TakeObject    /> <Condition ID = ObjectFound    /> <Action ID = AvoidObstacle    /> <Action ID = ApproachObject    /> <Sequence>     <Condition ID = IsObstacleDetected    />     <Action ID = AvoidObstacle    /> </Sequence> <Sequence>     <Condition ID = ObjectVisible    />     <Action ID = ApproachObject    /> </Sequence> <SubTree ID = SpecificTask    /> <Sequence>     <Condition ID = ObjectPropertiesMet    />     <SubTree ID = SpecificTask    /> </Sequence>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object found, take it. If object properties met, do specific task. Otherwise, avoid obstacle or approach object. list of available nodes: <Action ID = TakeObject    /> <Condition ID = ObjectFound    /> <Action ID = AvoidObstacle    /> <Action ID = ApproachObject    /> <Sequence>     <Condition ID = IsObstacleDetected    />     <Action ID = AvoidObstacle    /> </Sequence> <Sequence>     <Condition ID = ObjectVisible    />     <Action ID = ApproachObject    /> </Sequence> <SubTree ID = SpecificTask    /> <Sequence>     <Condition ID = ObjectPropertiesMet    />     <SubTree ID = SpecificTask    /> </Sequence>\"",
     "BT": {
         "Blackboard": [
+            {
+                "ObjectVisible": "Boolean"
+            },
             {
                 "IsObstacleDetected": "Boolean"
             },
@@ -10,84 +13,84 @@
             },
             {
                 "ObjectPropertiesMet": "Boolean"
-            },
-            {
-                "ObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "ObjectFound?": "ObjectFound"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectPropertiesMet?": "ObjectPropertiesMet"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObstacleDetected?": "IsObstacleDetected"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "AvoidObstacle",
-                                    "Name": "AvoidObstacle"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectVisible?": "ObjectVisible"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "ObjectFound?": "ObjectFound"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectPropertiesMet?": "ObjectPropertiesMet"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObstacleDetected?": "IsObstacleDetected"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "AvoidObstacle",
+                                        "Name": "AvoidObstacle"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectVisible?": "ObjectVisible"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectFound? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF ObjectPropertiesMet? THEN\n\t\t\t\tDO SpecificTask\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObstacleDetected? THEN\n\t\t\t\t\tDO AvoidObstacle\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectVisible? THEN\n\t\t\t\t\tDO ApproachObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

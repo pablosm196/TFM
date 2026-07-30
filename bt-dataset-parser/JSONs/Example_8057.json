@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If it's reachable, grab and analyze it. Otherwise, avoid obstacles and explore until successful.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = PerformSpecificTask    /> <Action ID = MoveToTarget    /> <Action ID = AvoidObstacle    /> <SubTree ID = CheckTargetProperties    /> <SubTree ID = ScanForTarget    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsTargetWithinReach    /> <Condition ID = IsObstacleBlockingWay    /> <Action ID = ExploreNewArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If it's reachable, grab and analyze it. Otherwise, avoid obstacles and explore until successful.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = PerformSpecificTask    /> <Action ID = MoveToTarget    /> <Action ID = AvoidObstacle    /> <SubTree ID = CheckTargetProperties    /> <SubTree ID = ScanForTarget    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsTargetWithinReach    /> <Condition ID = IsObstacleBlockingWay    /> <Action ID = ExploreNewArea    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsTargetWithinReach": "Boolean"
-            },
             {
                 "IsObstacleBlockingWay": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsTargetWithinReach": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTargetWithinReach?": "IsTargetWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabTarget",
-                            "Name": "GrabTarget"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckTargetProperties",
-                            "Name": "CheckTargetProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleBlockingWay?": "IsObstacleBlockingWay"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AvoidObstacle",
-                            "Name": "AvoidObstacle"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanForTarget",
-                            "Name": "ScanForTarget"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreNewArea",
-                    "Name": "ExploreNewArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTargetWithinReach?": "IsTargetWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabTarget",
+                                "Name": "GrabTarget"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckTargetProperties",
+                                "Name": "CheckTargetProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleBlockingWay?": "IsObstacleBlockingWay"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AvoidObstacle",
+                                "Name": "AvoidObstacle"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanForTarget",
+                                "Name": "ScanForTarget"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreNewArea",
+                        "Name": "ExploreNewArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveToTarget\n\t\tELSE\n\t\t\t\tIF IsTargetWithinReach? THEN\n\t\t\t\tDO GrabTarget\n\t\tELSE\n\t\t\tDO CheckTargetProperties\n\t\t\tDO PerformSpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleBlockingWay? THEN\n\t\t\t\tDO AvoidObstacle\n\t\tELSE\n\t\t\tDO ScanForTarget\n\t\tEND\n\t\tDO ExploreNewArea\n\tEND\n"
 }

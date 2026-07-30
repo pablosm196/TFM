@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is reached, scan and grab it, process it, move to destination. Else, scan and go to destination. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = ScanForDestination    /> <Action ID = IsLocationReached    /> <Action ID = IsObjectApproached    /> <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is reached, scan and grab it, process it, move to destination. Else, scan and go to destination. list of available nodes: <Action ID = ScanForObjects    /> <Action ID = ScanForDestination    /> <Action ID = IsLocationReached    /> <Action ID = IsObjectApproached    /> <Action ID = PickUpObject    /> <Action ID = MoveToDestination    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsLocationReached": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsLocationReached": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsLocationReached?": "IsLocationReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanForObjects",
-                            "Name": "ScanForObjects"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectApproached?": "IsObjectApproached"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PickUpObject",
-                                    "Name": "PickUpObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanForDestination",
-                    "Name": "ScanForDestination"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsLocationReached?": "IsLocationReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanForObjects",
+                                "Name": "ScanForObjects"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectApproached?": "IsObjectApproached"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PickUpObject",
+                                        "Name": "PickUpObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanForDestination",
+                        "Name": "ScanForDestination"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsLocationReached? THEN\n\t\t\t\tDO ScanForObjects\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\t\tDO PickUpObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObject\n\t\t\tEND\n\t\t\tDO MoveToDestination\n\t\tEND\n\t\tDO ScanForDestination\n\tEND\n"
 }

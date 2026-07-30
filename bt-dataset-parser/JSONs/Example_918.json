@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, pick it up. If in sight, approach it. Inspect if gripped, detect and perform task. Finally, scan. list of available nodes: <Action ID = PickupObject    /> <Action ID = ApproachObject    /> <Action ID = InspectObject    /> <Action ID = ScanArea    /> <Condition ID = IsObjectInGripper    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectDetected    /> <SubTree ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, pick it up. If in sight, approach it. Inspect if gripped, detect and perform task. Finally, scan. list of available nodes: <Action ID = PickupObject    /> <Action ID = ApproachObject    /> <Action ID = InspectObject    /> <Action ID = ScanArea    /> <Condition ID = IsObjectInGripper    /> <Condition ID = IsObjectInSight    /> <Condition ID = IsObjectNearby    /> <Condition ID = IsObjectDetected    /> <SubTree ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInGripper": "Boolean"
+                "IsObjectInSight": "Boolean"
             },
             {
-                "IsObjectInSight": "Boolean"
+                "IsObjectDetected": "Boolean"
             },
             {
                 "IsObjectNearby": "Boolean"
             },
             {
-                "IsObjectDetected": "Boolean"
+                "IsObjectInGripper": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectNearby?": "IsObjectNearby"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickupObject",
-                            "Name": "PickupObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInSight?": "IsObjectInSight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInGripper?": "IsObjectInGripper"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectNearby?": "IsObjectNearby"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickupObject",
+                                "Name": "PickupObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInSight?": "IsObjectInSight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInGripper?": "IsObjectInGripper"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectNearby? THEN\n\t\t\t\tDO PickupObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInSight? THEN\n\t\t\t\tDO ApproachObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInGripper? THEN\n\t\t\t\tDO InspectObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tDO PerformTask\n\t\tEND\n\t\tDO ScanArea\n\tEND\n"
 }

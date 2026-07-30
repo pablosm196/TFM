@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object near hold, then pick up. If heavy, move to location. If obstacle, avoid. Do task. list of available nodes: <Action ID = PickUpObject    /> <SubTree ID = DoTask    /> <Condition ID = IsObjectApproached    /> <Action ID = MoveObjectToDesignatedLocation    /> <Condition ID = IsObjectHeavy    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToDesignatedLocation    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object near hold, then pick up. If heavy, move to location. If obstacle, avoid. Do task. list of available nodes: <Action ID = PickUpObject    /> <SubTree ID = DoTask    /> <Condition ID = IsObjectApproached    /> <Action ID = MoveObjectToDesignatedLocation    /> <Condition ID = IsObjectHeavy    /> <Action ID = AvoidObstacle    /> <Action ID = MoveToDesignatedLocation    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObstacleInPath": "Boolean"
             },
             {
-                "IsObstacleInPath": "Boolean"
+                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedLocation",
-                            "Name": "MoveObjectToDesignatedLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObstacleInPath?": "IsObstacleInPath"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "AvoidObstacle",
-                                    "Name": "AvoidObstacle"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDesignatedLocation",
-                            "Name": "MoveToDesignatedLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoTask",
-                    "Name": "DoTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedLocation",
+                                "Name": "MoveObjectToDesignatedLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObstacleInPath?": "IsObstacleInPath"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "AvoidObstacle",
+                                        "Name": "AvoidObstacle"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDesignatedLocation",
+                                "Name": "MoveToDesignatedLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoTask",
+                        "Name": "DoTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO PickUpObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToDesignatedLocation\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObstacleInPath? THEN\n\t\t\t\t\tDO AvoidObstacle\n\t\t\tEND\n\t\t\tDO MoveToDesignatedLocation\n\t\tEND\n\t\tDO DoTask\n\tEND\n"
 }

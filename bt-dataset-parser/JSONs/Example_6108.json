@@ -1,69 +1,72 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is detected, approach and grasp it, then move it and check its properties. Complete specific task or scan and move.     list of available nodes: <Sequence>     <Condition ID = IsObjectDetected    />     <Action ID = ApproachObject    />     <Action ID = GraspObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveObject    />     <Condition ID = IsObjectFragile    />     <Action ID = CheckObjectProperties    />     <SubTree ID = SpecificTask    /> </Sequence> <Fallback>     <Action ID = ScanAreaForObjects    />     <Action ID = MoveToNewArea    /> </Fallback>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If an object is detected, approach and grasp it, then move it and check its properties. Complete specific task or scan and move.     list of available nodes: <Sequence>     <Condition ID = IsObjectDetected    />     <Action ID = ApproachObject    />     <Action ID = GraspObject    />     <Condition ID = IsObjectHeavy    />     <Action ID = MoveObject    />     <Condition ID = IsObjectFragile    />     <Action ID = CheckObjectProperties    />     <SubTree ID = SpecificTask    /> </Sequence> <Fallback>     <Action ID = ScanAreaForObjects    />     <Action ID = MoveToNewArea    /> </Fallback>\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectFragile": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "GraspObject",
-                    "Name": "GraspObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObject",
-                    "Name": "MoveObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectFragile?": "IsObjectFragile"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "GraspObject",
+                        "Name": "GraspObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObject",
+                        "Name": "MoveObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectFragile?": "IsObjectFragile"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO GraspObject\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObject\n\tELSE\n\t\t\tIF IsObjectFragile? THEN\n\t\t\tDO CheckObjectProperties\n\tELSE\n\t\tDO SpecificTask\n\tEND\n"
 }

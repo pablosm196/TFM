@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach and scan an object, then pickup or gently pickup and move to destination for specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanObjectProperties    /> <Action ID = PickupObject    /> <Action ID = GentlyPickupObject    /> <Action ID = MoveToDestination    /> <SubTree ID = SpecificTask    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Approach and scan an object, then pickup or gently pickup and move to destination for specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = ScanObjectProperties    /> <Action ID = PickupObject    /> <Action ID = GentlyPickupObject    /> <Action ID = MoveToDestination    /> <SubTree ID = SpecificTask    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectFragile": "Boolean"
             },
             {
                 "ObjectDetected": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "ObjectDetected?": "ObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanObjectProperties",
-                            "Name": "ScanObjectProperties"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PickupObject",
-                                            "Name": "PickupObject"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectFragile?": "IsObjectFragile"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "GentlyPickupObject",
-                                            "Name": "GentlyPickupObject"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "ObjectDetected?": "ObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanObjectProperties",
+                                "Name": "ScanObjectProperties"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PickupObject",
+                                                "Name": "PickupObject"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectFragile?": "IsObjectFragile"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "GentlyPickupObject",
+                                                "Name": "GentlyPickupObject"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\tDO ScanObjectProperties\n\t\t\t\tSELECTOR\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\t\tDO PickupObject\n\t\t\t\t\tEND\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\t\tDO GentlyPickupObject\n\t\t\t\t\tEND\n\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO MoveToDestination\n\t\tDO SpecificTask\n\tEND\n"
 }

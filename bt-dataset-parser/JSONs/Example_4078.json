@@ -1,12 +1,9 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. IF object is within reach THEN grab object, transport/handle/secure object, RELEASE object. Scan surroundings OR perform specific task. list of available nodes: <Action ID = GrabObject    /> <SubTree ID = TransportObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Action ID = MoveToObject    /> <Action ID = ReleaseObject    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = HandleFragileObject    /> <Condition ID = IsObjectValuable    /> <SubTree ID = SecureValuableObject    /> <Action ID = ScanSurroundings    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. IF object is within reach THEN grab object, transport/handle/secure object, RELEASE object. Scan surroundings OR perform specific task. list of available nodes: <Action ID = GrabObject    /> <SubTree ID = TransportObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Action ID = MoveToObject    /> <Action ID = ReleaseObject    /> <Condition ID = IsObjectHeavy    /> <SubTree ID = HandleFragileObject    /> <Condition ID = IsObjectValuable    /> <SubTree ID = SecureValuableObject    /> <Action ID = ScanSurroundings    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectFragile": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
@@ -15,82 +12,88 @@
                 "IsObjectValuable": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsObjectFragile": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TransportObject",
-                            "Name": "TransportObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFragile?": "IsObjectFragile"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "HandleFragileObject",
-                            "Name": "HandleFragileObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectValuable?": "IsObjectValuable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "SecureValuableObject",
-                            "Name": "SecureValuableObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ReleaseObject",
-                            "Name": "ReleaseObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TransportObject",
+                                "Name": "TransportObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFragile?": "IsObjectFragile"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "HandleFragileObject",
+                                "Name": "HandleFragileObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectValuable?": "IsObjectValuable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "SecureValuableObject",
+                                "Name": "SecureValuableObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ReleaseObject",
+                                "Name": "ReleaseObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToObject\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO GrabObject\n\t\t\tELSE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO TransportObject\n\t\t\tELSE\n\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\tDO HandleFragileObject\n\t\t\tELSE\n\t\t\t\t\tIF IsObjectValuable? THEN\n\t\t\t\t\tDO SecureValuableObject\n\t\t\tELSE\n\t\t\t\tDO ReleaseObject\n\t\t\tEND\n\tEND\n"
 }

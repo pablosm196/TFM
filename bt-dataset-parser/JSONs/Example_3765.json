@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and take object. Check properties and do specific task. Move to visible destination if necessary. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForDestination    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToDestination    /> <Action ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectReached    /> <Condition ID = IsDestinationVisible    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and take object. Check properties and do specific task. Move to visible destination if necessary. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForDestination    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToDestination    /> <Action ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectReached    /> <Condition ID = IsDestinationVisible    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsDestinationVisible": "Boolean"
-            },
             {
                 "IsObjectReached": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsDestinationVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToTarget",
-                    "Name": "MoveToTarget"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectReached?": "IsObjectReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsDestinationVisible?": "IsDestinationVisible"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveToDestination",
-                                    "Name": "MoveToDestination"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForDestination",
-                            "Name": "ScanAreaForDestination"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToTarget",
+                        "Name": "MoveToTarget"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReached?": "IsObjectReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsDestinationVisible?": "IsDestinationVisible"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveToDestination",
+                                        "Name": "MoveToDestination"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForDestination",
+                                "Name": "ScanAreaForDestination"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToTarget\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectReached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO SpecificTask\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsDestinationVisible? THEN\n\t\t\t\t\tDO MoveToDestination\n\t\t\tEND\n\t\t\tDO ScanAreaForDestination\n\t\tEND\n\tEND\n"
 }

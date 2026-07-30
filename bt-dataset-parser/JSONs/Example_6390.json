@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object if visible, approach and retrieve if small, inspect and exit.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = RetrieveObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToExit    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectSmall    /> <SubTree ID = InspectObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object if visible, approach and retrieve if small, inspect and exit.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = RetrieveObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToExit    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectSmall    /> <SubTree ID = InspectObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectSmall": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectSmall": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectSmall?": "IsObjectSmall"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "RetrieveObject",
-                                    "Name": "RetrieveObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "InspectObject",
-                    "Name": "InspectObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToExit",
-                    "Name": "MoveToExit"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectSmall?": "IsObjectSmall"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "RetrieveObject",
+                                        "Name": "RetrieveObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "InspectObject",
+                        "Name": "InspectObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToExit",
+                        "Name": "MoveToExit"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectSmall? THEN\n\t\t\t\t\tDO RetrieveObject\n\t\t\tEND\n\t\t\tDO ScanAreaForObject\n\t\tEND\n\t\tDO InspectObject\n\t\tDO MoveToExit\n\tEND\n"
 }

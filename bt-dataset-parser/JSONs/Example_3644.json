@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach object, take it, move to location, inspect object, or complete specific task. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToLocation    /> <Action ID = InspectObject    /> <Action ID = IsObjectPropertyMet    /> <Action ID = IsObjectApproached    /> <Action ID = ApproachObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsLocationReached    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Approach object, take it, move to location, inspect object, or complete specific task. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToLocation    /> <Action ID = InspectObject    /> <Action ID = IsObjectPropertyMet    /> <Action ID = IsObjectApproached    /> <Action ID = ApproachObject    /> <SubTree ID = SpecificTask    /> <Condition ID = IsLocationReached    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsLocationReached": "Boolean"
+                "IsObjectPropertyMet": "Boolean"
             },
             {
-                "IsObjectPropertyMet": "Boolean"
+                "IsLocationReached": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsLocationReached?": "IsLocationReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "IsObjectPropertyMet?": "IsObjectPropertyMet"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "InspectObject",
-                                    "Name": "InspectObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "SpecificTask",
-                                    "Name": "SpecificTask"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsLocationReached?": "IsLocationReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "IsObjectPropertyMet?": "IsObjectPropertyMet"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "InspectObject",
+                                        "Name": "InspectObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "SpecificTask",
+                                        "Name": "SpecificTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsLocationReached? THEN\n\t\t\t\tDO MoveToLocation\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectPropertyMet? THEN\n\t\t\t\tSELECTOR\n\t\t\t\t\tDO InspectObject\n\t\t\t\t\tDO SpecificTask\n\t\t\t\tEND\n\t\tEND\n\tEND\n"
 }

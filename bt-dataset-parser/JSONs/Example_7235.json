@@ -1,64 +1,67 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find, approach, and take an object, check its properties, perform a task, or scan the area. list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectDetected    /> <Condition ID = CheckObjectWeight    /> <Condition ID = CheckObjectColor    /> <SubTree ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find, approach, and take an object, check its properties, perform a task, or scan the area. list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = ScanArea    /> <Condition ID = ObjectDetected    /> <Condition ID = CheckObjectWeight    /> <Condition ID = CheckObjectColor    /> <SubTree ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "CheckObjectColor": "Boolean"
+                "ObjectDetected": "Boolean"
             },
             {
-                "ObjectDetected": "Boolean"
+                "CheckObjectColor": "Boolean"
             },
             {
                 "CheckObjectWeight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectDetected?": "ObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CheckObjectColor?": "CheckObjectColor"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanArea",
-                    "Name": "ScanArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectDetected?": "ObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CheckObjectColor?": "CheckObjectColor"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanArea",
+                        "Name": "ScanArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF ObjectDetected? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF CheckObjectColor? THEN\n\t\t\t\tDO PerformTask\n\t\tEND\n\t\tDO ScanArea\n\tEND\n"
 }

@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is found, move, check properties and take. Else, scan area for targets.     list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeObject    /> <Action ID = CheckTargetProperty1    /> <Action ID = CheckTargetProperty2    /> <Action ID = CheckTargetProperty3    /> <Action ID = ScanForTargets    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsTargetInRange    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is found, move, check properties and take. Else, scan area for targets.     list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeObject    /> <Action ID = CheckTargetProperty1    /> <Action ID = CheckTargetProperty2    /> <Action ID = CheckTargetProperty3    /> <Action ID = ScanForTargets    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsTargetInRange    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTargetInRange": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsTargetInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [
-                                {
-                                    "IsTargetInRange?": "IsTargetInRange"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckTargetProperty1",
-                                    "Name": "CheckTargetProperty1"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckTargetProperty2",
-                                    "Name": "CheckTargetProperty2"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckTargetProperty3",
-                                    "Name": "CheckTargetProperty3"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanForTargets",
-                    "Name": "ScanForTargets"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [
+                                    {
+                                        "IsTargetInRange?": "IsTargetInRange"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckTargetProperty1",
+                                        "Name": "CheckTargetProperty1"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckTargetProperty2",
+                                        "Name": "CheckTargetProperty2"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckTargetProperty3",
+                                        "Name": "CheckTargetProperty3"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanForTargets",
+                        "Name": "ScanForTargets"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToTarget\n\t\t\t\t\tIF IsTargetInRange? THEN\n\t\t\t\t\tSELECTOR\n\t\t\t\t\t\tDO CheckTargetProperty1\n\t\t\t\t\t\tDO CheckTargetProperty2\n\t\t\t\t\t\tDO CheckTargetProperty3\n\t\t\t\t\tEND\n\t\t\tELSE\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO TakeObject\n\t\t\t\t\tDO ProcessObject\n\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO ScanForTargets\n\tEND\n"
 }

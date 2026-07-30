@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is detected, move towards it, take it and check properties. Perform task. Otherwise, wander around.     list of available nodes: <Action ID = WanderAround    /> <Action ID = ScanAreaForObjects    /> <Condition ID = AreObjectsDetected    /> <Action ID = MoveTowardsClosestObject    /> <Condition ID = IsObjectDetected    /> <Action ID = MoveTowardsObject    /> <Condition ID = IsObjectWithinRange    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is detected, move towards it, take it and check properties. Perform task. Otherwise, wander around.     list of available nodes: <Action ID = WanderAround    /> <Action ID = ScanAreaForObjects    /> <Condition ID = AreObjectsDetected    /> <Action ID = MoveTowardsClosestObject    /> <Condition ID = IsObjectDetected    /> <Action ID = MoveTowardsObject    /> <Condition ID = IsObjectWithinRange    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectWithinRange": "Boolean"
+                "AreObjectsDetected": "Boolean"
             },
             {
-                "AreObjectsDetected": "Boolean"
+                "IsObjectWithinRange": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsObject",
-                            "Name": "MoveTowardsObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinRange?": "IsObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObjects",
-                            "Name": "ScanAreaForObjects"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "AreObjectsDetected?": "AreObjectsDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsClosestObject",
-                            "Name": "MoveTowardsClosestObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "WanderAround",
-                    "Name": "WanderAround"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsObject",
+                                "Name": "MoveTowardsObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinRange?": "IsObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObjects",
+                                "Name": "ScanAreaForObjects"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "AreObjectsDetected?": "AreObjectsDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsClosestObject",
+                                "Name": "MoveTowardsClosestObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "WanderAround",
+                        "Name": "WanderAround"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tDO MoveTowardsObject\n\t\tELSE\n\t\t\t\tIF IsObjectWithinRange? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tDO PerformSpecificTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\tDO ScanAreaForObjects\n\t\t\t\tIF AreObjectsDetected? THEN\n\t\t\t\tDO MoveTowardsClosestObject\n\t\tEND\n\t\tDO WanderAround\n\tEND\n"
 }

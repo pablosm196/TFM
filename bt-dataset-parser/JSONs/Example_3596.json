@@ -1,95 +1,98 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and approach object, take it if possible, move it to designated location. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ApproachDesignatedLocation    /> <Action ID = PlaceObjectInDesignatedLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsDesignatedLocationVisible    /> <Condition ID = IsDesignatedLocationWithinReach    /> <SubTree ID = FindMoveAndTakeObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and approach object, take it if possible, move it to designated location. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ApproachDesignatedLocation    /> <Action ID = PlaceObjectInDesignatedLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsDesignatedLocationVisible    /> <Condition ID = IsDesignatedLocationWithinReach    /> <SubTree ID = FindMoveAndTakeObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
-            },
-            {
-                "IsDesignatedLocationVisible": "Boolean"
-            },
-            {
-                "IsDesignatedLocationWithinReach": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
+            },
+            {
+                "IsDesignatedLocationWithinReach": "Boolean"
+            },
+            {
+                "IsDesignatedLocationVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedLocation",
-                            "Name": "MoveObjectToDesignatedLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDesignatedLocationVisible?": "IsDesignatedLocationVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachDesignatedLocation",
-                            "Name": "ApproachDesignatedLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDesignatedLocationWithinReach?": "IsDesignatedLocationWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PlaceObjectInDesignatedLocation",
-                            "Name": "PlaceObjectInDesignatedLocation"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedLocation",
+                                "Name": "MoveObjectToDesignatedLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDesignatedLocationVisible?": "IsDesignatedLocationVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachDesignatedLocation",
+                                "Name": "ApproachDesignatedLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDesignatedLocationWithinReach?": "IsDesignatedLocationWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PlaceObjectInDesignatedLocation",
+                                "Name": "PlaceObjectInDesignatedLocation"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToDesignatedLocation\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsDesignatedLocationVisible? THEN\n\t\t\t\tDO ApproachDesignatedLocation\n\t\tELSE\n\t\t\t\tIF IsDesignatedLocationWithinReach? THEN\n\t\t\t\tDO PlaceObjectInDesignatedLocation\n\t\tEND\n\tEND\n"
 }

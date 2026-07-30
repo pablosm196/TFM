@@ -1,107 +1,110 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Approach visible object, take it, then process it, place it. Move accordingly if object is large or fragile.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveSlowly    /> <Action ID = MoveCarefully    /> <Action ID = PlaceObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectLarge    /> <Condition ID = IsObjectFragile    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Approach visible object, take it, then process it, place it. Move accordingly if object is large or fragile.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveSlowly    /> <Action ID = MoveCarefully    /> <Action ID = PlaceObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectWithinRange    /> <Condition ID = IsObjectLarge    /> <Condition ID = IsObjectFragile    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectWithinRange": "Boolean"
             },
             {
+                "IsObjectVisible": "Boolean"
+            },
+            {
                 "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectLarge": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinRange?": "IsObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectLarge?": "IsObjectLarge"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "MoveSlowly",
-                                            "Name": "MoveSlowly"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectFragile?": "IsObjectFragile"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "MoveCarefully",
-                                            "Name": "MoveCarefully"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PlaceObject",
-                            "Name": "PlaceObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinRange?": "IsObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectLarge?": "IsObjectLarge"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "MoveSlowly",
+                                                "Name": "MoveSlowly"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectFragile?": "IsObjectFragile"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "MoveCarefully",
+                                                "Name": "MoveCarefully"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PlaceObject",
+                                "Name": "PlaceObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectWithinRange? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectLarge? THEN\n\t\t\t\t\t\tDO MoveSlowly\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\t\tDO MoveCarefully\n\t\t\t\tEND\n\t\t\tEND\n\t\t\tDO ProcessObject\n\t\t\tDO PlaceObject\n\t\tEND\n\tEND\n"
 }

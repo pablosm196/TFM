@@ -1,61 +1,64 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and take object, move it to destination, perform task, move to next location; if stuck, explore. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Condition ID = ObjectFound    /> <Action ID = MoveToDestination    /> <SubTree ID = ObjectTask    /> <Action ID = MoveToNextLocation    /> <Action ID = ExploreEnvironment    /> <Condition ID = IsStuck    /> <Action ID = BackUp    /> <Action ID = ScanAreaForObject    /> <Condition ID = ObjectGrabbed    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and take object, move it to destination, perform task, move to next location; if stuck, explore. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Condition ID = ObjectFound    /> <Action ID = MoveToDestination    /> <SubTree ID = ObjectTask    /> <Action ID = MoveToNextLocation    /> <Action ID = ExploreEnvironment    /> <Condition ID = IsStuck    /> <Action ID = BackUp    /> <Action ID = ScanAreaForObject    /> <Condition ID = ObjectGrabbed    />\"",
     "BT": {
         "Blackboard": [
             {
-                "ObjectGrabbed": "Boolean"
+                "ObjectFound": "Boolean"
             },
             {
-                "ObjectFound": "Boolean"
+                "ObjectGrabbed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "ObjectFound?": "ObjectFound"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectGrabbed?": "ObjectGrabbed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ObjectTask",
-                            "Name": "ObjectTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToNextLocation",
-                    "Name": "MoveToNextLocation"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "ObjectFound?": "ObjectFound"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectGrabbed?": "ObjectGrabbed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ObjectTask",
+                                "Name": "ObjectTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToNextLocation",
+                        "Name": "MoveToNextLocation"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectFound? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF ObjectGrabbed? THEN\n\t\t\t\tDO MoveToDestination\n\t\tELSE\n\t\t\tDO ObjectTask\n\t\tEND\n\t\tDO MoveToNextLocation\n\tEND\n"
 }

@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object detected, grasp it and check properties, then move, search for objects, or recharge.     list of available nodes: <Action ID = GraspObject    /> <Action ID = ObjectPropertiesCheck    /> <Action ID = PlaceObjectInStorage    />  <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsLocationReached    />  <Action ID = MoveToLocation    /> <Action ID = ScanForObjects    /> <Action ID = RechargeBattery    /> <Action ID = ReturnToDockingStation    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object detected, grasp it and check properties, then move, search for objects, or recharge.     list of available nodes: <Action ID = GraspObject    /> <Action ID = ObjectPropertiesCheck    /> <Action ID = PlaceObjectInStorage    />  <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsLocationReached    />  <Action ID = MoveToLocation    /> <Action ID = ScanForObjects    /> <Action ID = RechargeBattery    /> <Action ID = ReturnToDockingStation    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,70 +12,73 @@
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectDetected?": "IsObjectDetected"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinReach?": "IsObjectWithinReach"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GraspObject",
-                            "Name": "GraspObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ObjectPropertiesCheck",
-                            "Name": "ObjectPropertiesCheck"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PlaceObjectInStorage",
-                            "Name": "PlaceObjectInStorage"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToLocation",
-                            "Name": "MoveToLocation"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsLocationReached?": "IsLocationReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanForObjects",
-                            "Name": "ScanForObjects"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectDetected?": "IsObjectDetected"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinReach?": "IsObjectWithinReach"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GraspObject",
+                                "Name": "GraspObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ObjectPropertiesCheck",
+                                "Name": "ObjectPropertiesCheck"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PlaceObjectInStorage",
+                                "Name": "PlaceObjectInStorage"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToLocation",
+                                "Name": "MoveToLocation"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsLocationReached?": "IsLocationReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanForObjects",
+                                "Name": "ScanForObjects"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectDetected? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO GraspObject\n\t\t\tELSE\n\t\t\t\tDO ObjectPropertiesCheck\n\t\t\t\tDO PlaceObjectInStorage\n\t\t\tEND\n\tELSE\n\t\tSEQUENCE\n\t\t\tDO MoveToLocation\n\t\t\t\tIF IsLocationReached? THEN\n\t\t\t\tDO ScanForObjects\n\t\tEND\n\tEND\n"
 }

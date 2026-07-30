@@ -1,80 +1,83 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If an object is detected, then approach and take it. If heavy, call for help. Finally, complete the task or match properties.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = ObjectPropertiesMatch    /> <SubTree ID = CompleteTask    /> <Action ID = CallForHelp    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If an object is detected, then approach and take it. If heavy, call for help. Finally, complete the task or match properties.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = ObjectDetected    /> <Condition ID = IsObjectHeavy    /> <Condition ID = ObjectPropertiesMatch    /> <SubTree ID = CompleteTask    /> <Action ID = CallForHelp    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "ObjectPropertiesMatch": "Boolean"
             },
             {
                 "ObjectDetected": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "ObjectDetected?": "ObjectDetected"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallForHelp",
-                                    "Name": "CallForHelp"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectPropertiesMatch?": "ObjectPropertiesMatch"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CompleteTask",
-                                    "Name": "CompleteTask"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "ObjectDetected?": "ObjectDetected"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallForHelp",
+                                        "Name": "CallForHelp"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectPropertiesMatch?": "ObjectPropertiesMatch"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CompleteTask",
+                                        "Name": "CompleteTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF ObjectDetected? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO PickUpObject\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\tDO CallForHelp\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectPropertiesMatch? THEN\n\t\t\t\t\tDO CompleteTask\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

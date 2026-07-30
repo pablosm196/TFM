@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to target; grab, process; if task complete, move to base and deposit. Else scan or move. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsObjectApproached    /> <Action ID = ScanArea    /> <Action ID = MoveToNewArea    /> <Action ID = MoveToTarget    /> <Action ID = GrabObject    /> <Action ID = MoveToBase    /> <Action ID = DepositObject    /> <SubTree ID = ProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to target; grab, process; if task complete, move to base and deposit. Else scan or move. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsObjectApproached    /> <Action ID = ScanArea    /> <Action ID = MoveToNewArea    /> <Action ID = MoveToTarget    /> <Action ID = GrabObject    /> <Action ID = MoveToBase    /> <Action ID = DepositObject    /> <SubTree ID = ProcessObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTaskComplete": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsTaskComplete": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTaskComplete?": "IsTaskComplete"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToBase",
-                            "Name": "MoveToBase"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DepositObject",
-                            "Name": "DepositObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTaskComplete?": "IsTaskComplete"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToBase",
+                                "Name": "MoveToBase"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DepositObject",
+                                "Name": "DepositObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToTarget\n\t\t\t\tDO GrabObject\n\t\t\t\tDO ProcessObject\n\t\t\t\t\tIF IsTaskComplete? THEN\n\t\t\t\t\tDO MoveToBase\n\t\t\tELSE\n\t\t\t\tDO DepositObject\n\t\t\tEND\n\tEND\n"
 }

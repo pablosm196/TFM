@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is within reach, pick it up, handle with care and perform task. Otherwise, approach and scan. list of available nodes: <Action ID = PickUpObject    /> <Action ID = DragObject    /> <Action ID = HandleObjectWithCare    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is within reach, pick it up, handle with care and perform task. Otherwise, approach and scan. list of available nodes: <Action ID = PickUpObject    /> <Action ID = DragObject    /> <Action ID = HandleObjectWithCare    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectFragile    /> <SubTree ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectFragile": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "DragObject",
-                            "Name": "DragObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFragile?": "IsObjectFragile"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "HandleObjectWithCare",
-                            "Name": "HandleObjectWithCare"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "DragObject",
+                                "Name": "DragObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFragile?": "IsObjectFragile"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "HandleObjectWithCare",
+                                "Name": "HandleObjectWithCare"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectWithinReach? THEN\n\t\t\tDO PickUpObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO DragObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\tDO HandleObjectWithCare\n\t\tEND\n\t\tDO PerformTask\n\tEND\n"
 }

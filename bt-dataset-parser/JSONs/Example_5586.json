@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. Move to drop off. Check properties. Perform task. Scan area if necessary.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsAtDropOffPoint    /> <Action ID = CheckObjectProperties    /> <Action ID = GrabObject    /> <Action ID = MoveToDropOffPoint    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <SubTree ID = PerformTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. Move to drop off. Check properties. Perform task. Scan area if necessary.     list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = IsAtDropOffPoint    /> <Action ID = CheckObjectProperties    /> <Action ID = GrabObject    /> <Action ID = MoveToDropOffPoint    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectVisible    /> <SubTree ID = PerformTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsAtDropOffPoint": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsAtDropOffPoint": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDropOffPoint",
-                    "Name": "MoveToDropOffPoint"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsAtDropOffPoint?": "IsAtDropOffPoint"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDropOffPoint",
+                        "Name": "MoveToDropOffPoint"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsAtDropOffPoint?": "IsAtDropOffPoint"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\t\tDO GrabObject\n\t\t\tEND\n\tELSE\n\t\tDO MoveToDropOffPoint\n\t\t\tIF IsAtDropOffPoint? THEN\n\t\t\tDO CheckObjectProperties\n\tELSE\n\t\tDO PerformTask\n\tEND\n"
 }

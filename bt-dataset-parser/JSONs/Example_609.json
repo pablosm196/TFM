@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, move to it, take it, check properties, do task. Else, move to safe zone or scan surroundings. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveToSafeZone    /> <Action ID = ScanAreaForObjects    /> <Action ID = DoTask    /> <Condition ID = IsObjectInSight    />  <Condition ID = IsAreaSafe    /> <SubTree ID = CheckObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, move to it, take it, check properties, do task. Else, move to safe zone or scan surroundings. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = MoveToSafeZone    /> <Action ID = ScanAreaForObjects    /> <Action ID = DoTask    /> <Condition ID = IsObjectInSight    />  <Condition ID = IsAreaSafe    /> <SubTree ID = CheckObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInSight": "Boolean"
+                "IsAreaSafe": "Boolean"
             },
             {
-                "IsAreaSafe": "Boolean"
+                "IsObjectInSight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInSight?": "IsObjectInSight"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DoTask",
-                            "Name": "DoTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAreaSafe?": "IsAreaSafe"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToSafeZone",
-                            "Name": "MoveToSafeZone"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInSight?": "IsObjectInSight"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DoTask",
+                                "Name": "DoTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAreaSafe?": "IsAreaSafe"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToSafeZone",
+                                "Name": "MoveToSafeZone"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInSight? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\tDO CheckObjectProperties\n\t\t\tDO DoTask\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsAreaSafe? THEN\n\t\t\t\tDO MoveToSafeZone\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

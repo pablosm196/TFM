@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach, take and move it to storage. Move robot on path otherwise. Perform specific task. list of available nodes: <Action ID = IsObjectDetected    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = IsObjectHeavy    /> <Action ID = MoveToObjectStorage    /> <Action ID = PlaceObject    /> <Action ID = NoObjectDetected    /> <Action ID = MoveOnPath    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, approach, take and move it to storage. Move robot on path otherwise. Perform specific task. list of available nodes: <Action ID = IsObjectDetected    /> <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = IsObjectHeavy    /> <Action ID = MoveToObjectStorage    /> <Action ID = PlaceObject    /> <Action ID = NoObjectDetected    /> <Action ID = MoveOnPath    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "NoObjectDetected": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "NoObjectDetected": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObjectStorage",
-                            "Name": "MoveToObjectStorage"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PlaceObject",
-                            "Name": "PlaceObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "NoObjectDetected?": "NoObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveOnPath",
-                            "Name": "MoveOnPath"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformSpecificTask",
-                    "Name": "PerformSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObjectStorage",
+                                "Name": "MoveToObjectStorage"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PlaceObject",
+                                "Name": "PlaceObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "NoObjectDetected?": "NoObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveOnPath",
+                                "Name": "MoveOnPath"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformSpecificTask",
+                        "Name": "PerformSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveToObjectStorage\n\t\tELSE\n\t\t\tDO PlaceObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF NoObjectDetected? THEN\n\t\t\t\tDO MoveOnPath\n\t\tEND\n\t\tDO PerformSpecificTask\n\tEND\n"
 }

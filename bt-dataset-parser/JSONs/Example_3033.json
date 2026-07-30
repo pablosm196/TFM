@@ -1,75 +1,78 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and take it, move to destination for specific task, or scan area. list of available nodes: <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Condition ID = CanTakeObject    /> <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <SubTree ID = ObjectProperties    /> <SubTree ID = SpecificTask    /> <Action ID = ScanArea    /> <Condition ID = IsDestinationReached    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and take it, move to destination for specific task, or scan area. list of available nodes: <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Condition ID = CanTakeObject    /> <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <SubTree ID = ObjectProperties    /> <SubTree ID = SpecificTask    /> <Action ID = ScanArea    /> <Condition ID = IsDestinationReached    />\"",
     "BT": {
         "Blackboard": [
             {
-                "CanTakeObject": "Boolean"
+                "IsDestinationReached": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsDestinationReached": "Boolean"
+                "CanTakeObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "CanTakeObject?": "CanTakeObject"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ObjectProperties",
-                    "Name": "ObjectProperties"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDestinationReached?": "IsDestinationReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "CanTakeObject?": "CanTakeObject"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ObjectProperties",
+                        "Name": "ObjectProperties"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDestinationReached?": "IsDestinationReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF CanTakeObject? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO ObjectProperties\n\t\tSEQUENCE\n\t\t\t\tIF IsDestinationReached? THEN\n\t\t\t\tDO MoveToDestination\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\tEND\n"
 }

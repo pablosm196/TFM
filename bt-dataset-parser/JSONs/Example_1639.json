@@ -1,77 +1,80 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it. Move to destination and place object. If successful, end. Else, scan area or do specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PlaceObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsTaskSuccessful    /> <Action ID = ScanArea    /> <SubTree ID = SpecificSubtree    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach and grab it. Move to destination and place object. If successful, end. Else, scan area or do specific task. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PlaceObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsTaskSuccessful    /> <Action ID = ScanArea    /> <SubTree ID = SpecificSubtree    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "IsTaskSuccessful": "Boolean"
             },
             {
                 "IsObjectGrabbed": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectGrabbed?": "IsObjectGrabbed"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PlaceObject",
-                            "Name": "PlaceObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificSubtree",
-                            "Name": "SpecificSubtree"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectGrabbed?": "IsObjectGrabbed"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PlaceObject",
+                                "Name": "PlaceObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificSubtree",
+                                "Name": "SpecificSubtree"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectGrabbed? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToDestination\n\t\t\t\tDO PlaceObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tDO ScanArea\n\t\t\tDO SpecificSubtree\n\t\tEND\n\tEND\n"
 }

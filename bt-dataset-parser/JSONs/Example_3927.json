@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found reachable, move and grab it. Check properties, perform specific task. Else, scan or move randomly. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Action ID = ScanArea    /> <Action ID = MoveToRandomLocation    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectReachable    /> <Condition ID = IsObjectGrabbable    /> <SubTree ID = ObjectPropertiesCheck    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object found reachable, move and grab it. Check properties, perform specific task. Else, scan or move randomly. list of available nodes: <Action ID = GrabObject    /> <Action ID = MoveToObject    /> <Action ID = ScanArea    /> <Action ID = MoveToRandomLocation    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectReachable    /> <Condition ID = IsObjectGrabbable    /> <SubTree ID = ObjectPropertiesCheck    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectReachable": "Boolean"
+                "IsObjectGrabbable": "Boolean"
             },
             {
-                "IsObjectGrabbable": "Boolean"
+                "IsObjectReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectReachable?": "IsObjectReachable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrabbable?": "IsObjectGrabbable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ObjectPropertiesCheck",
-                            "Name": "ObjectPropertiesCheck"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToRandomLocation",
-                            "Name": "MoveToRandomLocation"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectReachable?": "IsObjectReachable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrabbable?": "IsObjectGrabbable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ObjectPropertiesCheck",
+                                "Name": "ObjectPropertiesCheck"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToRandomLocation",
+                                "Name": "MoveToRandomLocation"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectReachable? THEN\n\t\t\t\t\tDO MoveToObject\n\t\t\tELSE\n\t\t\t\t\tIF IsObjectGrabbable? THEN\n\t\t\t\t\tDO GrabObject\n\t\t\tELSE\n\t\t\t\tDO ObjectPropertiesCheck\n\t\t\t\tDO SpecificTask\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tDO ScanArea\n\t\t\tDO MoveToRandomLocation\n\t\tEND\n\tEND\n"
 }

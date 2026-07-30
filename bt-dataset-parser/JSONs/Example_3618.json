@@ -1,67 +1,70 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object in range and grabbable, then grab and process it. Move to target. Scan environment.     list of available nodes: <Action ID = ObjectInRange    /> <Action ID = ObjectIsGrabbable    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Action ID = MoveToTarget    /> <Action ID = ScanEnvironment    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object in range and grabbable, then grab and process it. Move to target. Scan environment.     list of available nodes: <Action ID = ObjectInRange    /> <Action ID = ObjectIsGrabbable    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Action ID = MoveToTarget    /> <Action ID = ScanEnvironment    />\"",
     "BT": {
         "Blackboard": [
             {
-                "ObjectInRange": "Boolean"
+                "ObjectIsGrabbable": "Boolean"
             },
             {
-                "ObjectIsGrabbable": "Boolean"
+                "ObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "ObjectInRange?": "ObjectInRange"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectIsGrabbable?": "ObjectIsGrabbable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObject",
-                                    "Name": "ProcessObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanEnvironment",
-                    "Name": "ScanEnvironment"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "ObjectInRange?": "ObjectInRange"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectIsGrabbable?": "ObjectIsGrabbable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObject",
+                                        "Name": "ProcessObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanEnvironment",
+                        "Name": "ScanEnvironment"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF ObjectInRange? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF ObjectIsGrabbable? THEN\n\t\t\t\t\t\tDO GrabObject\n\t\t\t\tELSE\n\t\t\t\t\tDO ProcessObject\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO MoveToTarget\n\t\tEND\n\t\tDO ScanEnvironment\n\tEND\n"
 }

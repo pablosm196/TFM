@@ -1,67 +1,70 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and take item if visible, approach, grab and process it, else scan area.     list of available nodes: <Action ID = TakeItem    /> <Action ID = ApproachItem    /> <Action ID = ScanAreaForItems    /> <Action ID = ProcessItem    /> <Condition ID = IsItemVisible    /> <Condition ID = IsItemApproached    /> <SubTree ID = ProcessItem    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and take item if visible, approach, grab and process it, else scan area.     list of available nodes: <Action ID = TakeItem    /> <Action ID = ApproachItem    /> <Action ID = ScanAreaForItems    /> <Action ID = ProcessItem    /> <Condition ID = IsItemVisible    /> <Condition ID = IsItemApproached    /> <SubTree ID = ProcessItem    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsItemVisible": "Boolean"
+                "IsItemApproached": "Boolean"
             },
             {
-                "IsItemApproached": "Boolean"
+                "IsItemVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsItemApproached?": "IsItemApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeItem",
-                            "Name": "TakeItem"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessItem",
-                            "Name": "ProcessItem"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsItemVisible?": "IsItemVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachItem",
-                            "Name": "ApproachItem"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForItems",
-                    "Name": "ScanAreaForItems"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsItemApproached?": "IsItemApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeItem",
+                                "Name": "TakeItem"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessItem",
+                                "Name": "ProcessItem"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsItemVisible?": "IsItemVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachItem",
+                                "Name": "ApproachItem"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForItems",
+                        "Name": "ScanAreaForItems"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsItemApproached? THEN\n\t\t\t\tDO TakeItem\n\t\tELSE\n\t\t\tDO ProcessItem\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsItemVisible? THEN\n\t\t\t\tDO ApproachItem\n\t\tEND\n\t\tDO ScanAreaForItems\n\tEND\n"
 }

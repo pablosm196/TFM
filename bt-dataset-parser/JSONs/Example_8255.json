@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible,  then move to object,  pick it up,  check its properties,  choose available task,  and do it (or idle). list of available nodes: <Action ID = MoveToObject    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsObjectVisible    /> <Action ID = Idle    /> <SubTree ID = PickUpObject    /> <Action ID = DoTask1    /> <Action ID = DoTask2    /> <Sequence>      <Condition ID = IsTask1Available    />      <Action ID = DoTask1    /> </Sequence> <Sequence>      <Condition ID = IsTask2Available    />      <Action ID = DoTask2    /> </Sequence>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible,  then move to object,  pick it up,  check its properties,  choose available task,  and do it (or idle). list of available nodes: <Action ID = MoveToObject    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsObjectVisible    /> <Action ID = Idle    /> <SubTree ID = PickUpObject    /> <Action ID = DoTask1    /> <Action ID = DoTask2    /> <Sequence>      <Condition ID = IsTask1Available    />      <Action ID = DoTask1    /> </Sequence> <Sequence>      <Condition ID = IsTask2Available    />      <Action ID = DoTask2    /> </Sequence>\"",
     "BT": {
         "Blackboard": [
             {
                 "IsTask1Available": "Boolean"
             },
             {
-                "IsTask2Available": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsTask2Available": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTask1Available?": "IsTask1Available"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DoTask1",
-                                    "Name": "DoTask1"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTask2Available?": "IsTask2Available"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DoTask2",
-                                    "Name": "DoTask2"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "Idle",
-                            "Name": "Idle"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTask1Available?": "IsTask1Available"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DoTask1",
+                                        "Name": "DoTask1"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTask2Available?": "IsTask2Available"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DoTask2",
+                                        "Name": "DoTask2"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "Idle",
+                                "Name": "Idle"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tDO PickUpObject\n\t\tDO CheckObjectProperties\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTask1Available? THEN\n\t\t\t\t\tDO DoTask1\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsTask2Available? THEN\n\t\t\t\t\tDO DoTask2\n\t\t\tEND\n\t\t\tDO Idle\n\t\tEND\n\tEND\n"
 }

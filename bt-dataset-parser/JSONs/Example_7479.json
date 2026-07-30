@@ -1,55 +1,58 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is approached, take it and move to destination, check weight and do task. If not visible, approach object or scan area.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsDestinationReached    /> <Action ID = CheckObjectWeight    /> <Action ID = DoTask    /> <Sequence ID = ApproachObject>     <Action ID = NavigateToObject    />     <Condition ID = IsObjectInReach    /> </Sequence> <Sequence ID = ScanArea>     <Action ID = NavigateToScanPoint    />     <Condition ID = IsObjectFound    /> </Sequence>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is approached, take it and move to destination, check weight and do task. If not visible, approach object or scan area.     list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsDestinationReached    /> <Action ID = CheckObjectWeight    /> <Action ID = DoTask    /> <Sequence ID = ApproachObject>     <Action ID = NavigateToObject    />     <Condition ID = IsObjectInReach    /> </Sequence> <Sequence ID = ScanArea>     <Action ID = NavigateToScanPoint    />     <Condition ID = IsObjectFound    /> </Sequence>\"",
     "BT": {
         "Blackboard": [
             {
-                "IsDestinationReached": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsDestinationReached": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsDestinationReached?": "IsDestinationReached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CheckObjectWeight",
-                    "Name": "CheckObjectWeight"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoTask",
-                    "Name": "DoTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsDestinationReached?": "IsDestinationReached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CheckObjectWeight",
+                        "Name": "CheckObjectWeight"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoTask",
+                        "Name": "DoTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO MoveToDestination\n\t\t\tIF IsDestinationReached? THEN\n\t\t\tDO CheckObjectWeight\n\tELSE\n\t\tDO DoTask\n\tEND\n"
 }

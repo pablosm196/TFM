@@ -1,10 +1,7 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach and grab it. Then check if useful and clean. Do task if needed. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToLocation    /> <Action ID = DoTask    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectClean    /> <Condition ID = IsObjectUseful    /> <Condition ID = IsInPosition    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, approach and grab it. Then check if useful and clean. Do task if needed. list of available nodes: <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = MoveToLocation    /> <Action ID = DoTask    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectClean    /> <Condition ID = IsObjectUseful    /> <Condition ID = IsInPosition    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsInPosition": "Boolean"
-            },
             {
                 "isObjectUseful": "Boolean"
             },
@@ -13,67 +10,73 @@
             },
             {
                 "IsObjectDetected": "Boolean"
+            },
+            {
+                "IsInPosition": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectDetected?": "IsObjectDetected"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsInPosition?": "IsInPosition"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DoTask",
-                                    "Name": "DoTask"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToLocation",
-                    "Name": "MoveToLocation"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectDetected?": "IsObjectDetected"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsInPosition?": "IsInPosition"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DoTask",
+                                        "Name": "DoTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToLocation",
+                        "Name": "MoveToLocation"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\t\tDO ApproachObject\n\t\t\tELSE\n\t\t\t\tDO GrabObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsInPosition? THEN\n\t\t\t\t\tDO DoTask\n\t\t\tEND\n\t\tEND\n\t\tDO MoveToLocation\n\tEND\n"
 }

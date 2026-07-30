@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. First approach the visible object, grasp it within range, inspect and do task if critical, finally scan the area. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectWithinRange    /> <Action ID = GraspObject    /> <SubTree ID = InspectObject    /> <Action ID = IsObjectOfCriticalValue    /> <SubTree ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. First approach the visible object, grasp it within range, inspect and do task if critical, finally scan the area. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectWithinRange    /> <Action ID = GraspObject    /> <SubTree ID = InspectObject    /> <Action ID = IsObjectOfCriticalValue    /> <SubTree ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectWithinRange": "Boolean"
             },
             {
-                "IsObjectOfCriticalValue": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectOfCriticalValue": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectWithinRange?": "IsObjectWithinRange"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GraspObject",
-                            "Name": "GraspObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectOfCriticalValue?": "IsObjectOfCriticalValue"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DoSpecificTask",
-                                    "Name": "DoSpecificTask"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectWithinRange?": "IsObjectWithinRange"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GraspObject",
+                                "Name": "GraspObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectOfCriticalValue?": "IsObjectOfCriticalValue"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DoSpecificTask",
+                                        "Name": "DoSpecificTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\t\tIF IsObjectWithinRange? THEN\n\t\t\t\t\tDO GraspObject\n\t\t\tELSE\n\t\t\t\tDO InspectObject\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectOfCriticalValue? THEN\n\t\t\t\t\t\tDO DoSpecificTask\n\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

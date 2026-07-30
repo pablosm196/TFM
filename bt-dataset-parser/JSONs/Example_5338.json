@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is in range, move and grab it. Check properties, do task or put down object. list of available nodes: <Action ID = IsObjectInRange    /> <Action ID = MoveToTarget    /> <Condition ID = CanGrabObject    /> <Action ID = GrabObject    /> <SubTree ID = CheckObjectProperties    /> <Action ID = DoSpecificTask    /> <Action ID = PutObjectDown    /> <Action ID = ScanAreaForObjects    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is in range, move and grab it. Check properties, do task or put down object. list of available nodes: <Action ID = IsObjectInRange    /> <Action ID = MoveToTarget    /> <Condition ID = CanGrabObject    /> <Action ID = GrabObject    /> <SubTree ID = CheckObjectProperties    /> <Action ID = DoSpecificTask    /> <Action ID = PutObjectDown    /> <Action ID = ScanAreaForObjects    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInRange": "Boolean"
+                "CanGrabObject": "Boolean"
             },
             {
-                "CanGrabObject": "Boolean"
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInRange?": "IsObjectInRange"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToTarget",
-                    "Name": "MoveToTarget"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CanGrabObject?": "CanGrabObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "DoSpecificTask",
-                                    "Name": "DoSpecificTask"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PutObjectDown",
-                                    "Name": "PutObjectDown"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInRange?": "IsObjectInRange"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToTarget",
+                        "Name": "MoveToTarget"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CanGrabObject?": "CanGrabObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "DoSpecificTask",
+                                        "Name": "DoSpecificTask"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PutObjectDown",
+                                        "Name": "PutObjectDown"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInRange? THEN\n\t\t\tDO MoveToTarget\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF CanGrabObject? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\t\tSELECTOR\n\t\t\t\tDO DoSpecificTask\n\t\t\t\tDO PutObjectDown\n\t\t\tEND\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

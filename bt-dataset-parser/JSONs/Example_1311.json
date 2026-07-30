@@ -1,55 +1,58 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object in grip, move to destination. If not visible, scan area. Randomly move. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectDetected    /> <Action ID = RandomMovement    /> <Action ID = ScanArea    /> <Action ID = ReleaseObject    /> <Action ID = IsObjectInGrip    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object in grip, move to destination. If not visible, scan area. Randomly move. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToDestination    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectDetected    /> <Action ID = RandomMovement    /> <Action ID = ScanArea    /> <Action ID = ReleaseObject    /> <Action ID = IsObjectInGrip    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsDestinationReached": "Boolean"
             },
             {
-                "IsObjectInGrip": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectInGrip": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInGrip?": "IsObjectInGrip"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsDestinationReached?": "IsDestinationReached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ReleaseObject",
-                    "Name": "ReleaseObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInGrip?": "IsObjectInGrip"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsDestinationReached?": "IsDestinationReached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ReleaseObject",
+                        "Name": "ReleaseObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectInGrip? THEN\n\t\t\tDO MoveToDestination\n\tELSE\n\t\t\tIF IsDestinationReached? THEN\n\t\t\tDO ReleaseObject\n\tEND\n"
 }

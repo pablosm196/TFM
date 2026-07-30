@@ -1,81 +1,84 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot detects and moves to object, grasps if possible, checks properties, or scans area and moves randomly. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GraspObject    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = isObjectDetected    /> <Condition ID = isObjectLost    /> <Action ID = ScanArea    /> <Action ID = MoveToRandomLocation    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Robot detects and moves to object, grasps if possible, checks properties, or scans area and moves randomly. list of available nodes: <Action ID = MoveToObject    /> <Action ID = GraspObject    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = isObjectDetected    /> <Condition ID = isObjectLost    /> <Action ID = ScanArea    /> <Action ID = MoveToRandomLocation    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectDetected": "Boolean"
+                "isObjectLost": "Boolean"
             },
             {
-                "isObjectLost": "Boolean"
+                "isObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectDetected?": "isObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "GraspObject",
-                            "Name": "GraspObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectLost?": "isObjectLost"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToRandomLocation",
-                            "Name": "MoveToRandomLocation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoNothing",
-                    "Name": "DoNothing"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectDetected?": "isObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "GraspObject",
+                                "Name": "GraspObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectLost?": "isObjectLost"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToRandomLocation",
+                                "Name": "MoveToRandomLocation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoNothing",
+                        "Name": "DoNothing"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF isObjectDetected? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO GraspObject\n\t\t\tDO CheckObjectProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isObjectLost? THEN\n\t\t\t\tDO ScanArea\n\t\tELSE\n\t\t\tDO MoveToRandomLocation\n\t\tEND\n\t\tDO DoNothing\n\tEND\n"
 }

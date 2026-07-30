@@ -1,58 +1,61 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. Take it if close, check weight and shape. Finally, perform specific task. If obstacle detected, move around it. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectClose    /> <Condition ID = CheckObjectWeight    /> <Condition ID = CheckObjectShape    /> <Action ID = MoveForward    /> <Condition ID = ObstacleDetected    /> <Action ID = TurnAround    /> <Action ID = ScanArea    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. Take it if close, check weight and shape. Finally, perform specific task. If obstacle detected, move around it. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectClose    /> <Condition ID = CheckObjectWeight    /> <Condition ID = CheckObjectShape    /> <Action ID = MoveForward    /> <Condition ID = ObstacleDetected    /> <Action ID = TurnAround    /> <Action ID = ScanArea    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectClose": "Boolean"
             },
             {
+                "IsObjectVisible": "Boolean"
+            },
+            {
                 "CheckObjectShape": "Boolean"
             },
             {
                 "CheckObjectWeight": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectClose?": "IsObjectClose"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "CheckObjectShape?": "CheckObjectShape"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectClose?": "IsObjectClose"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "CheckObjectShape?": "CheckObjectShape"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectClose? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\t\tIF CheckObjectShape? THEN\n\t\t\tDO SpecificTask\n\tEND\n"
 }

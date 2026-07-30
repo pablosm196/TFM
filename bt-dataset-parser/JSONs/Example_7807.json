@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan area for objects, if seen, approach, pick up, sort red/blue, repeat scanning. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = SortObjectToRedBin    /> <Action ID = SortObjectToBlueBin    /> <Action ID = ScanAgainForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInReach    /> <Condition ID = ObjectIsRed    /> <Condition ID = ObjectIsBlue    /> <SubTree ID = MobileRobotTakeObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Scan area for objects, if seen, approach, pick up, sort red/blue, repeat scanning. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Action ID = SortObjectToRedBin    /> <Action ID = SortObjectToBlueBin    /> <Action ID = ScanAgainForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectInReach    /> <Condition ID = ObjectIsRed    /> <Condition ID = ObjectIsBlue    /> <SubTree ID = MobileRobotTakeObject    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectInReach": "Boolean"
             },
             {
-                "ObjectIsRed": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
                 "ObjectIsBlue": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "ObjectIsRed": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInReach?": "IsObjectInReach"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectIsRed?": "ObjectIsRed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SortObjectToRedBin",
-                                    "Name": "SortObjectToRedBin"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectIsBlue?": "ObjectIsBlue"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "SortObjectToBlueBin",
-                                    "Name": "SortObjectToBlueBin"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAgainForObject",
-                            "Name": "ScanAgainForObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInReach?": "IsObjectInReach"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectIsRed?": "ObjectIsRed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SortObjectToRedBin",
+                                        "Name": "SortObjectToRedBin"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectIsBlue?": "ObjectIsBlue"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "SortObjectToBlueBin",
+                                        "Name": "SortObjectToBlueBin"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAgainForObject",
+                                "Name": "ScanAgainForObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectInReach? THEN\n\t\t\tDO PickUpObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectIsRed? THEN\n\t\t\t\t\tDO SortObjectToRedBin\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectIsBlue? THEN\n\t\t\t\t\tDO SortObjectToBlueBin\n\t\t\tEND\n\t\t\tDO ScanAgainForObject\n\t\tEND\n\tEND\n"
 }

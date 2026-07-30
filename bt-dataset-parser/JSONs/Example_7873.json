@@ -1,99 +1,102 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan for and find objects, grab them, process them, move, release, then find targets, process them, or explore! list of available nodes: <Action ID = GrabObject    /> <Action ID = ReleaseObject    /> <Action ID = MoveToDestination    /> <Action ID = MoveToTarget    /> <Action ID = ExploreEnvironment    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsTargetReached    /> <Condition ID = IsTargetKnown    /> <SubTree ID = ProcessObject    /> <SubTree ID = ProcessTarget    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Scan for and find objects, grab them, process them, move, release, then find targets, process them, or explore! list of available nodes: <Action ID = GrabObject    /> <Action ID = ReleaseObject    /> <Action ID = MoveToDestination    /> <Action ID = MoveToTarget    /> <Action ID = ExploreEnvironment    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsTargetReached    /> <Condition ID = IsTargetKnown    /> <SubTree ID = ProcessObject    /> <SubTree ID = ProcessTarget    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTargetReached": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsTargetReached": "Boolean"
             },
             {
                 "IsTargetKnown": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToDestination",
-                            "Name": "MoveToDestination"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTargetReached?": "IsTargetReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ReleaseObject",
-                            "Name": "ReleaseObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTargetKnown?": "IsTargetKnown"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTargetReached?": "IsTargetReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessTarget",
-                            "Name": "ProcessTarget"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreEnvironment",
-                    "Name": "ExploreEnvironment"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToDestination",
+                                "Name": "MoveToDestination"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTargetReached?": "IsTargetReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ReleaseObject",
+                                "Name": "ReleaseObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTargetKnown?": "IsTargetKnown"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTargetReached?": "IsTargetReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessTarget",
+                                "Name": "ProcessTarget"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreEnvironment",
+                        "Name": "ExploreEnvironment"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\t\tDO MoveToDestination\n\t\t\t\tIF IsTargetReached? THEN\n\t\t\t\tDO ReleaseObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsTargetKnown? THEN\n\t\t\t\tDO MoveToTarget\n\t\tELSE\n\t\t\t\tIF IsTargetReached? THEN\n\t\t\t\tDO ProcessTarget\n\t\tEND\n\t\tDO ExploreEnvironment\n\tEND\n"
 }

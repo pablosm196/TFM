@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, then move to object, collect if possible, check, complete task or scan. list of available nodes: <Action ID = IsObjectNearby    /> <Action ID = MoveToObject    /> <Condition ID = CanCollectObject    /> <Action ID = CollectObject    /> <Action ID = ScanForAnotherObject    /> <Condition ID = IsObjectDesirable    /> <Action ID = CheckObjectProperties    /> <SubTree ID = DoSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object nearby, then move to object, collect if possible, check, complete task or scan. list of available nodes: <Action ID = IsObjectNearby    /> <Action ID = MoveToObject    /> <Condition ID = CanCollectObject    /> <Action ID = CollectObject    /> <Action ID = ScanForAnotherObject    /> <Condition ID = IsObjectDesirable    /> <Action ID = CheckObjectProperties    /> <SubTree ID = DoSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,76 +12,79 @@
                 "IsObjectNearby": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectNearby?": "IsObjectNearby"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CanCollectObject?": "CanCollectObject"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CollectObject",
-                            "Name": "CollectObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectDesirable?": "IsObjectDesirable"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "CheckObjectProperties",
-                                            "Name": "CheckObjectProperties"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "DoSpecificTask",
-                                            "Name": "DoSpecificTask"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ScanForAnotherObject",
-                                    "Name": "ScanForAnotherObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectNearby?": "IsObjectNearby"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CanCollectObject?": "CanCollectObject"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CollectObject",
+                                "Name": "CollectObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectDesirable?": "IsObjectDesirable"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "CheckObjectProperties",
+                                                "Name": "CheckObjectProperties"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "DoSpecificTask",
+                                                "Name": "DoSpecificTask"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ScanForAnotherObject",
+                                        "Name": "ScanForAnotherObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectNearby? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF CanCollectObject? THEN\n\t\t\t\tDO CollectObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectDesirable? THEN\n\t\t\t\t\t\tDO CheckObjectProperties\n\t\t\t\tELSE\n\t\t\t\t\tDO DoSpecificTask\n\t\t\t\tEND\n\t\t\t\tDO ScanForAnotherObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

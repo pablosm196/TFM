@@ -1,55 +1,58 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, then grab and process it. Move to storage and do specific task. If not visible, scan area. list of available nodes: <SubTree ID = ProcessObject    /> <Condition ID = IsObjectStored    /> <Condition ID = IsObjectApproached    /> <Action ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToStorage    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is approached, then grab and process it. Move to storage and do specific task. If not visible, scan area. list of available nodes: <SubTree ID = ProcessObject    /> <Condition ID = IsObjectStored    /> <Condition ID = IsObjectApproached    /> <Action ID = DoSpecificTask    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToStorage    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectStored": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsObjectStored": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabObject",
-                    "Name": "GrabObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ProcessObject",
-                    "Name": "ProcessObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToStorage",
-                    "Name": "MoveToStorage"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectStored?": "IsObjectStored"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "DoSpecificTask",
-                    "Name": "DoSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabObject",
+                        "Name": "GrabObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ProcessObject",
+                        "Name": "ProcessObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToStorage",
+                        "Name": "MoveToStorage"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectStored?": "IsObjectStored"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "DoSpecificTask",
+                        "Name": "DoSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO GrabObject\n\tELSE\n\t\tDO ProcessObject\n\t\tDO MoveToStorage\n\t\t\tIF IsObjectStored? THEN\n\t\t\tDO DoSpecificTask\n\tEND\n"
 }

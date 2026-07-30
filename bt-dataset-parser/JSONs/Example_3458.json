@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, move to, take it, verify its properties, then move to destination. Otherwise, scan for objects. list of available nodes: <Action ID = IsObjectDetected    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectHeavy    /> <Action ID = MoveToDestination    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = ScanEnvironment    /> <Condition ID = IsAnyObjectDetected    /> <Action ID = MoveToNearestObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is detected, move to, take it, verify its properties, then move to destination. Otherwise, scan for objects. list of available nodes: <Action ID = IsObjectDetected    /> <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectHeavy    /> <Action ID = MoveToDestination    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = ScanEnvironment    /> <Condition ID = IsAnyObjectDetected    /> <Action ID = MoveToNearestObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "IsAnyObjectDetected": "Boolean"
             },
             {
-                "IsAnyObjectDetected": "Boolean"
+                "isObjectHeavy": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToObject",
-                                    "Name": "MoveToObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "isObjectHeavy?": "isObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveToDestination",
-                                    "Name": "MoveToDestination"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanEnvironment",
-                            "Name": "ScanEnvironment"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAnyObjectDetected?": "IsAnyObjectDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToNearestObject",
-                            "Name": "MoveToNearestObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToObject",
+                                        "Name": "MoveToObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "isObjectHeavy?": "isObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveToDestination",
+                                        "Name": "MoveToDestination"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanEnvironment",
+                                "Name": "ScanEnvironment"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAnyObjectDetected?": "IsAnyObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToNearestObject",
+                                "Name": "MoveToNearestObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO MoveToObject\n\t\t\t\t\tDO TakeObject\n\t\t\t\t\t\tIF isObjectHeavy? THEN\n\t\t\t\t\t\tDO MoveToDestination\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO ProcessObjectProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\tDO ScanEnvironment\n\t\t\t\tIF IsAnyObjectDetected? THEN\n\t\t\t\tDO MoveToNearestObject\n\t\tEND\n\tEND\n"
 }

@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If environment is safe, move to target. Then, if target is visible and within reach, take it. Finally, check target properties. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeTarget    /> <Action ID = ScanAreaForTarget    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsEnvironmentSafe    /> <Condition ID = IsTargetVisible    /> <Condition ID = IsTargetWithinReach    /> <SubTree ID = MobileRobot    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If environment is safe, move to target. Then, if target is visible and within reach, take it. Finally, check target properties. list of available nodes: <Action ID = MoveToTarget    /> <Action ID = TakeTarget    /> <Action ID = ScanAreaForTarget    /> <Action ID = CheckObjectProperties    /> <Condition ID = IsEnvironmentSafe    /> <Condition ID = IsTargetVisible    /> <Condition ID = IsTargetWithinReach    /> <SubTree ID = MobileRobot    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsTargetVisible": "Boolean"
+            },
             {
                 "IsEnvironmentSafe": "Boolean"
             },
             {
                 "IsTargetWithinReach": "Boolean"
-            },
-            {
-                "IsTargetVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsEnvironmentSafe?": "IsEnvironmentSafe"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToTarget",
-                            "Name": "MoveToTarget"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsTargetVisible?": "IsTargetVisible"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsTargetWithinReach?": "IsTargetWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeTarget",
-                                    "Name": "TakeTarget"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectProperties",
-                                    "Name": "CheckObjectProperties"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForTarget",
-                    "Name": "ScanAreaForTarget"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsEnvironmentSafe?": "IsEnvironmentSafe"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToTarget",
+                                "Name": "MoveToTarget"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsTargetVisible?": "IsTargetVisible"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsTargetWithinReach?": "IsTargetWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeTarget",
+                                        "Name": "TakeTarget"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectProperties",
+                                        "Name": "CheckObjectProperties"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForTarget",
+                        "Name": "ScanAreaForTarget"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsEnvironmentSafe? THEN\n\t\t\t\tDO MoveToTarget\n\t\tELSE\n\t\t\t\tIF IsTargetVisible? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsTargetWithinReach? THEN\n\t\t\t\t\t\tDO TakeTarget\n\t\t\t\tELSE\n\t\t\t\t\tDO CheckObjectProperties\n\t\t\t\tEND\n\t\tEND\n\t\tDO ScanAreaForTarget\n\tEND\n"
 }

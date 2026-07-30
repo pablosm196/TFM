@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Detect and move objects, perform task if possible. Find assistance if object too heavy.     list of available nodes: <Action ID = FindAssistance    /> <Action ID = IsObjectDetected    /> <Action ID = IsObjectInRange    /> <Action ID = isObjectTooHeavy    /> <Action ID = PerformSpecificTask    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = ScanAreaForObject    /> <SubTree ID = MobileRobotTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Detect and move objects, perform task if possible. Find assistance if object too heavy.     list of available nodes: <Action ID = FindAssistance    /> <Action ID = IsObjectDetected    /> <Action ID = IsObjectInRange    /> <Action ID = isObjectTooHeavy    /> <Action ID = PerformSpecificTask    /> <Action ID = PickUpObject    /> <Action ID = MoveObjectToLocation    /> <Action ID = ScanAreaForObject    /> <SubTree ID = MobileRobotTask    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectInRange": "Boolean"
-            },
             {
                 "isObjectTooHeavy": "Boolean"
             },
             {
                 "IsObjectDetected": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectInRange?": "IsObjectInRange"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PickUpObject",
-                                    "Name": "PickUpObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveObjectToLocation",
-                                    "Name": "MoveObjectToLocation"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanAreaForObject",
-                            "Name": "ScanAreaForObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectTooHeavy?": "isObjectTooHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "FindAssistance",
-                            "Name": "FindAssistance"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformSpecificTask",
-                    "Name": "PerformSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectInRange?": "IsObjectInRange"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PickUpObject",
+                                        "Name": "PickUpObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveObjectToLocation",
+                                        "Name": "MoveObjectToLocation"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanAreaForObject",
+                                "Name": "ScanAreaForObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectTooHeavy?": "isObjectTooHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "FindAssistance",
+                                "Name": "FindAssistance"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformSpecificTask",
+                        "Name": "PerformSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectInRange? THEN\n\t\t\t\t\t\tDO PickUpObject\n\t\t\t\tELSE\n\t\t\t\t\tDO MoveObjectToLocation\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO ScanAreaForObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isObjectTooHeavy? THEN\n\t\t\t\tDO FindAssistance\n\t\tEND\n\t\tDO PerformSpecificTask\n\tEND\n"
 }

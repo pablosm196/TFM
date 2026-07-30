@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is found, then approach, pick up, check, use it. Scan area or move otherwise. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectHeld    /> <SubTree ID = UseObject    /> <Action ID = ScanArea    /> <Action ID = MoveToNextArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is found, then approach, pick up, check, use it. Scan area or move otherwise. list of available nodes: <Action ID = ApproachObject    /> <Action ID = PickUpObject    /> <Condition ID = IsObjectHeld    /> <SubTree ID = UseObject    /> <Action ID = ScanArea    /> <Action ID = MoveToNextArea    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectHeld": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsObjectHeld": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ApproachObject",
-                                    "Name": "ApproachObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PickUpObject",
-                                    "Name": "PickUpObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeld?": "IsObjectHeld"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "UseObject",
-                                    "Name": "UseObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToNextArea",
-                            "Name": "MoveToNextArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ApproachObject",
+                                        "Name": "ApproachObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PickUpObject",
+                                        "Name": "PickUpObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeld?": "IsObjectHeld"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "UseObject",
+                                        "Name": "UseObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToNextArea",
+                                "Name": "MoveToNextArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO ApproachObject\n\t\t\t\t\tDO PickUpObject\n\t\t\t\t\t\tIF IsObjectHeld? THEN\n\t\t\t\t\t\tDO UseObject\n\t\t\t\tEND\n\t\t\t\tDO ScanArea\n\t\t\t\tDO MoveToNextArea\n\t\t\tEND\n\tEND\n"
 }

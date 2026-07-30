@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object found, approach and take it. Then process it, put it back and move to next location. If stuck, try to unstuck or scan the area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = CallForHelp    /> <Action ID = PutObjectBack    /> <Action ID = MoveToNextLocation    /> <Action ID = TryToUnstuck    /> <SubTree ID = ProcessObjectTask    /> <Condition ID = IsObjectFound    /> <Condition ID = IsStuck    /> <Action ID = ScanArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object found, approach and take it. Then process it, put it back and move to next location. If stuck, try to unstuck or scan the area. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = CallForHelp    /> <Action ID = PutObjectBack    /> <Action ID = MoveToNextLocation    /> <Action ID = TryToUnstuck    /> <SubTree ID = ProcessObjectTask    /> <Condition ID = IsObjectFound    /> <Condition ID = IsStuck    /> <Action ID = ScanArea    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,73 +9,76 @@
                 "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHeavy?": "IsObjectHeavy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CallForHelp",
-                                    "Name": "CallForHelp"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObjectTask",
-                            "Name": "ProcessObjectTask"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PutObjectBack",
-                            "Name": "PutObjectBack"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToNextLocation",
-                    "Name": "MoveToNextLocation"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHeavy?": "IsObjectHeavy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CallForHelp",
+                                        "Name": "CallForHelp"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObjectTask",
+                                "Name": "ProcessObjectTask"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PutObjectBack",
+                                "Name": "PutObjectBack"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToNextLocation",
+                        "Name": "MoveToNextLocation"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\tDO TakeObject\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\t\t\tDO CallForHelp\n\t\t\t\tEND\n\t\t\t\tDO ProcessObjectTask\n\t\t\t\tDO PutObjectBack\n\t\t\tEND\n\tELSE\n\t\tDO MoveToNextLocation\n\tEND\n"
 }

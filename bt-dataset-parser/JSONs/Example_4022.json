@@ -1,75 +1,78 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, move and take it. Consider object properties, perform subtask. Scan otherwise. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = ObjectWeightIsNotTooHeavy    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectFragile    /> <Action ID = HandleGently    /> <SubTree ID = PerformSubTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, move and take it. Consider object properties, perform subtask. Scan otherwise. list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = ObjectWeightIsNotTooHeavy    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectFragile    /> <Action ID = HandleGently    /> <SubTree ID = PerformSubTask    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFragile": "Boolean"
             },
             {
-                "ObjectWeightIsNotTooHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
                 "IsObjectWithinReach": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "ObjectWeightIsNotTooHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveTowardsObject",
-                    "Name": "MoveTowardsObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "ObjectWeightIsNotTooHeavy?": "ObjectWeightIsNotTooHeavy"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFragile?": "IsObjectFragile"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "HandleGently",
-                            "Name": "HandleGently"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformSubTask",
-                    "Name": "PerformSubTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveTowardsObject",
+                        "Name": "MoveTowardsObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "ObjectWeightIsNotTooHeavy?": "ObjectWeightIsNotTooHeavy"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFragile?": "IsObjectFragile"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "HandleGently",
+                                "Name": "HandleGently"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformSubTask",
+                        "Name": "PerformSubTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveTowardsObject\n\tELSE\n\t\t\tIF IsObjectWithinReach? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\t\tIF ObjectWeightIsNotTooHeavy? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectFragile? THEN\n\t\t\t\t\tDO HandleGently\n\t\t\tEND\n\tELSE\n\t\tDO PerformSubTask\n\tEND\n"
 }

@@ -1,7 +1,10 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then grab if reachable or move towards. Scan in order to retry. list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveTowardsObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsPathClear    /> <SubTree ID = GrabAndProcessObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object detected, then grab if reachable or move towards. Scan in order to retry. list of available nodes: <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveTowardsObject    /> <Action ID = ProcessObject    /> <Condition ID = IsObjectDetected    /> <Condition ID = IsObjectWithinReach    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsPathClear    /> <SubTree ID = GrabAndProcessObject    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "IsPathClear": "Boolean"
             },
@@ -9,85 +12,85 @@
                 "IsObjectWithinReach": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
-            },
-            {
                 "IsObjectDetected": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectDetected?": "IsObjectDetected"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "GrabObject",
-                                    "Name": "GrabObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsPathClear?": "IsPathClear"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveTowardsObject",
-                                    "Name": "MoveTowardsObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectDetected?": "IsObjectDetected"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "GrabObject",
+                                        "Name": "GrabObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsPathClear?": "IsPathClear"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveTowardsObject",
+                                        "Name": "MoveTowardsObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectDetected? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\t\tDO GrabObject\n\t\t\t\tEND\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsPathClear? THEN\n\t\t\t\t\t\tDO MoveTowardsObject\n\t\t\t\tEND\n\t\tEND\n\t\tDO ScanAreaForObject\n\tEND\n"
 }

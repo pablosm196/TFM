@@ -1,90 +1,93 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and pick it up. Then handle object, move to new location.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectDirty    /> <Action ID = CleanObject    /> <Condition ID = isObjectWet    /> <Action ID = PlaceObjectInDryingRack    /> <Action ID = MoveToNextLocation    /> <SubTree ID = PickUpObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is visible, approach and pick it up. Then handle object, move to new location.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = isObjectHeavy    /> <Condition ID = isObjectDirty    /> <Action ID = CleanObject    /> <Condition ID = isObjectWet    /> <Action ID = PlaceObjectInDryingRack    /> <Action ID = MoveToNextLocation    /> <SubTree ID = PickUpObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "isObjectDirty": "Boolean"
+                "isObjectHeavy": "Boolean"
             },
             {
                 "isObjectWet": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "isObjectDirty": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectWet?": "isObjectWet"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PlaceObjectInDryingRack",
-                            "Name": "PlaceObjectInDryingRack"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "isObjectDirty?": "isObjectDirty"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CleanObject",
-                            "Name": "CleanObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToNextLocation",
-                    "Name": "MoveToNextLocation"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectWet?": "isObjectWet"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PlaceObjectInDryingRack",
+                                "Name": "PlaceObjectInDryingRack"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "isObjectDirty?": "isObjectDirty"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CleanObject",
+                                "Name": "CleanObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToNextLocation",
+                        "Name": "MoveToNextLocation"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isObjectWet? THEN\n\t\t\t\tDO PlaceObjectInDryingRack\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF isObjectDirty? THEN\n\t\t\t\tDO CleanObject\n\t\tEND\n\t\tDO MoveToNextLocation\n\tEND\n"
 }

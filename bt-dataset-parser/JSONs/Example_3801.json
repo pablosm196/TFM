@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is close, take it. If heavy, move it. If low battery, charge it. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ChargeBattery    /> <Action ID = FixObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsBatteryLow    /> <Condition ID = IsObjectDamaged    /> <SubTree ID = SpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is close, take it. If heavy, move it. If low battery, charge it. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveObjectToDesignatedLocation    /> <Action ID = ChargeBattery    /> <Action ID = FixObject    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsBatteryLow    /> <Condition ID = IsObjectDamaged    /> <SubTree ID = SpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectDamaged": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsBatteryLow": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
-                "IsBatteryLow": "Boolean"
+                "IsObjectDamaged": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToDesignatedLocation",
-                    "Name": "MoveObjectToDesignatedLocation"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsBatteryLow?": "IsBatteryLow"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ChargeBattery",
-                                    "Name": "ChargeBattery"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectDamaged?": "IsObjectDamaged"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FixObject",
-                                    "Name": "FixObject"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToDesignatedLocation",
+                        "Name": "MoveObjectToDesignatedLocation"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsBatteryLow?": "IsBatteryLow"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ChargeBattery",
+                                        "Name": "ChargeBattery"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectDamaged?": "IsObjectDamaged"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FixObject",
+                                        "Name": "FixObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToDesignatedLocation\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsBatteryLow? THEN\n\t\t\t\t\tDO ChargeBattery\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectDamaged? THEN\n\t\t\t\t\tDO FixObject\n\t\t\tEND\n\t\tEND\n\t\tDO SpecificTask\n\tEND\n"
 }

@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab visible object. Move to object, check properties, then perform given task. Otherwise, scan area.     list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = ObjectIsReachable    /> <Condition ID = CanPickUpObject    /> <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Action ID = ScanForObject    /> <Action ID = PerformTask    /> <SubTree ID = CheckObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab visible object. Move to object, check properties, then perform given task. Otherwise, scan area.     list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = ObjectIsReachable    /> <Condition ID = CanPickUpObject    /> <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Action ID = ScanForObject    /> <Action ID = PerformTask    /> <SubTree ID = CheckObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
-                "ObjectIsReachable": "Boolean"
+                "CanPickUpObject": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "CanPickUpObject": "Boolean"
+                "ObjectIsReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectIsReachable?": "ObjectIsReachable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "CanPickUpObject?": "CanPickUpObject"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PickUpObject",
-                                            "Name": "PickUpObject"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "CheckObjectProperties",
-                                            "Name": "CheckObjectProperties"
-                                        },
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [],
-                                            "Nodes": [],
-                                            "Task": "PerformTask",
-                                            "Name": "PerformTask"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ScanForObject",
-                                    "Name": "ScanForObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectIsReachable?": "ObjectIsReachable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "CanPickUpObject?": "CanPickUpObject"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PickUpObject",
+                                                "Name": "PickUpObject"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "CheckObjectProperties",
+                                                "Name": "CheckObjectProperties"
+                                            },
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [],
+                                                "Nodes": [],
+                                                "Task": "PerformTask",
+                                                "Name": "PerformTask"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ScanForObject",
+                                        "Name": "ScanForObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectIsReachable? THEN\n\t\t\t\t\tDO MoveToObject\n\t\t\tELSE\n\t\t\t\tSELECTOR\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF CanPickUpObject? THEN\n\t\t\t\t\t\t\tDO PickUpObject\n\t\t\t\t\tELSE\n\t\t\t\t\t\tDO CheckObjectProperties\n\t\t\t\t\t\tDO PerformTask\n\t\t\t\t\tEND\n\t\t\t\t\tDO ScanForObject\n\t\t\t\tEND\n\t\t\tEND\n\tEND\n"
 }

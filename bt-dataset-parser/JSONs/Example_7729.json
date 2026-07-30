@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is in range, move to it, grab it and process it. If unhealthy fix it, otherwise dispose it. list of available nodes: <Action ID = MoveToObject    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectTouchable    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectHealthy    /> <Action ID = FixObject    /> <Condition ID = IsObjectHarmful    /> <Action ID = DisposeObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is in range, move to it, grab it and process it. If unhealthy fix it, otherwise dispose it. list of available nodes: <Action ID = MoveToObject    /> <Condition ID = IsObjectInRange    /> <Condition ID = IsObjectTouchable    /> <Action ID = GrabObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectHealthy    /> <Action ID = FixObject    /> <Condition ID = IsObjectHarmful    /> <Action ID = DisposeObject    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectHealthy": "Boolean"
-            },
-            {
-                "IsObjectInRange": "Boolean"
-            },
             {
                 "IsObjectTouchable": "Boolean"
             },
             {
                 "IsObjectHarmful": "Boolean"
+            },
+            {
+                "IsObjectHealthy": "Boolean"
+            },
+            {
+                "IsObjectInRange": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInRange?": "IsObjectInRange"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectTouchable?": "IsObjectTouchable"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "GrabObject",
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHealthy?": "IsObjectHealthy"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FixObject",
-                                    "Name": "FixObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectHarmful?": "IsObjectHarmful"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DisposeObject",
-                                    "Name": "DisposeObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInRange?": "IsObjectInRange"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectTouchable?": "IsObjectTouchable"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "GrabObject",
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHealthy?": "IsObjectHealthy"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FixObject",
+                                        "Name": "FixObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectHarmful?": "IsObjectHarmful"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DisposeObject",
+                                        "Name": "DisposeObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectInRange? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectTouchable? THEN\n\t\t\t\tDO GrabObject\n\t\tELSE\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHealthy? THEN\n\t\t\t\t\tDO FixObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectHarmful? THEN\n\t\t\t\t\tDO DisposeObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

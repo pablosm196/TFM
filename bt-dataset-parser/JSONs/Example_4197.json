@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to and take it, if not nearby, move towards, check property and perform task. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = PerformTask    /> <Condition ID = ObjectHasKey    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, move to and take it, if not nearby, move towards, check property and perform task. list of available nodes: <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = PerformTask    /> <Condition ID = ObjectHasKey    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,56 +12,59 @@
                 "ObjectHasKey": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectApproached?": "IsObjectApproached"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "ObjectHasKey?": "ObjectHasKey"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectApproached?": "IsObjectApproached"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "ObjectHasKey?": "ObjectHasKey"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\t\t\tDO TakeObject\n\t\t\t\tEND\n\t\t\t\tDO MoveToObject\n\t\t\t\t\tIF ObjectHasKey? THEN\n\t\t\t\t\tDO PerformTask\n\t\t\tEND\n\tEND\n"
 }

@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If the object is approached, take it and check properties. If the destination is reached, stop moving. list of available nodes: <Action ID = TakeObject    /> <Action ID = StopMoving    /> <Action ID = MoveToObject    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <Sequence>     <Condition ID = IsDestinationReached    />     <Action ID = StopMoving    /> </Sequence> <Sequence>     <Condition ID = IsObjectApproached    />     <Action ID = TakeObject    />     <SubTree ID = CheckObjectProperties    /> </Sequence> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = MoveToObject    /> </Sequence> <Action ID = ScanAreaForObjects    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If the object is approached, take it and check properties. If the destination is reached, stop moving. list of available nodes: <Action ID = TakeObject    /> <Action ID = StopMoving    /> <Action ID = MoveToObject    /> <Action ID = ScanAreaForObjects    /> <SubTree ID = CheckObjectProperties    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = TakeObject    /> <SubTree ID = CheckObjectProperties    /> <Sequence>     <Condition ID = IsDestinationReached    />     <Action ID = StopMoving    /> </Sequence> <Sequence>     <Condition ID = IsObjectApproached    />     <Action ID = TakeObject    />     <SubTree ID = CheckObjectProperties    /> </Sequence> <Sequence>     <Condition ID = IsObjectVisible    />     <Action ID = MoveToObject    /> </Sequence> <Action ID = ScanAreaForObjects    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsDestinationReached": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsDestinationReached": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDestinationReached?": "IsDestinationReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "StopMoving",
-                            "Name": "StopMoving"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObjects",
-                    "Name": "ScanAreaForObjects"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDestinationReached?": "IsDestinationReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "StopMoving",
+                                "Name": "StopMoving"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObjects",
+                        "Name": "ScanAreaForObjects"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tDO CheckObjectProperties\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsDestinationReached? THEN\n\t\t\t\tDO StopMoving\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveToObject\n\t\tEND\n\t\tDO ScanAreaForObjects\n\tEND\n"
 }

@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move to it. If object can be picked up, pick it up, check properties, then drop it. OR if close to task location, complete task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Action ID = DropObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = CanRobotPickUpObject    /> <Condition ID = IsRobotCloseToTaskLocation    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = CompleteSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move to it. If object can be picked up, pick it up, check properties, then drop it. OR if close to task location, complete task. list of available nodes: <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Action ID = DropObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = CanRobotPickUpObject    /> <Condition ID = IsRobotCloseToTaskLocation    /> <SubTree ID = CheckObjectProperties    /> <SubTree ID = CompleteSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "CanRobotPickUpObject": "Boolean"
+                "IsRobotCloseToTaskLocation": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsRobotCloseToTaskLocation": "Boolean"
+                "CanRobotPickUpObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "CanRobotPickUpObject?": "CanRobotPickUpObject"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PickUpObject",
-                                    "Name": "PickUpObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectProperties",
-                                    "Name": "CheckObjectProperties"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "DropObject",
-                                    "Name": "DropObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsRobotCloseToTaskLocation?": "IsRobotCloseToTaskLocation"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CompleteSpecificTask",
-                                    "Name": "CompleteSpecificTask"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "CanRobotPickUpObject?": "CanRobotPickUpObject"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PickUpObject",
+                                        "Name": "PickUpObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectProperties",
+                                        "Name": "CheckObjectProperties"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "DropObject",
+                                        "Name": "DropObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsRobotCloseToTaskLocation?": "IsRobotCloseToTaskLocation"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CompleteSpecificTask",
+                                        "Name": "CompleteSpecificTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF CanRobotPickUpObject? THEN\n\t\t\t\t\tDO PickUpObject\n\t\t\tELSE\n\t\t\t\tDO CheckObjectProperties\n\t\t\t\tDO DropObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsRobotCloseToTaskLocation? THEN\n\t\t\t\t\tDO CompleteSpecificTask\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

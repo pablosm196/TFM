@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, move and take it. Then check its properties, complete a task. Or scan and move. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = CompleteSpecificTask    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToNextLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = HasObjectProperties    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If an object is visible, move and take it. Then check its properties, complete a task. Or scan and move. list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObjectProperties    /> <Action ID = CompleteSpecificTask    /> <Action ID = ScanAreaForObject    /> <Action ID = MoveToNextLocation    /> <Condition ID = IsObjectVisible    /> <Condition ID = HasObjectProperties    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,53 +9,56 @@
                 "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "HasObjectProperties?": "HasObjectProperties"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "CompleteSpecificTask",
-                    "Name": "CompleteSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "HasObjectProperties?": "HasObjectProperties"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "CompleteSpecificTask",
+                        "Name": "CompleteSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\tDO TakeObject\n\t\tSEQUENCE\n\t\t\t\tIF HasObjectProperties? THEN\n\t\t\t\tDO ProcessObjectProperties\n\t\tEND\n\t\tDO CompleteSpecificTask\n\tEND\n"
 }

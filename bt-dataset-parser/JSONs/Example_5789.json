@@ -1,41 +1,44 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is approached, take it. If it's heavy then move to destination. Scan, approach or do subtask.     list of available nodes: <Action ID = TakeObject    /> <Condition ID = isObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = DoSubtask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is approached, take it. If it's heavy then move to destination. Scan, approach or do subtask.     list of available nodes: <Action ID = TakeObject    /> <Condition ID = isObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <Action ID = ApproachObject    /> <Action ID = DoSubtask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "isObjectHeavy": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "isObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "isObjectHeavy?": "isObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToDestination",
-                    "Name": "MoveObjectToDestination"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "isObjectHeavy?": "isObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToDestination",
+                        "Name": "MoveObjectToDestination"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\t\tIF isObjectHeavy? THEN\n\t\t\tDO MoveObjectToDestination\n\tEND\n"
 }

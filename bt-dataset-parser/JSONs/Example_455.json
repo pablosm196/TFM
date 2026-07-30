@@ -1,74 +1,77 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and grab it. Hold, move, and check properties. Finally, inspect and proceed or scan area. list of available nodes: <Action ID = ScanAreaForObjects    /> <Action ID = ApproachObject    /> <Action ID = GrabAndHoldObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectClean    /> <Condition ID = IsObjectHeavy    /> <Action ID = ProceedToNextObject    /> <Action ID = MoveObjectToDesignatedArea    /> <SubTree ID = InspectObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and grab it. Hold, move, and check properties. Finally, inspect and proceed or scan area. list of available nodes: <Action ID = ScanAreaForObjects    /> <Action ID = ApproachObject    /> <Action ID = GrabAndHoldObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectClean    /> <Condition ID = IsObjectHeavy    /> <Action ID = ProceedToNextObject    /> <Action ID = MoveObjectToDesignatedArea    /> <SubTree ID = InspectObject    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectHeavy": "Boolean"
+            },
             {
                 "IsObjectClean": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
-            },
-            {
-                "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "GrabAndHoldObject",
-                    "Name": "GrabAndHoldObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToDesignatedArea",
-                            "Name": "MoveObjectToDesignatedArea"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectClean?": "IsObjectClean"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProceedToNextObject",
-                            "Name": "ProceedToNextObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "GrabAndHoldObject",
+                        "Name": "GrabAndHoldObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToDesignatedArea",
+                                "Name": "MoveObjectToDesignatedArea"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectClean?": "IsObjectClean"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProceedToNextObject",
+                                "Name": "ProceedToNextObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO GrabAndHoldObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToDesignatedArea\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectClean? THEN\n\t\t\t\tDO ProceedToNextObject\n\t\tEND\n\tEND\n"
 }

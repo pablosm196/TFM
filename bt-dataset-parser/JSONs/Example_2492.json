@@ -1,48 +1,51 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move to it and take it. Perform task. If not, scan area or patrol. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Action ID = CanTakeObject    /> <Action ID = TakeObject    /> <SubTree ID = PerformTask    /> <Action ID = ScanAreaForObject    /> <Action ID = PatrolArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move to it and take it. Perform task. If not, scan area or patrol. list of available nodes: <Action ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Action ID = CanTakeObject    /> <Action ID = TakeObject    /> <SubTree ID = PerformTask    /> <Action ID = ScanAreaForObject    /> <Action ID = PatrolArea    />\"",
     "BT": {
         "Blackboard": [
             {
-                "CanTakeObject": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "CanTakeObject": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObject",
-                    "Name": "MoveToObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "CanTakeObject?": "CanTakeObject"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformTask",
-                    "Name": "PerformTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObject",
+                        "Name": "MoveToObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "CanTakeObject?": "CanTakeObject"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformTask",
+                        "Name": "PerformTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToObject\n\tELSE\n\t\t\tIF CanTakeObject? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO PerformTask\n\tEND\n"
 }

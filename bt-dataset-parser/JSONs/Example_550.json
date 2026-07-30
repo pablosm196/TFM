@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, move to object, take object, check properties, perform specific task. If object unreachable, scan again. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObjectProperties    /> <SubTree ID = PerformSpecificTask    /> <Action ID = MoveToLocation    /> <Condition ID = IsObjectLocated    /> <Condition ID = ObjectIsReachable    /> <Condition ID = ObjectIsUnreachable    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, move to object, take object, check properties, perform specific task. If object unreachable, scan again. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = TakeObject    /> <SubTree ID = ProcessObjectProperties    /> <SubTree ID = PerformSpecificTask    /> <Action ID = MoveToLocation    /> <Condition ID = IsObjectLocated    /> <Condition ID = ObjectIsReachable    /> <Condition ID = ObjectIsUnreachable    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectLocated": "Boolean"
             },
             {
-                "ObjectIsReachable": "Boolean"
+                "ObjectIsUnreachable": "Boolean"
             },
             {
-                "ObjectIsUnreachable": "Boolean"
+                "ObjectIsReachable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectLocated?": "IsObjectLocated"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToLocation",
-                    "Name": "MoveToLocation"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectIsUnreachable?": "ObjectIsUnreachable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "ScanForObject",
-                                    "Name": "ScanForObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "ObjectIsReachable?": "ObjectIsReachable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObjectProperties",
-                                    "Name": "ProcessObjectProperties"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PerformSpecificTask",
-                                    "Name": "PerformSpecificTask"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectLocated?": "IsObjectLocated"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToLocation",
+                        "Name": "MoveToLocation"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectIsUnreachable?": "ObjectIsUnreachable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "ScanForObject",
+                                        "Name": "ScanForObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "ObjectIsReachable?": "ObjectIsReachable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObjectProperties",
+                                        "Name": "ProcessObjectProperties"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PerformSpecificTask",
+                                        "Name": "PerformSpecificTask"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectLocated? THEN\n\t\t\tDO MoveToLocation\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectIsUnreachable? THEN\n\t\t\t\t\tDO ScanForObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF ObjectIsReachable? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObjectProperties\n\t\t\t\tDO PerformSpecificTask\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

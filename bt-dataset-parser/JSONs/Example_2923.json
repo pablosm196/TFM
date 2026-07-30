@@ -1,71 +1,74 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     First, find and approach an object. Pick it up, perform a task if necessary. Finally, put the object down. Or continue scanning.     list of available nodes: <Action ID = FindObject    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Condition ID = CheckObjectWeight    /> <Condition ID = CheckObjectSize    /> <SubTree ID = PerformTask    /> <Action ID = PutDownObject    /> <Action ID = ScanArea    /> <Action ID = MoveToNextArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     First, find and approach an object. Pick it up, perform a task if necessary. Finally, put the object down. Or continue scanning.     list of available nodes: <Action ID = FindObject    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToObject    /> <Action ID = PickUpObject    /> <Condition ID = CheckObjectWeight    /> <Condition ID = CheckObjectSize    /> <SubTree ID = PerformTask    /> <Action ID = PutDownObject    /> <Action ID = ScanArea    /> <Action ID = MoveToNextArea    />\"",
     "BT": {
         "Blackboard": [
             {
                 "CheckObjectSize": "Boolean"
             },
             {
-                "CheckObjectWeight": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "CheckObjectWeight": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "FindObject",
-                    "Name": "FindObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CheckObjectSize?": "CheckObjectSize"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformTask",
-                            "Name": "PerformTask"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "PutDownObject",
-                            "Name": "PutDownObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "FindObject",
+                        "Name": "FindObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CheckObjectSize?": "CheckObjectSize"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformTask",
+                                "Name": "PerformTask"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "PutDownObject",
+                                "Name": "PutDownObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO FindObject\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO PickUpObject\n\t\t\t\tIF CheckObjectSize? THEN\n\t\t\t\tDO PerformTask\n\t\tELSE\n\t\t\tDO PutDownObject\n\t\tEND\n\tEND\n"
 }

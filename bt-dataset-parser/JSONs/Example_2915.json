@@ -1,101 +1,104 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and take it. Move to drop zone. Perform subtask if in proximity. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = MoveToObjectDropZone    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsInProximityToTarget    /> <Condition ID = IsObjectGrasped    /> <SubTree ID = ProcessObject    /> <SubTree ID = PerformSubtask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, approach and take it. Move to drop zone. Perform subtask if in proximity. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = MoveToObject    /> <Action ID = MoveToObjectDropZone    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsPathBlocked    /> <Condition ID = IsInProximityToTarget    /> <Condition ID = IsObjectGrasped    /> <SubTree ID = ProcessObject    /> <SubTree ID = PerformSubtask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectGrasped": "Boolean"
+                "IsInProximityToTarget": "Boolean"
             },
             {
                 "IsObjectVisible": "Boolean"
             },
             {
-                "IsInProximityToTarget": "Boolean"
+                "IsPathBlocked": "Boolean"
             },
             {
-                "IsPathBlocked": "Boolean"
+                "IsObjectGrasped": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsPathBlocked?": "IsPathBlocked"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectGrasped?": "IsObjectGrasped"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObjectDropZone",
-                            "Name": "MoveToObjectDropZone"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsInProximityToTarget?": "IsInProximityToTarget"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformSubtask",
-                            "Name": "PerformSubtask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsPathBlocked?": "IsPathBlocked"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectGrasped?": "IsObjectGrasped"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObjectDropZone",
+                                "Name": "MoveToObjectDropZone"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsInProximityToTarget?": "IsInProximityToTarget"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformSubtask",
+                                "Name": "PerformSubtask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\tDO ProcessObject\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsPathBlocked? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\t\tIF IsObjectGrasped? THEN\n\t\t\t\tDO MoveToObjectDropZone\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsInProximityToTarget? THEN\n\t\t\t\tDO PerformSubtask\n\t\tEND\n\tEND\n"
 }

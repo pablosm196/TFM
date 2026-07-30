@@ -1,48 +1,51 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If grabbed, process it. If not, approach and scan area.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectInGripper    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToTarget    /> <Action ID = ApproachObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find and grab object. If grabbed, process it. If not, approach and scan area.     list of available nodes: <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Condition ID = IsObjectVisible    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectInGripper    /> <Action ID = CheckObjectProperties    /> <Action ID = MoveToTarget    /> <Action ID = ApproachObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectInGripper": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectInGripper": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToTarget",
-                    "Name": "MoveToTarget"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectInGripper?": "IsObjectInGripper"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "CheckObjectProperties",
-                    "Name": "CheckObjectProperties"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToTarget",
+                        "Name": "MoveToTarget"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectInGripper?": "IsObjectInGripper"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "CheckObjectProperties",
+                        "Name": "CheckObjectProperties"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToTarget\n\tELSE\n\t\t\tIF IsObjectInGripper? THEN\n\t\t\tDO CheckObjectProperties\n\tELSE\n\t\tDO SpecificTask\n\tEND\n"
 }

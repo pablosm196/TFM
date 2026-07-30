@@ -1,93 +1,96 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Robot takes object, if heavy, calls help. If stuck, navigates clear path. Deposits object at designated location. list of available nodes: <Action ID = TakeObject    /> <Action ID = CallForHelp    /> <Action ID = DepositObject    /> <Action ID = NavigateToClearPath    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectAtDesignatedLocation    /> <Condition ID = IsRobotStuck    /> <SubTree ID = [Task]    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Robot takes object, if heavy, calls help. If stuck, navigates clear path. Deposits object at designated location. list of available nodes: <Action ID = TakeObject    /> <Action ID = CallForHelp    /> <Action ID = DepositObject    /> <Action ID = NavigateToClearPath    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectAtDesignatedLocation    /> <Condition ID = IsRobotStuck    /> <SubTree ID = [Task]    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectAtDesignatedLocation": "Boolean"
+                "IsRobotStuck": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
-                "IsRobotStuck": "Boolean"
+                "IsObjectAtDesignatedLocation": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallForHelp",
-                            "Name": "CallForHelp"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectAtDesignatedLocation?": "IsObjectAtDesignatedLocation"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "DepositObject",
-                                    "Name": "DepositObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsRobotStuck?": "IsRobotStuck"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "NavigateToClearPath",
-                                    "Name": "NavigateToClearPath"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallForHelp",
+                                "Name": "CallForHelp"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectAtDesignatedLocation?": "IsObjectAtDesignatedLocation"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "DepositObject",
+                                        "Name": "DepositObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsRobotStuck?": "IsRobotStuck"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "NavigateToClearPath",
+                                        "Name": "NavigateToClearPath"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CallForHelp\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectAtDesignatedLocation? THEN\n\t\t\t\t\tDO DepositObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsRobotStuck? THEN\n\t\t\t\t\tDO NavigateToClearPath\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

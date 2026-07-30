@@ -1,94 +1,97 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object seen, then approach, pick-up. If heavy, move to target. If dirty, clean. Else fix it. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = MoveObjectToTarget    /> <Action ID = CleanObject    /> <Action ID = FixObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectBroken    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object seen, then approach, pick-up. If heavy, move to target. If dirty, clean. Else fix it. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ProcessObject    /> <Action ID = MoveObjectToTarget    /> <Action ID = CleanObject    /> <Action ID = FixObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectBroken    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectBroken": "Boolean"
+                "IsObjectClean": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectClean": "Boolean"
+                "IsObjectBroken": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PickupObject",
-                    "Name": "PickupObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToTarget",
-                    "Name": "MoveObjectToTarget"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectClean?": "IsObjectClean"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "CleanObject",
-                                    "Name": "CleanObject"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectBroken?": "IsObjectBroken"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FixObject",
-                                    "Name": "FixObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PickupObject",
+                        "Name": "PickupObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToTarget",
+                        "Name": "MoveObjectToTarget"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectClean?": "IsObjectClean"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "CleanObject",
+                                        "Name": "CleanObject"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectBroken?": "IsObjectBroken"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FixObject",
+                                        "Name": "FixObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tDO PickupObject\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToTarget\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectClean? THEN\n\t\t\t\t\tDO CleanObject\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectBroken? THEN\n\t\t\t\t\tDO FixObject\n\t\t\tEND\n\t\tEND\n\tEND\n"
 }

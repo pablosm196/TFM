@@ -1,62 +1,65 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Approach object, take and lift it. If heavy, activate mechanism. Move and activate task. Else, scan. list of available nodes: <Action ID = ActivateLiftingMechanism    /> <Action ID = ActivateTaskMechanism    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Action ID = ScanSurroundings    /> <Action ID = TakeObject    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToDestination    /> <SubTree ID = ProcessObject    /> <SubTree ID = MoveToDestination    /> <SubTree ID = TakeObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Approach object, take and lift it. If heavy, activate mechanism. Move and activate task. Else, scan. list of available nodes: <Action ID = ActivateLiftingMechanism    /> <Action ID = ActivateTaskMechanism    /> <Action ID = ApproachObject    /> <Action ID = GrabObject    /> <Action ID = ScanAreaForObject    /> <Action ID = ScanSurroundings    /> <Action ID = TakeObject    /> <Condition ID = IsDestinationReached    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectVisible    /> <Action ID = MoveToDestination    /> <SubTree ID = ProcessObject    /> <SubTree ID = MoveToDestination    /> <SubTree ID = TakeObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsDestinationReached": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsDestinationReached": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ActivateLiftingMechanism",
-                    "Name": "ActivateLiftingMechanism"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToDestination",
-                    "Name": "MoveToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsDestinationReached?": "IsDestinationReached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ActivateTaskMechanism",
-                    "Name": "ActivateTaskMechanism"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ActivateLiftingMechanism",
+                        "Name": "ActivateLiftingMechanism"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToDestination",
+                        "Name": "MoveToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsDestinationReached?": "IsDestinationReached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ActivateTaskMechanism",
+                        "Name": "ActivateTaskMechanism"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO ActivateLiftingMechanism\n\tELSE\n\t\tDO MoveToDestination\n\t\t\tIF IsDestinationReached? THEN\n\t\t\tDO ActivateTaskMechanism\n\tEND\n"
 }

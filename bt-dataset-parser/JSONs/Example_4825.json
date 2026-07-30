@@ -1,67 +1,70 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. 1. If object is visible, approach it.  2. Then, if object is movable, move and check properties.  3. In order to complete task, execute specific subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = SpecificRobotTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectMovable    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. 1. If object is visible, approach it.  2. Then, if object is movable, move and check properties.  3. In order to complete task, execute specific subtree. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveObject    /> <Action ID = CheckObjectProperties    /> <SubTree ID = SpecificRobotTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectMovable    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectMovable": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectMovable": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectMovable?": "IsObjectMovable"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveObject",
-                                    "Name": "MoveObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectProperties",
-                                    "Name": "CheckObjectProperties"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificRobotTask",
-                            "Name": "SpecificRobotTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectMovable?": "IsObjectMovable"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveObject",
+                                        "Name": "MoveObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectProperties",
+                                        "Name": "CheckObjectProperties"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificRobotTask",
+                                "Name": "SpecificRobotTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectMovable? THEN\n\t\t\t\t\tDO MoveObject\n\t\t\tELSE\n\t\t\t\tDO CheckObjectProperties\n\t\t\tEND\n\t\t\tDO SpecificRobotTask\n\t\tEND\n\tEND\n"
 }

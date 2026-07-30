@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object visible, then approach, take, process the object. Else, search for object. Avoid obstacle. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectProcessed    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Fallback>     <Sequence>         <Condition ID = IsObstacleBlocked    />         <Action ID = MoveAroundObstacle    />     </Sequence>     <Action ID = SearchForObject    /> </Fallback>",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object visible, then approach, take, process the object. Else, search for object. Avoid obstacle. list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Condition ID = IsObjectProcessed    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectVisible    /> <Fallback>     <Sequence>         <Condition ID = IsObstacleBlocked    />         <Action ID = MoveAroundObstacle    />     </Sequence>     <Action ID = SearchForObject    /> </Fallback>\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "IsObjectProcessed": "Boolean"
             },
             {
                 "IsObstacleBlocked": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectProcessed?": "IsObjectProcessed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessObject",
-                            "Name": "ProcessObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObstacleBlocked?": "IsObstacleBlocked"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "MoveAroundObstacle",
-                                    "Name": "MoveAroundObstacle"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SearchForObject",
-                            "Name": "SearchForObject"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectProcessed?": "IsObjectProcessed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessObject",
+                                "Name": "ProcessObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObstacleBlocked?": "IsObstacleBlocked"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "MoveAroundObstacle",
+                                        "Name": "MoveAroundObstacle"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SearchForObject",
+                                "Name": "SearchForObject"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\tDO TakeObject\n\t\t\t\t\tIF IsObjectProcessed? THEN\n\t\t\t\t\tDO ProcessObject\n\t\t\tEND\n\tELSE\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObstacleBlocked? THEN\n\t\t\t\t\tDO MoveAroundObstacle\n\t\t\tEND\n\t\t\tDO SearchForObject\n\t\tEND\n\tEND\n"
 }

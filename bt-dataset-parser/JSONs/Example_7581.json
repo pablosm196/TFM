@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan area. If object visible, approach, pick up. Then process: if red, sort to red zone. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = PickUpObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectRed    /> <Action ID = SortObjectToRedZone    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Scan area. If object visible, approach, pick up. Then process: if red, sort to red zone. list of available nodes: <Action ID = ScanAreaForObject    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Action ID = PickUpObject    /> <SubTree ID = ProcessObject    /> <Condition ID = IsObjectRed    /> <Action ID = SortObjectToRedZone    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectRed": "Boolean"
             },
             {
-                "IsObjectRed": "Boolean"
+                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanAreaForObject",
-                    "Name": "ScanAreaForObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PickUpObject",
-                            "Name": "PickUpObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectRed?": "IsObjectRed"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "SortObjectToRedZone",
-                            "Name": "SortObjectToRedZone"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanAreaForObject",
+                        "Name": "ScanAreaForObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PickUpObject",
+                                "Name": "PickUpObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectRed?": "IsObjectRed"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "SortObjectToRedZone",
+                                "Name": "SortObjectToRedZone"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\tDO ScanAreaForObject\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO ApproachObject\n\t\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\t\tDO PickUpObject\n\t\t\tELSE\n\t\t\t\t\tIF IsObjectRed? THEN\n\t\t\t\t\tDO SortObjectToRedZone\n\t\t\tEND\n\tEND\n"
 }

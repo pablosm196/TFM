@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. If unreachable, search. Then pick up. If heavy, call support. list of available nodes: <Action ID = PickUpObject    /> <Action ID = CallSupport    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectHeavy    /> <Sequence>     <Action ID = GrabObject    />     <SubTree ID = ProcessObject    />     <Condition ID = IsObjectApproached    /> </Sequence> <Action ID = SearchForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, approach it. If unreachable, search. Then pick up. If heavy, call support. list of available nodes: <Action ID = PickUpObject    /> <Action ID = CallSupport    /> <Action ID = ApproachObject    /> <Condition ID = IsObjectHeavy    /> <Sequence>     <Action ID = GrabObject    />     <SubTree ID = ProcessObject    />     <Condition ID = IsObjectApproached    /> </Sequence> <Action ID = SearchForObject    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,39 +9,42 @@
                 "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "CallSupport",
-                            "Name": "CallSupport"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "CallSupport",
+                                "Name": "CallSupport"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO PickUpObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO CallSupport\n\t\tEND\n\tEND\n"
 }

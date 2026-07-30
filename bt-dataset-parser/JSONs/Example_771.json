@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and retrieve visible object. If unreachable then take, check, move and place it. list of available nodes: <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    />  <Condition ID = IsObjectReached    /> <Action ID = MoveToEndLocation    /> <Action ID = TakeObject    />  <Action ID = CheckObjectWeight    />  <Sequence>  <SubTree ID = FindAndRetrieveObject    />  </Sequence>  <Action ID = PlaceObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and retrieve visible object. If unreachable then take, check, move and place it. list of available nodes: <Action ID = ApproachObject    /> <Condition ID = IsObjectVisible    />  <Condition ID = IsObjectReached    /> <Action ID = MoveToEndLocation    /> <Action ID = TakeObject    />  <Action ID = CheckObjectWeight    />  <Sequence>  <SubTree ID = FindAndRetrieveObject    />  </Sequence>  <Action ID = PlaceObject    />\"",
     "BT": {
         "Blackboard": [
             {
@@ -9,66 +9,69 @@
                 "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [
-                        {
-                            "IsObjectReached?": "IsObjectReached"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "CheckObjectWeight",
-                                    "Name": "CheckObjectWeight"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "MoveToEndLocation",
-                                    "Name": "MoveToEndLocation"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "PlaceObject",
-                                    "Name": "PlaceObject"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [
+                            {
+                                "IsObjectReached?": "IsObjectReached"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "CheckObjectWeight",
+                                        "Name": "CheckObjectWeight"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "MoveToEndLocation",
+                                        "Name": "MoveToEndLocation"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "PlaceObject",
+                                        "Name": "PlaceObject"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectReached? THEN\n\t\t\tSELECTOR\n\t\t\t\tDO TakeObject\n\t\t\t\tSEQUENCE\n\t\t\t\t\tDO CheckObjectWeight\n\t\t\t\t\tDO MoveToEndLocation\n\t\t\t\t\tDO PlaceObject\n\t\t\t\tEND\n\t\t\tEND\n\tEND\n"
 }

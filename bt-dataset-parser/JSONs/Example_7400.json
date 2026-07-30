@@ -1,10 +1,7 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and take it. If small, put in container. Else, move to area. Complete specific task. list of available nodes: <Action ID = MoveToFindObject    /> <Action ID = TakeObject    /> <Action ID = PutInContainer    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectSmall    /> <Condition ID = IsObjectBig    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object is visible, move and take it. If small, put in container. Else, move to area. Complete specific task. list of available nodes: <Action ID = MoveToFindObject    /> <Action ID = TakeObject    /> <Action ID = PutInContainer    /> <Action ID = MoveObjectToDesignatedArea    /> <Action ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectSmall    /> <Condition ID = IsObjectBig    />\"",
     "BT": {
         "Blackboard": [
-            {
-                "IsObjectSmall": "Boolean"
-            },
             {
                 "IsObjectApproached": "Boolean"
             },
@@ -12,89 +9,95 @@
                 "IsObjectVisible": "Boolean"
             },
             {
+                "IsObjectSmall": "Boolean"
+            },
+            {
                 "IsObjectBig": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToFindObject",
-                    "Name": "MoveToFindObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectApproached?": "IsObjectApproached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectSmall?": "IsObjectSmall"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PutInContainer",
-                                            "Name": "PutInContainer"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectBig?": "IsObjectBig"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "MoveObjectToDesignatedArea",
-                                            "Name": "MoveObjectToDesignatedArea"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToFindObject",
+                        "Name": "MoveToFindObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectApproached?": "IsObjectApproached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectSmall?": "IsObjectSmall"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PutInContainer",
+                                                "Name": "PutInContainer"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectBig?": "IsObjectBig"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "MoveObjectToDesignatedArea",
+                                                "Name": "MoveObjectToDesignatedArea"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToFindObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectApproached? THEN\n\t\t\t\tDO TakeObject\n\t\tELSE\n\t\t\tSELECTOR\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectSmall? THEN\n\t\t\t\t\t\tDO PutInContainer\n\t\t\t\tEND\n\t\t\t\tSEQUENCE\n\t\t\t\t\t\tIF IsObjectBig? THEN\n\t\t\t\t\t\tDO MoveObjectToDesignatedArea\n\t\t\t\tEND\n\t\t\tEND\n\t\t\tDO SpecificTask\n\t\tEND\n\tEND\n"
 }

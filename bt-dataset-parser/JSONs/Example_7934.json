@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find and grab an object. Move and check danger, then perform task or scan. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToPosition    /> <Action ID = PerformTask    /> <Action ID = ScanArea    /> <Action ID = FindAlternativePath    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsAreaSafe    /> <Condition ID = IsPathBlocked    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find and grab an object. Move and check danger, then perform task or scan. list of available nodes: <Action ID = TakeObject    /> <Action ID = MoveToPosition    /> <Action ID = PerformTask    /> <Action ID = ScanArea    /> <Action ID = FindAlternativePath    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsAreaSafe    /> <Condition ID = IsPathBlocked    />\"",
     "BT": {
         "Blackboard": [
             {
                 "IsObjectApproached": "Boolean"
             },
             {
-                "IsPathBlocked": "Boolean"
+                "IsAreaSafe": "Boolean"
             },
             {
-                "IsAreaSafe": "Boolean"
+                "IsPathBlocked": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "MoveToPosition",
-                    "Name": "MoveToPosition"
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsAreaSafe?": "IsAreaSafe"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "PerformTask",
-                                    "Name": "PerformTask"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsPathBlocked?": "IsPathBlocked"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "FindAlternativePath",
-                                    "Name": "FindAlternativePath"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "MoveToPosition",
+                        "Name": "MoveToPosition"
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsAreaSafe?": "IsAreaSafe"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "PerformTask",
+                                        "Name": "PerformTask"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsPathBlocked?": "IsPathBlocked"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "FindAlternativePath",
+                                        "Name": "FindAlternativePath"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tDO MoveToPosition\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsAreaSafe? THEN\n\t\t\t\t\tDO PerformTask\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsPathBlocked? THEN\n\t\t\t\t\tDO FindAlternativePath\n\t\t\tEND\n\t\t\tDO ScanArea\n\t\tEND\n\tEND\n"
 }

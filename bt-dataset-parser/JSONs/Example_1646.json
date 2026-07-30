@@ -1,88 +1,91 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If low battery, go charge. If object in sight, approach, take, and inspect. Else explore. list of available nodes: <Action ID = MoveToChargeStation    /> <Action ID = TakeObject    /> <Action ID = InspectObject    /> <Condition ID = CheckBatteryLevel    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsManipulatorFree    /> <Action ID = ApproachObject    /> <Action ID = ExploreArea    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If low battery, go charge. If object in sight, approach, take, and inspect. Else explore. list of available nodes: <Action ID = MoveToChargeStation    /> <Action ID = TakeObject    /> <Action ID = InspectObject    /> <Condition ID = CheckBatteryLevel    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsManipulatorFree    /> <Action ID = ApproachObject    /> <Action ID = ExploreArea    />\"",
     "BT": {
         "Blackboard": [
             {
                 "CheckBatteryLevel": "Boolean"
             },
             {
-                "IsManipulatorFree": "Boolean"
+                "IsObjectVisible": "Boolean"
             },
             {
-                "IsObjectVisible": "Boolean"
+                "IsManipulatorFree": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "CheckBatteryLevel?": "CheckBatteryLevel"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToChargeStation",
-                            "Name": "MoveToChargeStation"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectVisible?": "IsObjectVisible"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ApproachObject",
-                            "Name": "ApproachObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsManipulatorFree?": "IsManipulatorFree"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                }
-                            ],
-                            "Name": "GrabObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "InspectObject",
-                            "Name": "InspectObject"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreArea",
-                    "Name": "ExploreArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "CheckBatteryLevel?": "CheckBatteryLevel"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToChargeStation",
+                                "Name": "MoveToChargeStation"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectVisible?": "IsObjectVisible"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ApproachObject",
+                                "Name": "ApproachObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsManipulatorFree?": "IsManipulatorFree"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    }
+                                ],
+                                "Name": "GrabObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "InspectObject",
+                                "Name": "InspectObject"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreArea",
+                        "Name": "ExploreArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF CheckBatteryLevel? THEN\n\t\t\t\tDO MoveToChargeStation\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectVisible? THEN\n\t\t\t\tDO ApproachObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsManipulatorFree? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tEND\n\t\t\tDO InspectObject\n\t\tEND\n\t\tDO ExploreArea\n\tEND\n"
 }

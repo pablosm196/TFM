@@ -1,68 +1,71 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find, grab, move and check properties of a visible object, store it, and perform a specific task finally. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToObjectStorage    /> <Action ID = ScanAreaForObject    /> <Action ID = ProcessObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectStored    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find, grab, move and check properties of a visible object, store it, and perform a specific task finally. list of available nodes: <Action ID = ApproachObject    /> <Action ID = MoveToObjectStorage    /> <Action ID = ScanAreaForObject    /> <Action ID = ProcessObjectProperties    /> <SubTree ID = SpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectGrabbed    /> <Condition ID = IsObjectStored    />\"",
     "BT": {
         "Blackboard": [
+            {
+                "IsObjectVisible": "Boolean"
+            },
             {
                 "IsObjectStored": "Boolean"
             },
             {
                 "IsObjectGrabbed": "Boolean"
-            },
-            {
-                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ApproachObject",
-                    "Name": "ApproachObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectGrabbed?": "IsObjectGrabbed"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToObjectStorage",
-                    "Name": "MoveToObjectStorage"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectStored?": "IsObjectStored"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ProcessObjectProperties",
-                            "Name": "ProcessObjectProperties"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "SpecificTask",
-                            "Name": "SpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ApproachObject",
+                        "Name": "ApproachObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectGrabbed?": "IsObjectGrabbed"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToObjectStorage",
+                        "Name": "MoveToObjectStorage"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectStored?": "IsObjectStored"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ProcessObjectProperties",
+                                "Name": "ProcessObjectProperties"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "SpecificTask",
+                                "Name": "SpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO ApproachObject\n\tELSE\n\t\t\tIF IsObjectGrabbed? THEN\n\t\t\tDO MoveToObjectStorage\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectStored? THEN\n\t\t\t\tDO ProcessObjectProperties\n\t\tELSE\n\t\t\tDO SpecificTask\n\t\tEND\n\tEND\n"
 }

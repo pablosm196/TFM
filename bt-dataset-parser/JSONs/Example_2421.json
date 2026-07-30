@@ -1,87 +1,90 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     Find object, take it, check properties. Perform specific task. If lost, explore area.     list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = ExploreArea    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsTaskSpecificAreaReached    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWithinReach    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <SubTree ID = ProcessObjectProperties    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     Find object, take it, check properties. Perform specific task. If lost, explore area.     list of available nodes: <Action ID = MoveTowardsObject    /> <Action ID = TakeObject    /> <Action ID = ExploreArea    /> <Action ID = ScanAreaForObject    /> <Action ID = GrabObject    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsTaskSpecificAreaReached    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectWithinReach    /> <Action ID = ApproachObject    /> <SubTree ID = ProcessObject    /> <SubTree ID = ProcessObjectProperties    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTaskSpecificAreaReached": "Boolean"
+                "IsObjectWithinReach": "Boolean"
             },
             {
-                "IsObjectWithinReach": "Boolean"
+                "IsTaskSpecificAreaReached": "Boolean"
             },
             {
                 "IsObjectInView": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectInView?": "IsObjectInView"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveTowardsObject",
-                            "Name": "MoveTowardsObject"
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectWithinReach?": "IsObjectWithinReach"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "TakeObject",
-                                    "Name": "TakeObject"
-                                },
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [],
-                                    "Nodes": [],
-                                    "Task": "ProcessObjectProperties",
-                                    "Name": "ProcessObjectProperties"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsTaskSpecificAreaReached?": "IsTaskSpecificAreaReached"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "PerformSpecificTask",
-                            "Name": "PerformSpecificTask"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ExploreArea",
-                    "Name": "ExploreArea"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectInView?": "IsObjectInView"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveTowardsObject",
+                                "Name": "MoveTowardsObject"
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectWithinReach?": "IsObjectWithinReach"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "TakeObject",
+                                        "Name": "TakeObject"
+                                    },
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [],
+                                        "Nodes": [],
+                                        "Task": "ProcessObjectProperties",
+                                        "Name": "ProcessObjectProperties"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsTaskSpecificAreaReached?": "IsTaskSpecificAreaReached"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "PerformSpecificTask",
+                                "Name": "PerformSpecificTask"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ExploreArea",
+                        "Name": "ExploreArea"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectInView? THEN\n\t\t\t\tDO MoveTowardsObject\n\t\tELSE\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectWithinReach? THEN\n\t\t\t\t\tDO TakeObject\n\t\t\tELSE\n\t\t\t\tDO ProcessObjectProperties\n\t\t\tEND\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsTaskSpecificAreaReached? THEN\n\t\t\t\tDO PerformSpecificTask\n\t\tEND\n\t\tDO ExploreArea\n\tEND\n"
 }

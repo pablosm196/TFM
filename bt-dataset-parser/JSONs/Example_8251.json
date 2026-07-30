@@ -1,93 +1,96 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Find object, approach it, take it, check properties, perform task. Do it quickly and efficiently. list of available nodes: <Action ID = CheckObjectProperties    /> <Action ID = MoveToNextObject    /> <Action ID = PickupLargeObject    /> <Action ID = PickupSmallObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectLarge    /> <Condition ID = IsObjectSmall    /> <SubTree ID = DoSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Find object, approach it, take it, check properties, perform task. Do it quickly and efficiently. list of available nodes: <Action ID = CheckObjectProperties    /> <Action ID = MoveToNextObject    /> <Action ID = PickupLargeObject    /> <Action ID = PickupSmallObject    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectLarge    /> <Condition ID = IsObjectSmall    /> <SubTree ID = DoSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectSmall": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsObjectSmall": "Boolean"
             },
             {
                 "IsObjectLarge": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [
-                        {
-                            "IsObjectFound?": "IsObjectFound"
-                        }
-                    ],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "MoveToNextObject",
-                            "Name": "MoveToNextObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "CheckObjectProperties",
-                            "Name": "CheckObjectProperties"
-                        },
-                        {
-                            "Type": "Selector",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectLarge?": "IsObjectLarge"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PickupLargeObject",
-                                            "Name": "PickupLargeObject"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Type": "Sequence",
-                                    "Decorators": [],
-                                    "Nodes": [
-                                        {
-                                            "Type": "Task",
-                                            "Decorators": [
-                                                {
-                                                    "IsObjectSmall?": "IsObjectSmall"
-                                                }
-                                            ],
-                                            "Nodes": [],
-                                            "Task": "PickupSmallObject",
-                                            "Name": "PickupSmallObject"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "DoSpecificTask",
-                    "Name": "DoSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [
+                            {
+                                "IsObjectFound?": "IsObjectFound"
+                            }
+                        ],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "MoveToNextObject",
+                                "Name": "MoveToNextObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "CheckObjectProperties",
+                                "Name": "CheckObjectProperties"
+                            },
+                            {
+                                "Type": "Selector",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectLarge?": "IsObjectLarge"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PickupLargeObject",
+                                                "Name": "PickupLargeObject"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Type": "Sequence",
+                                        "Decorators": [],
+                                        "Nodes": [
+                                            {
+                                                "Type": "Task",
+                                                "Decorators": [
+                                                    {
+                                                        "IsObjectSmall?": "IsObjectSmall"
+                                                    }
+                                                ],
+                                                "Nodes": [],
+                                                "Task": "PickupSmallObject",
+                                                "Name": "PickupSmallObject"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "DoSpecificTask",
+                        "Name": "DoSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectFound? THEN\n\t\t\tSEQUENCE\n\t\t\t\tDO MoveToNextObject\n\t\t\t\tDO CheckObjectProperties\n\t\t\t\tSELECTOR\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectLarge? THEN\n\t\t\t\t\t\t\tDO PickupLargeObject\n\t\t\t\t\tEND\n\t\t\t\t\tSEQUENCE\n\t\t\t\t\t\t\tIF IsObjectSmall? THEN\n\t\t\t\t\t\t\tDO PickupSmallObject\n\t\t\t\t\tEND\n\t\t\t\tEND\n\t\t\tEND\n\tELSE\n\t\tDO DoSpecificTask\n\tEND\n"
 }

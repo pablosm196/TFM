@@ -1,55 +1,58 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. Scan the area. If object is visible, move to it, pick it up, move it, perform task. Else, search another area. list of available nodes: <Action ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectInReach    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    /> <Action ID = MoveToPickLocation    /> <Action ID = PickUpObject    /> <Action ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <SubTree ID = SpecificTask    /> <Action ID = SearchAnotherArea    /> <Action ID = MoveToApproachLocation    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. Scan the area. If object is visible, move to it, pick it up, move it, perform task. Else, search another area. list of available nodes: <Action ID = IsObjectVisible    /> <Condition ID = IsObjectApproached    /> <Condition ID = IsObjectInReach    /> <Action ID = GrabObject    /> <Action ID = ApproachObject    /> <Action ID = ScanAreaForObject    /> <SubTree ID = ProcessObject    /> <Action ID = MoveToPickLocation    /> <Action ID = PickUpObject    /> <Action ID = IsObjectHeavy    /> <Action ID = MoveObjectToDestination    /> <SubTree ID = SpecificTask    /> <Action ID = SearchAnotherArea    /> <Action ID = MoveToApproachLocation    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectVisible": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectVisible": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectVisible?": "IsObjectVisible"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveToPickLocation",
-                    "Name": "MoveToPickLocation"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PickUpObject",
-                    "Name": "PickUpObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectHeavy?": "IsObjectHeavy"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "MoveObjectToDestination",
-                    "Name": "MoveObjectToDestination"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "SpecificTask",
-                    "Name": "SpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectVisible?": "IsObjectVisible"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveToPickLocation",
+                        "Name": "MoveToPickLocation"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PickUpObject",
+                        "Name": "PickUpObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectHeavy?": "IsObjectHeavy"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "MoveObjectToDestination",
+                        "Name": "MoveObjectToDestination"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "SpecificTask",
+                        "Name": "SpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectVisible? THEN\n\t\t\tDO MoveToPickLocation\n\tELSE\n\t\tDO PickUpObject\n\t\t\tIF IsObjectHeavy? THEN\n\t\t\tDO MoveObjectToDestination\n\tELSE\n\t\tDO SpecificTask\n\tEND\n"
 }

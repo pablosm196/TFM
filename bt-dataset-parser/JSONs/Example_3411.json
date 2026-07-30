@@ -1,48 +1,51 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If task object is visible, approach it, take it, move it, do a task and return it. list of available nodes: <Action ID = GrabTaskObject    /> <Action ID = MoveTaskObjectToDesignatedLocation    /> <Action ID = TakeTaskObject    /> <Action ID = ApproachTaskObject    /> <Action ID = ReturnTaskObject    /> <Action ID = ScanAreaForTaskObject    /> <SubTree ID = ProcessTask    /> <Condition ID = IsTaskSuccessful    /> <Condition ID = IsTaskObjectHeavy    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsTaskObjectVisible    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If task object is visible, approach it, take it, move it, do a task and return it. list of available nodes: <Action ID = GrabTaskObject    /> <Action ID = MoveTaskObjectToDesignatedLocation    /> <Action ID = TakeTaskObject    /> <Action ID = ApproachTaskObject    /> <Action ID = ReturnTaskObject    /> <Action ID = ScanAreaForTaskObject    /> <SubTree ID = ProcessTask    /> <Condition ID = IsTaskSuccessful    /> <Condition ID = IsTaskObjectHeavy    /> <Condition ID = IsTaskComplete    /> <Condition ID = IsTaskObjectVisible    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsTaskComplete": "Boolean"
+                "IsTaskSuccessful": "Boolean"
             },
             {
-                "IsTaskSuccessful": "Boolean"
+                "IsTaskComplete": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsTaskComplete?": "IsTaskComplete"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "GrabTaskObject",
-                    "Name": "GrabTaskObject"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ProcessTask",
-                    "Name": "ProcessTask"
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsTaskSuccessful?": "IsTaskSuccessful"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "ReturnTaskObject",
-                    "Name": "ReturnTaskObject"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsTaskComplete?": "IsTaskComplete"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "GrabTaskObject",
+                        "Name": "GrabTaskObject"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ProcessTask",
+                        "Name": "ProcessTask"
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsTaskSuccessful?": "IsTaskSuccessful"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "ReturnTaskObject",
+                        "Name": "ReturnTaskObject"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsTaskComplete? THEN\n\t\t\tDO GrabTaskObject\n\tELSE\n\t\tDO ProcessTask\n\t\t\tIF IsTaskSuccessful? THEN\n\t\t\tDO ReturnTaskObject\n\tEND\n"
 }

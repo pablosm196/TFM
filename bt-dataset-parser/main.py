@@ -123,7 +123,37 @@ def clean_xml(s: str) -> str:
         s
     )
 
+def parsePseudoCode(bt: dict, level : int = 0) -> tuple[str, bool]:
+    code = ""
 
+    t = bt["Type"]
+    hasDecorator = len(bt["Decorators"]) != 0
+
+    if hasDecorator:
+        level += 1
+        for key, _ in bt["Decorators"][0].items():
+            code += "\t" * (level + 1) + f"IF {key} THEN\n"
+
+    if t != "Task":
+        code += "\t" * (level + 1) + f"{t.upper()}\n"
+    else:
+        code += "\t" * (level + 1) + f"DO {bt["Task"]}\n"
+
+    cond = False
+    for ch in bt["Nodes"]:
+        if cond: 
+            code += "\t" * (level + 1) + "ELSE\n"
+        c, cond = parsePseudoCode(ch, level + 1)
+        code += c
+
+
+    if t != "Task":
+        code += "\t" * (level + 1) + "END\n"
+
+
+    return code, hasDecorator
+
+    
 
 def parseBT(xml_string: str) -> str:
     conditions = set()
@@ -136,7 +166,9 @@ def parseBT(xml_string: str) -> str:
 
     json_tree = {
         "Blackboard": [],
-        "Node": parse_node_wrapper(first_child, conditions)
+        "Root" : {
+            "Node": parse_node_wrapper(first_child, conditions)
+        }
     }
 
     for cond in conditions:
@@ -154,18 +186,34 @@ def main():
     i = 0
     for bt in tqdm(ds['train']):
         try:
-            s = f'''{{
-                "prompt" : \"{" ".join(str(bt['instruction']).splitlines())}\",
-                "BT" : '''
+
             p = parseBT(bt['output'])
             p = str(p)
             p = p.replace('\'', '\"')
             j = json.loads(str(p))
-            s += json.dumps(j, indent = 4)
 
-            s += "\n}"
+            c = "```\n"
+            code, _ = parsePseudoCode(j["Root"]["Node"])
+            c += code + "\n```"
 
-            s = json.loads(s)
+            s = {
+                "prompt" : f"\"{" ".join(str(bt['instruction']).splitlines())}\"",
+                "BT" : j,
+                "code" : code
+            }
+
+            # s = f'''{{
+            #     "prompt" : \"{" ".join(str(bt['instruction']).splitlines())}\",
+            #     "BT" : '''
+            # p = parseBT(bt['output'])
+            # p = str(p)
+            # p = p.replace('\'', '\"')
+            # j = json.loads(str(p))
+            # s += json.dumps(j, indent = 4)
+
+            # s += "\n}"
+
+            # s = json.loads(s)
 
             f = open(f'{path}{i}.json', 'w')
             f.write(json.dumps(s, indent = 4))

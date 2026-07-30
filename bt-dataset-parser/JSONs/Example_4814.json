@@ -1,5 +1,5 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes. If object not found, scan environment. Approach and take object. Find stronger grip if heavy. Avoid obstacles. list of available nodes: <Action ID = MoveToFindObject     /> <Action ID = ScanEnvironment     /> <Action ID = TryAnotherPath     /> <Action ID = FindStrongerGrip     /> <Action ID = TakeObject     /> <Condition ID = IsObjectFound     /> <Condition ID = IsObstacleDetected     /> <Condition ID = IsObjectHeavy     />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes. If object not found, scan environment. Approach and take object. Find stronger grip if heavy. Avoid obstacles. list of available nodes: <Action ID = MoveToFindObject     /> <Action ID = ScanEnvironment     /> <Action ID = TryAnotherPath     /> <Action ID = FindStrongerGrip     /> <Action ID = TakeObject     /> <Condition ID = IsObjectFound     /> <Condition ID = IsObstacleDetected     /> <Condition ID = IsObjectHeavy     />\"",
     "BT": {
         "Blackboard": [
             {
@@ -12,70 +12,73 @@
                 "IsObjectHeavy": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToFindObject",
-                            "Name": "MoveToFindObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "FindStrongerGrip",
-                            "Name": "FindStrongerGrip"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObstacleDetected?": "IsObstacleDetected"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "TryAnotherPath",
-                            "Name": "TryAnotherPath"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "ScanEnvironment",
-                    "Name": "ScanEnvironment"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToFindObject",
+                                "Name": "MoveToFindObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "FindStrongerGrip",
+                                "Name": "FindStrongerGrip"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObstacleDetected?": "IsObstacleDetected"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "TryAnotherPath",
+                                "Name": "TryAnotherPath"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "ScanEnvironment",
+                        "Name": "ScanEnvironment"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tDO MoveToFindObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO FindStrongerGrip\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsObstacleDetected? THEN\n\t\t\t\tDO TryAnotherPath\n\t\tEND\n\t\tDO ScanEnvironment\n\tEND\n"
 }

@@ -1,100 +1,103 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object is close, take it, move to storage if heavy, inspect for color, then do specific task, if not visible scan area.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = InspectObjectForRedness    /> <Action ID = InspectObjectForBlueness    /> <Action ID = MoveObjectToStorage    /> <Action ID = DoSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectColorRed    /> <Condition ID = IsObjectColorBlue    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectApproached    /> <Action ID = ScanAreaForObject    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object is close, take it, move to storage if heavy, inspect for color, then do specific task, if not visible scan area.     list of available nodes: <Action ID = ApproachObject    /> <Action ID = TakeObject    /> <Action ID = InspectObjectForRedness    /> <Action ID = InspectObjectForBlueness    /> <Action ID = MoveObjectToStorage    /> <Action ID = DoSpecificTask    /> <Condition ID = IsObjectVisible    /> <Condition ID = IsObjectColorRed    /> <Condition ID = IsObjectColorBlue    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsObjectApproached    /> <Action ID = ScanAreaForObject    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsObjectColorBlue": "Boolean"
+                "IsObjectApproached": "Boolean"
             },
             {
-                "IsObjectApproached": "Boolean"
+                "IsObjectHeavy": "Boolean"
             },
             {
                 "IsObjectColorRed": "Boolean"
             },
             {
-                "IsObjectHeavy": "Boolean"
+                "IsObjectColorBlue": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Sequence",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Task",
-                    "Decorators": [
-                        {
-                            "IsObjectApproached?": "IsObjectApproached"
-                        }
-                    ],
-                    "Nodes": [],
-                    "Task": "TakeObject",
-                    "Name": "TakeObject"
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveObjectToStorage",
-                            "Name": "MoveObjectToStorage"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Selector",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectColorRed?": "IsObjectColorRed"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObjectForRedness",
-                                    "Name": "InspectObjectForRedness"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Sequence",
-                            "Decorators": [],
-                            "Nodes": [
-                                {
-                                    "Type": "Task",
-                                    "Decorators": [
-                                        {
-                                            "IsObjectColorBlue?": "IsObjectColorBlue"
-                                        }
-                                    ],
-                                    "Nodes": [],
-                                    "Task": "InspectObjectForBlueness",
-                                    "Name": "InspectObjectForBlueness"
-                                }
-                            ]
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "DoSpecificTask",
-                            "Name": "DoSpecificTask"
-                        }
-                    ]
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Sequence",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Task",
+                        "Decorators": [
+                            {
+                                "IsObjectApproached?": "IsObjectApproached"
+                            }
+                        ],
+                        "Nodes": [],
+                        "Task": "TakeObject",
+                        "Name": "TakeObject"
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveObjectToStorage",
+                                "Name": "MoveObjectToStorage"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Selector",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectColorRed?": "IsObjectColorRed"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObjectForRedness",
+                                        "Name": "InspectObjectForRedness"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Sequence",
+                                "Decorators": [],
+                                "Nodes": [
+                                    {
+                                        "Type": "Task",
+                                        "Decorators": [
+                                            {
+                                                "IsObjectColorBlue?": "IsObjectColorBlue"
+                                            }
+                                        ],
+                                        "Nodes": [],
+                                        "Task": "InspectObjectForBlueness",
+                                        "Name": "InspectObjectForBlueness"
+                                    }
+                                ]
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "DoSpecificTask",
+                                "Name": "DoSpecificTask"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSEQUENCE\n\t\t\tIF IsObjectApproached? THEN\n\t\t\tDO TakeObject\n\tELSE\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO MoveObjectToStorage\n\t\tEND\n\t\tSELECTOR\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectColorRed? THEN\n\t\t\t\t\tDO InspectObjectForRedness\n\t\t\tEND\n\t\t\tSEQUENCE\n\t\t\t\t\tIF IsObjectColorBlue? THEN\n\t\t\t\t\tDO InspectObjectForBlueness\n\t\t\tEND\n\t\t\tDO DoSpecificTask\n\t\tEND\n\tEND\n"
 }

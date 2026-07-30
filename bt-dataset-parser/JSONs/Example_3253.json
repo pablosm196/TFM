@@ -1,12 +1,12 @@
 {
-    "prompt": "Write a behavior tree for the robot to execute the command using only available nodes.     If object found, move to it and take it. If heavy, ask for help. Scan area for danger, move away. Then perform specific task.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = AskForHelp    /> <Action ID = ScanArea    /> <Action ID = MoveAwayFromDanger    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsAreaSafe    /> <Condition ID = IsDangerousObjectFound    /> <SubTree ID = PerformSpecificTask    />",
+    "prompt": "\"Write a behavior tree for the robot to execute the command using only available nodes.     If object found, move to it and take it. If heavy, ask for help. Scan area for danger, move away. Then perform specific task.     list of available nodes: <Action ID = MoveToObject    /> <Action ID = TakeObject    /> <Action ID = AskForHelp    /> <Action ID = ScanArea    /> <Action ID = MoveAwayFromDanger    /> <Condition ID = IsObjectFound    /> <Condition ID = IsObjectHeavy    /> <Condition ID = IsAreaSafe    /> <Condition ID = IsDangerousObjectFound    /> <SubTree ID = PerformSpecificTask    />\"",
     "BT": {
         "Blackboard": [
             {
-                "IsDangerousObjectFound": "Boolean"
+                "IsObjectFound": "Boolean"
             },
             {
-                "IsObjectFound": "Boolean"
+                "IsDangerousObjectFound": "Boolean"
             },
             {
                 "IsObjectHeavy": "Boolean"
@@ -15,81 +15,84 @@
                 "IsAreaSafe": "Boolean"
             }
         ],
-        "Node": {
-            "Type": "Selector",
-            "Decorators": [],
-            "Nodes": [
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectFound?": "IsObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveToObject",
-                            "Name": "MoveToObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [],
-                            "Nodes": [],
-                            "Task": "TakeObject",
-                            "Name": "TakeObject"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsObjectHeavy?": "IsObjectHeavy"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "AskForHelp",
-                            "Name": "AskForHelp"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Sequence",
-                    "Decorators": [],
-                    "Nodes": [
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsAreaSafe?": "IsAreaSafe"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "ScanArea",
-                            "Name": "ScanArea"
-                        },
-                        {
-                            "Type": "Task",
-                            "Decorators": [
-                                {
-                                    "IsDangerousObjectFound?": "IsDangerousObjectFound"
-                                }
-                            ],
-                            "Nodes": [],
-                            "Task": "MoveAwayFromDanger",
-                            "Name": "MoveAwayFromDanger"
-                        }
-                    ]
-                },
-                {
-                    "Type": "Task",
-                    "Decorators": [],
-                    "Nodes": [],
-                    "Task": "PerformSpecificTask",
-                    "Name": "PerformSpecificTask"
-                }
-            ]
+        "Root": {
+            "Node": {
+                "Type": "Selector",
+                "Decorators": [],
+                "Nodes": [
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectFound?": "IsObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveToObject",
+                                "Name": "MoveToObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [],
+                                "Nodes": [],
+                                "Task": "TakeObject",
+                                "Name": "TakeObject"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsObjectHeavy?": "IsObjectHeavy"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "AskForHelp",
+                                "Name": "AskForHelp"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Sequence",
+                        "Decorators": [],
+                        "Nodes": [
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsAreaSafe?": "IsAreaSafe"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "ScanArea",
+                                "Name": "ScanArea"
+                            },
+                            {
+                                "Type": "Task",
+                                "Decorators": [
+                                    {
+                                        "IsDangerousObjectFound?": "IsDangerousObjectFound"
+                                    }
+                                ],
+                                "Nodes": [],
+                                "Task": "MoveAwayFromDanger",
+                                "Name": "MoveAwayFromDanger"
+                            }
+                        ]
+                    },
+                    {
+                        "Type": "Task",
+                        "Decorators": [],
+                        "Nodes": [],
+                        "Task": "PerformSpecificTask",
+                        "Name": "PerformSpecificTask"
+                    }
+                ]
+            }
         }
-    }
+    },
+    "code": "\tSELECTOR\n\t\tSEQUENCE\n\t\t\t\tIF IsObjectFound? THEN\n\t\t\t\tDO MoveToObject\n\t\tELSE\n\t\t\tDO TakeObject\n\t\t\t\tIF IsObjectHeavy? THEN\n\t\t\t\tDO AskForHelp\n\t\tEND\n\t\tSEQUENCE\n\t\t\t\tIF IsAreaSafe? THEN\n\t\t\t\tDO ScanArea\n\t\tELSE\n\t\t\t\tIF IsDangerousObjectFound? THEN\n\t\t\t\tDO MoveAwayFromDanger\n\t\tEND\n\t\tDO PerformSpecificTask\n\tEND\n"
 }
