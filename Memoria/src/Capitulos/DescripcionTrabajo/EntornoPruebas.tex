@@ -1,7 +1,7 @@
 \section{Descripción del entorno}
 \label{sec:DescripcionEntorno}
 
-Para poder desarrollar la herramienta se han creado unos entornos de pruebas basado en Unreal Engine 5.7.
+Para poder desarrollar la herramienta se han creado unos entornos de pruebas basados en Unreal Engine 5.7.
 Son estos entornos los que se van a comunicar con el agente \gls{LLM} de Python.
 
 Estos entornos, de los que se pueden ver un ejemplo en la figura \ref{fig:entorno}, constan de un agente (el \gls{npc} que va a seguir el comportamiento buscado) cuyo controlador es una clase que hereda de la clase de Unreal Engine ``AIController''.
@@ -18,7 +18,7 @@ Para comenzar la ejecución se debe pulsar el botó ``GenerateBT'' que se apreci
     \label{fig:entorno}
 \end{figure}
 
-Junto con este agente se han preparado una serie de tareas (los cuales servirán como nodos terminales de los árboles) y condicionales que sirven como base para poder crear unos comportamientos de prueba.
+Junto con el agente mencionado anteriormente se han preparado una serie de tareas (los cuales servirán como nodos terminales de los árboles) y condicionales que sirven como base para poder crear unos comportamientos de prueba.
 Estas tareas y condicionales son introducidos en una clase ``BTFactory'', la cual es un \gls{Abstract Factory} implementado para la construcción de los \glspl{BT}.
 Esta clase, la cual se inicializa desde el componente ``BTGeneratorComponent'', contiene tres diccionarios que guardan las tareas, las tareas que necesitan una variable de la \gls{BB} y los condicionales.
 Estos diccionarios reciben como clave un string, que es la ID de la tarea o el condicional, y como valor una función (implementada en la propia clase) que crea el objeto que se ha pedido.
@@ -83,3 +83,7 @@ Si no es de tipo ``Task'' se crea un objeto de tipo ``BTCompositeNode'', del cua
 Si por el contrario es de tipo ``Task'' se le pide a la clase ``BTFactory'' una nueva instancia de esa tarea (si no existe esta tarea se devuelve un nodo vacío).
 Además, si necesita alguna variable de la \gls{BB}, se llama a las funciones necesarias de éstas tareas para establecérsela.
 Finalmente, tanto como para las tareas como para los nodos compuestos, se recorren sus decoradores para inicializarse de la misma forma que las tareas: pidiéndole a ``BTFactory'' una instancia de esa clase y estableciendo las variables de la \gls{BB} necesarias.
+
+Una vez se ha especificado todo lo necesario para la generación de los \glspl{BT} se ha procedido a la conexión con la herramienta que los genera.
+Como se ha mencionado en la sección \ref{sec:ModeloBT}, por comodidad del usuario es el propio entorno quien lanza el proceso de Python.
+Para ello se llama a la función ``ExecProcess'' de la clase de Unreal ``PlatformProcess'' con ``python'' como el proceso que debe ser lanzado y como argumentos la ruta del script de la herramienta, las listas de tareas (la lista de tareas que requieren de una variable de la \gls{BB} y la lista de las que no), la lista de decoradores, el comportamiento buscado y la lista de entradas de la \gls{BB}. 

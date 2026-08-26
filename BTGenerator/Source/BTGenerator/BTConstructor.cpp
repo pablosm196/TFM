@@ -155,6 +155,7 @@ FBTCompositeChild BTConstructor::CreateNode(json data, UBlackboardData* BBAsset,
 
 		if (data.contains("BlackboardEntries")) {
 			for (auto& it : data["BlackboardEntries"]) {
+				if (dynamic_cast<IBaseTask*>(task) == nullptr) break;
 				dynamic_cast<IBaseTask*>(task)->SetKeyName(FName(std::string(it).c_str()));
 				dynamic_cast<IBaseTask*>(task)->ResolveKey(BBAsset);
 			}
