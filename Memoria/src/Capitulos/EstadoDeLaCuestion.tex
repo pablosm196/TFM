@@ -18,10 +18,81 @@ Según su definición se puede ver que resulta muy útil para modelar el comport
 
 Esto se puede ver en trabajos como \cite{FSM-NPC1}, donde los autores presentan un videojuego en el que implementan las FSM en diferentes \glspl{npc} para que muestren un comportamiento más consistente, realista y reactivo por su simplicidad a la hora de desarrollar, dando como resultado un comportamiento inteligente y autónomo.
 Otro ejemplo del uso histórico de las FSMs en videojuegos se puede ver en \cite{FSM-NPC2}, donde los autores implementan una FSM con probabilidad de transiciones distinta a 1 para emular de forma más realista el comportamiento de caza de los lobos, logrando así una experiencia más realista en inmersiva para el usuario.
-Sin embargo, las FSM no están tan extendidas actualmente , ya que autores como \cite{FSM-MAL} están de acuerdo en que las FSM tienen un problema de reutilización, flexibilidad y escalabilidad con comportamientos complejos.
-Aún así, actualmente se siguen utilizando como se puede ver en trabajos recientes como \cite{FSM-NPC3}, donde implementan FSM de forma clásica para \glspl{npc} o en \cite{FSM-ML}, donde combinan FSM con técnicas de Machine Learning como Q-Learning y DQN para controlar \glspl{npc} de un RPG.
+Sin embargo, las FSM no están tan extendidas actualmente, ya que autores como \cite{FSM-MAL} están de acuerdo en que las FSM tienen un problema de reutilización, flexibilidad y escalabilidad con comportamientos complejos.
+Aún así, actualmente se siguen utilizando como se puede ver en trabajos recientes como \cite{FSM-NPC3}, donde implementan FSM de forma clásica para \glspl{npc} o en \cite{FSM-ML}, donde combinan FSM con técnicas de Machine Learning como Q-Learning y DQN para controlar \glspl{npc} de un \gls{rpg}.
 
 \subsection{Máquinas de estado finitas jerárquicas}
+Las máquinas de estado finitas jerárquicas (HFSM por las siglas en inglés de Hierarchical Finite State Machines) se define en \cite{HFSM} como una extensión de una FSM cuyos estados puedan ser otras FSM contenidas (llamados ``superestados'').
+Aunque todas las HFSM se pueden convertir en FSM mediante un proceso de \textit{flattering} reemplazando de forma recursiva los superestados por sus máquinas internas, las HFSM han solucionado probleamas de reutilización de componentes y simplicidad descriptiva.
+Esta reutilización ha permitido que se extendiese su uso en videojuegos, como mencionan los autores en el trabajo citado anteriormente \cite{FSM-MAL}, con un rendimiento ligeramente mejor o similar a las FSM, como pudieron comprobar los autores en una comparativa realizada en \cite{FSMvsHFSM}.
+En la figura \ref{fig:HFSMGame} se muestra un ejemplo de una HFSM en videojuegos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Imagenes/Bitmap/HFSMGame.png}
+    \caption[Ejemplo de una HFSM en videojuegos]{Ejemplo de un comportamiento de un \gls{npc} modelado en una HFSM. Fuente: \cite{FSM-MAL}.}
+    \label{fig:HFSMGame}
+\end{figure}
+
+De forma comercial también se han usado las HFSM, como se puede ver en \cite{Doom}.
+Otra forma de uso de las HFSM en vidoejuegos no es para comportamientos de \glspl{npc}, sino para simplificar el sistema de animaciones de videojuegos, como se puede ver en trabajos como \cite{HFSMAnim}.
+El motor de videojuegos Unity Engine también estructura su sistema de animaciones\footnotemark en forma de HFSM para la simplicidad del usuario, como se puede apreciar en el estado de color naranja (estado ``Idle'') de la figura \ref{fig:HFSMUnity}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Imagenes/Bitmap/StateMachineUnity.png}
+    \caption[Captura del sistema de animaciones de Unity Engine]{Captura del sistema de animaciones de Unity, estructurado en forma de una HFSM en la que los nodos naranja son ``superestados''. Fuente: \url{https://docs.unity3d.com/560/Documentation/Manual/StateMachineBasics.html} }
+    \label{fig:HFSMUnity}
+\end{figure}
+
+\footnotetext{Enlace a la documentación de Unity: \url{https://docs.unity3d.com/6000.7/Documentation/Manual/AnimationStateMachines.html}}
+
+A pesar de aliviar parcialmente el problema de la duplicidad de código, autores como \cite{BTGames} argumentan que las HFSM siguen manteniendo problemas de escalabilidad y reutilización en videojuegos; y en el trabajo de \cite{HFSMvsBT} los autores comentan que sigue siendo dificil de escalar.
+
+\subsection{Árboles de comportamiento}
+Los árboles de comportamiento (conocidos como \glspl{BT}) se definen en \cite{BTDef} como árboles dirigidos formados por dos tipos de nodos: nodos hoja y nodos de composición en las que las transiciones no son unidireccionales (a diferencia de las FSM y las HFSM), sino llamadas de función bidireccionales en las que el nodo padre envía una señal periódica de activación y el hijo le responde con tres posibles estados: ``Success'', ``Failure'' o ``Running''.
+Un ejemplo de \gls{BT} lo podemos encontrar en la figura \ref{EjBT}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Imagenes/Bitmap/BT.png}
+    \caption[Ejemplo de \gls{BT}]{Ejemplo de un \gls{BT} para un \gls{npc} que debe pasar por una puerta. Fuente: \url{https://outforafight.wordpress.com/2014/07/15/behaviour-behavior-trees-for-ai-dudes-part-1/} }
+    \label{fig:EjBT}
+\end{figure}
+
+Como podemos ver en \cite{BTOg}, los \glspl{BT} surgieron en el mundo de la programación de \gls{ia} de los vidoejuegos (estableciendo el videojuego Halo 2 como hito histórico) como forma de solucionar los problemas de escalabilidad, acoplamiento, adaptabilidad y reutilización que presentaban las FSM.
+Además, el mismo artículo comenta que este modelo resultó ser muy valioso también para la robótica, como menciona también la revisión de \cite{BTRev} o en trabajos como \cite{BTRob}.
+Actualmente hay bastante literatura sobre \glspl{BT}, sus implementaciones y posibles mejoras.
+Por ejemplo, el trabajo de \cite{EDBT} nos habla de \glspl{BT} que no son evaluados cada tick sino cuando sucede un evento (llamados Event-Driven Behavior Trees o EDBT), mejorando así la cooperación en entornos multi-agente.
+También podemos ver en el trabajo de \cite{BTVarios} varias ampliaciones a los \glspl{BT} en videojuegos, como los EDBT, los árboles de comportamiento emocionales (EmBT) que altera dinámicamente la prioridad de los nodos hijos dependiendo de pesos emocionales (aportando así más humanidad a los \glspl{npc}) y la evolución de los comportamientos (Evolving Behavior), \glspl{BT} que utilizan la programación genética para automatizar su optimización.
+
+Aunque artículos como \cite{BTEstandar} hablan del uso de los \glspl{BT} como herramienta estándar de la industria (sin dejar de usar otros métodos como las ya mencionadas FSM), artículos como \cite{BTEval} mencionan que no existe un consenso sobre la descripción de sus propiedades ni sobre su semántica.
+Es por ello que este trabajo se va a basar en los \glspl{BT} de Unreal Engine.
+
+\subsubsection{\glspl{BT} en Unreal Engine}
+Unreal Engine se ha convertido en uno de los principales motores de la industria de los videojuegos, así como en el ámbito de la investigación con \glspl{BT}, como se puede ver en trabajos como \cite{BTUE4}.
+Los \glspl{BT} de Unreal Engine están basados en EDBT, como se menciona en la documentación oficial de Unreal Engine\footnotemark, incrementando de esta manera el rendimiento del juego.
+\footnotetext{Enlace a la documentación oficial de Unreal: \url{https://dev.epicgames.com/documentation/unreal-engine/behavior-tree-in-unreal-engine---overview?lang=en-US}}
+
+SINTAXIS BTs UNREAL
+
+\section{Modelos de lenguaje}
+
+UN POCO DE HISTORIA
+
+LLMs, CHATs Y APIs
+
+PROMPT ENGINEERING
+
+AGENTES Y MCP
+
+\section{Generación automática de \glspl{BT}}
+
+EJEMPLOS DE GENERACIONES ANTERIORES A LLMs
+
+GENERACIÓN CON LLMs EN ROBÓTICA
+
+GENERACIÓN CON LLMs EN VIDEOJUEGOS.
 
 % \section{Entornos virtuales}
 % Como se puede ver en el artículo \cite{NOVE}, se empezó a hablar en la década de los 90 de entornos virtuales y el \gls{metaverso} como nuevas formas de comunicarse con las personas.
