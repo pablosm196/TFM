@@ -11,11 +11,11 @@
  * 
  */
 UCLASS()
-class BTGENERATOR_API UIsItNear_Decorator : public UBaseDecorator
+class BTGENERATOR_API UDecorator_IsItNear : public UBaseDecorator
 {
 	GENERATED_BODY()
 public:
-	UIsItNear_Decorator();
+	UDecorator_IsItNear();
 	inline void SetKeyName(FName name) { BlackboardKey.SelectedKeyName = name; };
 	inline void ResolveKey(UBlackboardData* BBAsset) { BlackboardKey.ResolveSelectedKey(*BBAsset); };
 protected:

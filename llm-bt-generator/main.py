@@ -1124,7 +1124,12 @@ List of conditions ("conditions" list) : {decorators}
     
     response = llm.invoke(messages)
 
-    code = re.search(r"```(.*?)```", response.content, re.DOTALL).group(1)
+    code = re.search(r"```(.*?)```", response.content, re.DOTALL)
+
+    if code != None:
+        code = code.group(1)
+    else:
+        code = response.content
 
 
     print(code)

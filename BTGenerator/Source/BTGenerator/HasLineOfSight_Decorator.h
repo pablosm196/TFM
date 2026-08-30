@@ -10,11 +10,11 @@
  * 
  */
 UCLASS()
-class BTGENERATOR_API UHasLineOfSight_Decorator : public UBaseDecorator
+class BTGENERATOR_API UDecorator_HasLineOfSight : public UBaseDecorator
 {
 	GENERATED_BODY()
 public:
-	UHasLineOfSight_Decorator();
+	UDecorator_HasLineOfSight();
 	inline void SetKeyName(FName name) { BlackboardKey.SelectedKeyName = name; };
 	inline void ResolveKey(UBlackboardData* BBAsset) { BlackboardKey.ResolveSelectedKey(*BBAsset); };
 protected:

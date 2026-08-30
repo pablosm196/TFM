@@ -6,12 +6,12 @@
 
 #include "BehaviorList.h"
 
-UIsItNear_Decorator::UIsItNear_Decorator()
+UDecorator_IsItNear::UDecorator_IsItNear()
 {
 	FlowAbortMode = EBTFlowAbortMode::Both;
 }
 
-bool UIsItNear_Decorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
+bool UDecorator_IsItNear::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	FString behavior = "IsItNear?";
 	BehaviorList::Instance()->addBehavior(behavior);

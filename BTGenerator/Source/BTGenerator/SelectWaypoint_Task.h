@@ -13,7 +13,7 @@
  * 
  */
 UCLASS()
-class BTGENERATOR_API USelectWaypoint_Task : public UBTTask_BlackboardBase, public IBaseTask
+class BTGENERATOR_API UBTTask_SelectWaypoint : public UBTTask_BlackboardBase, public IBaseTask
 {
 	GENERATED_BODY()
 public:

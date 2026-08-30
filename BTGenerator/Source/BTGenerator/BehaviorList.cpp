@@ -104,6 +104,10 @@ FString BehaviorList::getBehaviors()
 
 bool BehaviorList::init(std::string path, IValidatorCallback* callback, IObjectiveValidatorBase* objectiveValidator)
 {
+	_initialized = path.empty();
+
+	if (!_initialized) return false;
+
 	_callback = callback;
 	_objectiveValidator = objectiveValidator;
 

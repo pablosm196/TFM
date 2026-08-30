@@ -7,7 +7,7 @@
 #include "MyGameInstance.h"
 #include "BehaviorList.h"
 
-EBTNodeResult::Type USelectWaypoint_Task::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_SelectWaypoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UWorld* World = OwnerComp.GetWorld();
 	if (!World) return EBTNodeResult::Failed;
@@ -26,7 +26,7 @@ EBTNodeResult::Type USelectWaypoint_Task::ExecuteTask(UBehaviorTreeComponent& Ow
 	return EBTNodeResult::Succeeded;
 }
 
-void USelectWaypoint_Task::setBBKey(UBehaviorTreeComponent& OwnerComp, AActor* waypoint)
+void UBTTask_SelectWaypoint::setBBKey(UBehaviorTreeComponent& OwnerComp, AActor* waypoint)
 {
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BlackboardKey.SelectedKeyName, waypoint);
 }

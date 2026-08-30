@@ -90,10 +90,10 @@ void UBTGeneratorComponent::GenerateBT()
 	f->RegisterBlackboardTask<UBTTask_ChooseBlueFlower>("ChooseBlueFlower", "Choose one blue flower as a target");
 	f->RegisterBlackboardTask<UBTTask_ChooseBlackFlower>("ChooseBlackFlower", "Choose one black flower as a target");
 	f->RegisterTask<UAttackNode>("Attack", "It launches an attack on whoever is nearby");
-	f->RegisterBlackboardTask<USelectWaypoint_Task>("SelectWaypoint", "Choose a random waypoint as a target. It needs and Object type");
+	f->RegisterBlackboardTask<UBTTask_SelectWaypoint>("SelectWaypoint", "Choose a random waypoint as a target. It needs and Object type");
 
-	f->RegisterDecorator<UHasLineOfSight_Decorator>("HasLineOfSight?", "True if the player is seeing the target, false if not. It NEEDS a to check only a bool type");
-	f->RegisterDecorator<UHasLineOfSight_Decorator>("IsItNear?", "True if the distance between the executor and the objective is less or equal than a certain number, false if not. The objective NEEDS to be an Object type");
+	f->RegisterDecorator<UDecorator_HasLineOfSight>("HasLineOfSight?", "True if the player is seeing the target, false if not. It NEEDS a to check only a bool type");
+	f->RegisterDecorator<UDecorator_IsItNear>("IsItNear?", "True if the distance between the executor and the objective is less or equal than a certain number, false if not. The objective NEEDS to be an Object type");
 
 	BTConstructor::Init();
 

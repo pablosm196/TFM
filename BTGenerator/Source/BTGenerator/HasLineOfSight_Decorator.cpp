@@ -6,15 +6,15 @@
 
 #include "BehaviorList.h"
 
-UHasLineOfSight_Decorator::UHasLineOfSight_Decorator()
+UDecorator_HasLineOfSight::UDecorator_HasLineOfSight()
 {
 	NodeName = "Has Line Of Sight?";
 
-	BlackboardKey.AddBoolFilter(this, GET_MEMBER_NAME_CHECKED(UHasLineOfSight_Decorator, BlackboardKey));
+	BlackboardKey.AddBoolFilter(this, GET_MEMBER_NAME_CHECKED(UDecorator_HasLineOfSight, BlackboardKey));
 	FlowAbortMode = EBTFlowAbortMode::Both;
 }
 
-bool UHasLineOfSight_Decorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
+bool UDecorator_HasLineOfSight::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	FString behavior = "HasLineOfSight?";
 	BehaviorList::Instance()->addBehavior(behavior);

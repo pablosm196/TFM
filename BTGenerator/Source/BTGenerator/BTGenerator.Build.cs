@@ -22,7 +22,10 @@ public class BTGenerator : ModuleRules
 			"NavigationSystem"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[] {
+			"GameplayTasks",
+			"BehaviorTreeEditor"
+		});
 
         if (Target.bBuildEditor)
         {

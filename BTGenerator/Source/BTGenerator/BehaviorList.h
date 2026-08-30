@@ -56,4 +56,6 @@ private:
 	TArray<NodesDefinition> _nodes;
 	TMultiMap<FString, int> _namesToNodes;
 	TSet<int> _activeStates;
+
+	bool _initialized;
 };
