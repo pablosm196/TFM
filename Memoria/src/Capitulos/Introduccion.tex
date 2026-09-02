@@ -1,7 +1,7 @@
 \chapter{Introducción}
 \label{cap:introduccion}
 
-\chapterquote{La revolución industrial y sus consecuencias han sido un desastre para la raza humana}{Theodore Kaczynski}
+% \chapterquote{La revolución industrial y sus consecuencias han sido un desastre para la raza humana}{Theodore Kaczynski}
 
 % En los últimos años el avance de tecnologías inmersivas como la \gls{vr} ha proporcionado un gran cambio en la forma en la que los usuarios interactúan en los entornos digitales.
 % Grandes empresas como Meta o Apple han apostado por el desarrollo de hardware para estas tecnologías con el lanzamiento de Meta Quest 3 y Apple Vision Pro, así como con la creación de plataformas de interacción social en el \gls{metaverso} con el desarrollo de Meta Horizon Worlds.
@@ -11,60 +11,83 @@
 % En nuestro día a día representa una parte esencial de las comunicaciones humanas, sin embargo su representación en entornos virtuales es más limitada y dependiente de acciones predefinidas como animaciones o ``emotes'' ya introducidos en el juego.
 % Es por esto que el desarrollo de herramientas que permitan capturar e interpretar en tiempo real estos gestos constituye un gran paso hacia entornos virtuales más expresivos y realistas.
 
-En el desarrollo de videojuegos es fundamental el diseño e implementación del comportamiento de los diferentes agentes presentes en el juego, tanto los \glspl{npc} como los enemigos, con el fin de crear un mundo inmersivo para el jugador.
-En los equipos de desarrollo es el diseñador quien especifica los comportamientos buscados, mientras que el programador tiene la tarea de implementar las acciones requeridas.
-Finalmente las acciones se deben juntar en un modelo ejecutor que sea capaces de procesarlas. Este trabajo se centra en el modelo de \glspl{BT}.
+Los videojuegos están compuestos por múltiples elementos que interactúan entre sí para construir una experiencia coherente e inmersiva para el jugador, entre los que se encuentran el avatar del jugador, los escenarios, los objetos interactivos y, de forma habitual, los personajes no jugables.
+Estos personajes no jugables (NPC, por sus siglas en inglés de Non-Player Character) desempeñan un papel relevante en la construcción de mundos virtuales, ya que son responsables de proporcionar interacciones, responder a las acciones del jugador y desarrollar comportamientos coherentes con el contexto del juego.
 
+El desarrollo de estos comportamientos constituye una tarea que involucra tanto aspectos de diseño como de implementación.
+Habitualmente, los diseñadores determinan las acciones, rutinas e interacciones que debe desarrollar un NPC, mientras que los programadores se encargan de trasladar estas especificaciones a una implementación ejecutable.
+Para ello pueden emplearse diferentes técnicas de inteligencia artificial, entre las que destacan las máquinas de estados finitos (Finite State Machines, FSM) y los árboles de comportamiento (Behavior Trees, BT), siendo estos últimos el principal objeto de estudio de este trabajo.
 
-MOVER A MOTIVACIÓN:
-Gracias a los avances tecnológicos, los juegos son cada vez más grandes y con sistemas más complejos, lo que ha aumentado también la complejidad de los comportamientos generados, lo que también ha causado el incremento de la complejidad de los \glspl{BT}.
-Es por esto que el desarrollo de herramientas que permitan automatizar el montaje automático de estos modelos conseguirá reducir el tiempo del desarrollo de videojuegos.
+El desarrollo de comportamientos para NPCs es, además, un proceso inherentemente iterativo.
+Durante la implementación es necesario comprobar el comportamiento obtenido, detectar situaciones no previstas y modificar la lógica para adaptarla a los requisitos del juego.
+Como consecuencia, diseñadores y programadores pueden verse obligados a repetir sucesivamente las fases de diseño, implementación, evaluación y modificación de los comportamientos.
+En el caso de los árboles de comportamiento, estos cambios implican con frecuencia crear, reorganizar o modificar nodos, condiciones y relaciones de ejecución, lo que puede incrementar el esfuerzo necesario a medida que aumenta la complejidad del comportamiento.
+
+A este coste de desarrollo se añade la necesidad de disponer de conocimientos técnicos específicos para construir y modificar correctamente estas estructuras.
+La utilización de un sistema basado en árboles de comportamiento requiere comprender tanto su lógica de ejecución como los elementos que lo componen y sus relaciones, lo que puede dificultar su utilización por parte de desarrolladores con menor experiencia en inteligencia artificial o por perfiles no especializados en programación.
+
+En este contexto, la generación automática de árboles de comportamiento a partir de descripciones realizadas en lenguaje natural constituye una posible vía para reducir el esfuerzo asociado a su creación y modificación.
+Permitir que un usuario pueda describir el comportamiento deseado mediante una especificación en lenguaje natural y obtener de forma automática una estructura ejecutable podría reducir parte del trabajo manual necesario durante el desarrollo, facilitar la iteración sobre los comportamientos y disminuir las barreras técnicas asociadas a su implementación.
+
+La aparición de los Large Language Models (LLMs), capaces de interpretar instrucciones en lenguaje natural y generar estructuras complejas a partir de ellas, abre una nueva posibilidad para automatizar este proceso.
+Por este motivo, este trabajo estudia la utilización de modelos de lenguaje para la generación automática de árboles de comportamiento destinados al control de personajes no jugables, analizando las posibilidades y limitaciones de este enfoque en el contexto del desarrollo de videojuegos.
 
 \section{Motivación}
-Como se ha mencionado en la introducción, el uso de la comunicación no verbal en entornos virtuales está limitado y prefijado por el diseño de éstos, limitando una parte fundamental de la forma de expresarse cotidiana de los humanos.
-Debido a esto y como podemos ver en artículos como \cite{Neverova} o \cite{VRHANDS} la detección de gestos es un campo de estudio que actualmente se está explorando para intentar resolver este problema.
-Por estas razones es interesante investigar formas de ampliar esta representación de la comunicación no verbal para que la comunicación entre usuarios y \glspl{npc} sea más natural.
+\label{sec:Motivacion}
+% Como se ha mencionado en la introducción, el trabajo de los diseñadores a la hora de implementar BTs es un proceso lento y tedioso que se puede repetir varias veces debido a rediseños de los personajes.
+% Además, con los avances tecnológicos con consolas y equipos de mayor potencia (tanto de gráfica como de memoria), los videojuegos se están volviendo cada vez más grandes y exigentes, aumentando de esta forma la complejidad de los comportamientos de los personajes repercutiendo en el aumento de la complejidad de los \glspl{BT}.
+% Debido a estos motivos la generación de los árboles de comportamiento es una línea investigativa que, como se va a expandir en el apartado \ref{sec:GenCom}, se lleva investigando desde hace varios años.
+% Además, los avances en los grandes modelos de lenguaje permiten avances en este ámbito, permitiendo el uso del lenguaje natural para la generación  y acercando de esta forma el diseño a usuarios no técnicos.
 
-Es por este motivo que este trabajo se inscribe dentro de la línea de investigación de herramientas que puedan reconocer gestos realizados por un usuario mediante un traje de captura de movimiento con el fin de crear entornos virtuales más inmersivos y naturales para los usuarios.
+% Es por los motivos anteriores que este trabajo se inscribe dentro de esta línea de investigación, buscando aportar una herramienta funcional y sencilla de usar para todo tipo de usuarios.
 
-Por otra parte, es necesaria una gran cantidad de datos para crear modelos de \gls{ia} que permitan crear las herramientas mencionadas.
-En el caso de este proyecto, los datos necesarios son una secuencia de coordenadas 3D de posiciones y rotaciones de los huesos del esqueleto a lo largo de las animaciones, por lo que los datos que se necesitan procesar tienen un tamaño relativamente grande.
-Es por esto que es necesario crear modelos complejos que procesen un número significativo de datos de entrada, pero como desarrollaremos a lo largo del trabajo, no ha sido posible encontrar datasets de este tipo de datos.
-Como consecuencia de este motivo, una gran aportación de este trabajo en el campo ha sido la creación de un dataset gracias a la extracción de animaciones de un banco especializado en estas y a la captura de movimientos de usuarios.
+% Para ello se describen a continuación los diferentes obejtivos que se buscan en este trabajo.
 
-Vistos estos motivos, se puede concretar que, la carencia de métodos naturales de explotar la comunicación no verbal en entornos virtuales y la falta de datasets de animaciones han motivado los objetivos mencionados y que expandiremos a continuación.
+La creciente complejidad de los videojuegos ha incrementado también la complejidad de los comportamientos que deben implementar sus personajes no jugables.
+A medida que se incorporan un mayor número de acciones, situaciones y posibilidades de interacción, las estructuras encargadas de controlar estos comportamientos requieren un mayor número de elementos y relaciones entre ellos.
+En este contexto, los Behavior Trees presentan características como la modularidad y la escalabilidad que resultan especialmente adecuadas para representar comportamientos complejos (\cite{DEFCON}).
+
+Sin embargo, estas características no eliminan el coste asociado a la creación y mantenimiento de los árboles.
+La construcción manual de comportamientos puede resultar laboriosa y requerir conocimientos especializados, especialmente cuando los comportamientos deben modificarse o ampliarse de manera iterativa.
+La literatura señala precisamente el esfuerzo que supone para los diseñadores desarrollar comportamientos de NPC y proponen mecanismos destinados a automatizar su expansión (\cite{CBR}).
+Asimismo, hay artículos que ponen de manifiesto la necesidad de facilitar la interacción entre los aspectos de diseño y los aspectos técnicos de la implementación de comportamientos (\cite{BTValRef}).
+
+La dificultad de autoría de los Behavior Trees también ha motivado la investigación de herramientas destinadas a facilitar su creación.
+Hay autores que proponen una herramienta de autoría basada en una interfaz visual que busca simplificar la construcción de estos árboles y acercar su edición al proceso de diseño (\cite{AIPaint}).
+Estos trabajos muestran que la reducción del esfuerzo necesario para especificar y modificar comportamientos constituye una problemática anterior a la aparición de los Large Language Models.
+
+Como consecuencia, se han desarrollado diferentes aproximaciones para automatizar total o parcialmente la construcción de Behavior Trees.
+Entre ellas se encuentran métodos basados en la reutilización de comportamientos, técnicas de evolución automática y métodos de síntesis a partir de especificaciones formales, demostrando que la generación de árboles de comportamiento constituye una línea de investigación consolidada.
+Estas aproximaciones permiten reducir parte del trabajo manual, aunque generalmente requieren representaciones estructuradas del problema, funciones de evaluación, demostraciones o conocimientos específicos del dominio.
+
+La aparición de los Large Language Models introduce una nueva posibilidad para abordar este problema, ya que estos modelos permiten procesar instrucciones expresadas en lenguaje natural y generar estructuras a partir de ellas.
+En lugar de requerir que el usuario defina directamente la estructura interna del Behavior Tree, puede plantearse que describa el comportamiento deseado mediante lenguaje natural y que el sistema se encargue de realizar la traducción a una representación estructurada.
+Esta aproximación permite explorar una interacción más cercana al proceso de diseño y puede reducir las barreras técnicas asociadas a la autoría de comportamientos.
+
+En este contexto, este trabajo se sitúa en la intersección entre la investigación sobre generación automática de Behavior Trees y los avances recientes en Large Language Models.
+
 \section{Objetivos}
 \label{sec:Objetivos}
 
-El objetivo general de este proyecto es la implementación de un modelo de \gls{ia} que, con baja latencia, permita identificar el gesto que se esté realizando con un traje de captura de movimiento en tiempo real, con la intención de mejorar la comunicación no verbal en entornos virtuales.
-Para cumplir el objetivo, se han propuesto las siguientes metas durante el desarrollo del trabajo:
-\begin{enumerate}
-	%\renewcommand{\theenumi}{\alph{enumi}}
-	\item Búsqueda de datasets de animaciones que se han considerado relevantes a la hora de comunicarse con un \gls{npc} en un videojuego. Estas animaciones han sido bailar, saludar, señalar, sentarse, pelear y correr.
-	\item Extracción automática de las animaciones mencionadas anteriormente de bancos de animaciones y posterior procesamiento.
-	\item Extracción de las animaciones mediante la captura de movimiento de un grupo heterogéneo de usuarios.
-	\item Implementación, entrenamiento y comparación de distintos modelos de \gls{ia}, tanto redes neuronales (LSTM, CNN y RNN) como modelos de clasificación clásicos (Random Forest)
-	\item Implementación de una aplicación final a modo de demostración para enseñar los resultados en \gls{vr} para aumentar el grado de inmersión.
-\end{enumerate}
+El objetivo general de este proyecto es la implementación de una herramienta que puedan usar de forma sencilla e intuitiva diseñadores, tanto expertos como los que no tienen una base técnica, para poder generar \glspl{BT} de una manera más eficaz que los que puedan generar ellos y con una calidad similar a la humana con el fin de aliviar su trabajo.
+No se busca sustituir el trabajo de un diseñador, sino aportarles una base útil que les devuelva unas estructuras fácilmente modificables para matizar ciertos aspectos o cambiar de forma sencilla los comportamientos generados.
+Para cumplir estos objetivos se han propuesto las siguientes metas durante el trabajo:
 
-Como gran objetivo secundario y debido a la falta de datasets de animaciones se ha propuesto publicar los datasets resultantes, tanto de las animaciones artificiales como de las capturas de usuarios.
+\begin{itemize}
+	\item Implementación de una pila de tareas y condicionales necesarias para generar diferentes comportamientos.
+	\item Diseño e implementación de diferentes escenarios en los que se pueda probar en tiempo real y de forma visual los comportamientos buscados.
+	\item Comparar diferentes métodos de implementación y modelos de lenguaje (tiempos de ejecución y calidad de las generaciones) para elegir el idóneo para cumplir el objetivo general.
+	\item Implementación de la herramienta generadora usando diferentes técnicas de \gls{ia} que consigan una generación óptima.
+	\item Implementación un sistema de validación de los \glspl{BT} generados para comprobar que son válidos en cuanto a respeto de dependencias de nodos y cumplimiento de objetivos.
+	\item Realizar un plan de pruebas para validar el cumplimiento de los objetivos generales.
+\end{itemize}
 
 \section{Plan de trabajo}
 El plan de trabajo consiste en varios pasos:
 \begin{enumerate}
 	%\renewcommand{\theenumi}{\alph{enumi}}
-	\item Búsqueda de un dataset: generar un dataset lo suficientemente grande con varios ejemplos de gestos como para poder entrenar de forma adecuada diferentes modelos. Este dataset debe estar compuesto en su mayoría por datos de usuarios reales para poder identificar gestos lo más naturales posibles.
-	\item Implementación de modelos de \gls{ia}: implementación de varios modelos de \gls{ia} para poder hacer una comparativa entre ellos y decidir cuál es el más adecuado teniendo en cuenta su velocidad de predicción y su precisión. La implementación de dichos modelos debe contener: entrenador, forma de sacar las estadísticas del modelo final, búsqueda de hiperparámetros, generador de matriz de confusión y debe ser acoplable a una interfaz de usuario común a todos los entrenamientos.
-	\item Desarrollo de una interfaz de usuario para el entrenamiento y monitorización de los distintos modelos: desarrollo de una interfaz web para que los usuarios con menos experiencia en programación e \gls{ia} puedan entrenar modelos capaces de predecir los gestos que necesiten sin necesidad de modificar el código ni tener que saber como funciona internamente la base de código.
-	\item Desarrollo de una aplicación final: desarrollo de una aplicación para las Oculus Quest a forma de demo en la que se conecte al modelo elegido y se pueda ver en tiempo real su uso.
+	\item Desarrollo e implementación de varios escenarios en un motor de videojuegos que contengan lo necesario para la generación: una pila de tareas y condicionales, capacidad para ejecutar los \glspl{BT} generados y una forma de comunicarse con la herramienta de generación.
+	\item Implementación de una herramienta que, mediante grandes modelos de lenguaje, sea capaz de generar \glspl{BT} a través del lenguaje natural capaces de satisfacer un comportamiento buscado.
+	\item Desarrollo de un sistema de validación automática de los \glspl{BT} generados.
+	\item Diseño y posterior ejecución de pruebas con usuarios objetivo para medir el correcto cumplimiento de los objetivos.
 \end{enumerate}
-
-El desarrollo de las tareas y su planificación se puede ver en la figura \ref{fig:diagrama-gantt}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.91\textwidth]{Imagenes/Vectorial/Diagrama-gannt.pdf}
-	\caption{Diagrama de Gantt del proyecto}
-	\label{fig:diagrama-gantt}
-\end{figure}
-

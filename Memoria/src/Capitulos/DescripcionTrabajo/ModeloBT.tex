@@ -1,7 +1,12 @@
-\section{Modelo propuesto}
-\label{sec:ModeloBT}
 
-Esta herramienta debería ser de fácil uso para los diseñadores y programadores, por lo que hemos propuesto un modelo en el que, sin salir del proyecto de Unreal Engine, puedan generar los Behavior Trees de forma sencilla.
+Debido al proceso tedioso y costoso (sobre todo en tiempo) que conlleva a los diseñadores la creación de árboles de comportamiento (BTs) de forma constante para diseñar a los diferentes personajes no jugador (NPCs), el objetivo general de este trabajo es la creación de una herramienta que sea capaz de generar BTs funcionales que sirvan de base para rebajar la carga de trabajo de los diseñadores.
+Para ello se busca un modelo que sea completamente opaco al usuario, que dé resultados en un tiempo inferior a la alternativa ya existente con una calidad similar y sea sencilla de usar sin requerir muchos conocimientos técnicos para, además, ayudar a diseñadores con un perfil no tan técnico a desarrollar con mayor facilidad.
+
+Con esta idea en mente y gracias a los avances que se han producido en el campo de los modelos del lenguaje, se ha desarrollado un modelo de herramienta basada en generación mediante LLMs, ya que ofrece la ventaja de que los usuarios puedan explicar el comportamiento deseado en lenguaje natural.
+Como esta herramienta debería ser de fácil uso para los diseñadores y programadores, se propone un modelo en el que, sin salir de un proyecto de Unreal Engine, se puedan generar los BTs mediante su propia interfaz.
+
+\section{Diseño del modelo propuesto de la herramienta de generación de árboles de comportamiento}
+\label{sec:ModeloBT}
 
 \begin{figure}[H]
     \centering
@@ -10,8 +15,8 @@ Esta herramienta debería ser de fácil uso para los diseñadores y programadore
     \label{fig:diagramaHerramienta}
 \end{figure}
 
-En la figura \ref{fig:diagramaHerramienta} se puede ver el flujo de la herramienta, donde el diseñador describe el comportamiento que busca para un \gls{npc} y, de forma opaca para éste, un \gls{LLM} genera el \gls{BT}, el cual deberá ser parseado a formato JSON.
-Una vez creado el BT, se devuelve el control a Unreal Engine, donde se ejecutará de forma automática para comprobar que es un \gls{BT} válido.
-En caso de ser así se termina la ejecución de la herramienta, pero en caso contrario se reinicia su ejecución, donde se le pasa al \gls{LLM} el error del \gls{BT} generado para volver a intentarlo.
+En la figura \ref{fig:diagramaHerramienta} se puede ver el flujo de la herramienta propuesta, donde el diseñador debe describir el comportamiento que busca para un NPC y, de forma opaca para éste, una serie de LLMs genera el BT con el comportamiento buscado, el cual deberá ser traducido a un formato JSON específico para poder ser contruído en Unreal Engine.
+Una vez creado el BT se devuelve el control a Unreal Engine, donde se ejecutará de forma automática para comprobar que es un BT válido tanto por cumplimiento de dependencias de tareas como por cumplimiento de un objetivo.
+En caso de ser así se termina la ejecución de la herramienta, pero en caso contrario se reinicia su ejecución, donde se le pasa al LLM el error del BT generado junto a las tareas ejecutadas en forma de contexto adicional y el resutado de la generación dada para arreglar el error.
 
-En las siguientes secciones de este capítulo se explicará el entorno de pruebas desarrollado para este trabajo, así como la implementación de la generación de los \glspl{BT}, la validación de éstos y las pruebas realizadas.
+En las siguientes secciones de este capítulo se explicará el entorno de pruebas desarrollado para este trabajo, así como la implementación de la generación de los BTs, la validación de éstos y las pruebas a usuarios realizadas.

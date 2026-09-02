@@ -1,13 +1,12 @@
 \chapter{Estado de la Cuestión}
 \label{cap:estadoDeLaCuestion}
-En este capítulo se presenta el estado del arte de los distintos elementos que componen el trabajo. Estos campos son los comportamientos de \glspl{npc} en videojuegos, los modelos de lenguaje y la generación de árboles de comportamiento mediante modelos de lenguaje
+En este capítulo se presenta el estado del arte de los distintos elementos que componen el trabajo. Estos campos son los comportamientos de \glspl{npc} en videojuegos, los modelos de lenguaje y la generación automática de comportamientos.
 
 \section{Comportamientos de \glspl{npc} en videojuegos}
-El modelado de comportamientos de \glspl{npc} en videojuegos ha sido siempre un aspecto fundamental en el desarrollo de videojuegos.
-Como bien se ha mencionado en la sección(INTRODUCIR REFERENCIA A INTRODUCCIÓN), a medida que los videojuegos han ido creciendo y evolucionando se han tenido que utilizar diferentes técnicas para modelar comportamientos cada vez más grandes y complejos, como se puede ver en \cite{AIGames}.
+Como bien se ha mencionado en la sección \ref{cap:introduccion}, a medida que los videojuegos han ido creciendo y evolucionando se han tenido que utilizar diferentes técnicas para modelar comportamientos cada vez más grandes y complejos, como se puede ver en \cite{AIGames}.
 \subsection{Máquinas de estado finitas}
 Las máquinas de estados finitas (FSM según las siglas en inglés de Finite State Machine) se definen según \cite{FSMDef} como un conjunto de estados $s_i$ y un conjunto de transiciones $s_i, s_j$ que están definidas por una relación de tipo acción/condición, donde la condición actúa como el evento desencadenante para realizar la transición y la acción representa la tarea específica que se ejecuta al cambiar de estado.
-Según su definición se puede ver que resulta muy útil para modelar el comportamiento en los videojuegos, como se puede ver en la figura \ref{FSMNPC}, ya que se pueden ver a los \glspl{npc} como agentes que realizan acciones (permanecen en estados) constantemente, siendo las transiciones la terminación de las acciones (cuando pasan a un estado siguiente) o un factor externo.
+Según su definición se puede ver que resulta muy útil para modelar el comportamiento en los videojuegos, como se puede ver en la figura \ref{fig:FSMNPC}, ya que se pueden ver a los \glspl{npc} como agentes que realizan acciones (permanecen en estados) constantemente, siendo las transiciones la terminación de las acciones (cuando pasan a un estado siguiente) o un factor externo.
 
 \begin{figure}[H]
     \centering
@@ -105,231 +104,133 @@ Al principio se basaban en modelos de lenguaje estadístico, como podemos ver en
 Aunque posteriormente surgieron trabajos como \cite{Entropia}, donde usaban el concepto de máxima entropía para que los modelos sean ligeramente sensibles al contexto que mejoraban estos modelos probabilístios, seguían estando muy limitados por su baja capacidad de contexto y nulo razonamiento detrás de las respuestas.
 
 En el trabajo de \cite{PmodelML} se introduce un modelo de lenguaje probabilístico neuronal con el fin de aprender una representación distribuída para cada palabra del vocabulario asociándola con un vector contínuo de características reales y una función de probabilidad condicional de la siguiente palabra dependiendo de su contexto, consiguiendo una reducción de la perplejidad (métrica de los modelos de lenguaje que mide la precisión de predicción de la siguiente palabra) de entre el 10\% y el 20\% y permitiendo aprovechar contextos de entrada más largos y más distribuídos, no solo teniendo en cuenta las N palabras anteriores.
-Este trabajo permitió una evolución de modelos de lenguaje probabilísticos a los basados en redes neuronales.
-En \cite{RNN} se introduce el concepto de las redes neuronales recurrentes (RNN por las siglas en inglés de Recurrent Neural Network)  para su uso en traducción de textos.
+Este trabajo permitió una evolución de modelos de lenguaje probabilísticos a los basados en redes neuronales, como las \gls{RNN} (donde se habla del primero entrenable en \cite{RNNDef}) o las \gls{LSTM} (introducidas en \cite{LSTM}).
+En \cite{RNN} se introduce el concepto de las RNN Encoder-Decoder para su uso en traducción de textos, mejorando el flujo de memoria de un \gls{RNN} convencional y consiguiendo un rendimiento significativamente superior gracias a la preservación automática de estructuras semánticas y sintácticas.
+A pesar de la mejora que aplicaron las redes neuronales previamente mencionadas frente a los modelos puramente estadísticos, todavía tenían imperfecciones debido al desvanecimiento de contextos en textos amplios o al amplio coste de procesamiento debido a su secuencialidad.
+Aún con estas limitaciones los \glspl{LSTM} fueron fundamentales en otro hito de los modelos de lenguaje en el trabajo \cite{ELMo}, en donde los autores introducen la arquitectura ELMo (Embeddings for Language Models), la cual gracias a la suma ponderada de los resultados de las capas \glspl{LSTM} bidireccionales es capaz de generar una representación vectorial de las palabras (\glspl{Embedding}) contextualizada a nivel semántico y sintáctico, a diferencia de las estructuras estáticas que se utilizaban previamente como Word2Vec, introducido en \cite{Word2Vec}.
 
-LLMs, CHATs Y APIs
+En el trabajo \cite{Atencion} presentan el modelo Transformer que logra suplir los problemas mencionados de las redes recurrentes.
+Esto lo consiguen mediante una arquitectura Encoder-Decoder que contiene unos mecanismos de atención multipropósito y una codificación posicional que inyecta información sobre el órden secuencial, prescindiendo así de los mecanismos de recurrencia.
+Los mecanismos de atención logran relacionar cualquier pareja de tokens de una misma secuencia sin importar la distancia física que les separe, permitiendo aprender dependencias a largo alcance y la paralelización del entrenamiento.
 
-PROMPT ENGINEERING
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Imagenes/Bitmap/Transformer.png}
+    \caption[arquitectura de un modelo Transformer]{Diagrama de las distintas capas de la arquitectura Transformer. Fuente: \url{https://aws.amazon.com/es/what-is/transformers-in-artificial-intelligence/} }
+    \label{fig:BTUnreal}
+\end{figure}
 
-AGENTES Y MCP
+Gracias al surgimiento de los Transformers empezaron a aparecer otras arquitecturas que mejoraban las taras del procesamiento del lenguaje natural (NLP por las siglas en inglés de Natural Processing Language).
+Podemos destacar la arquitectura BERT, introducida en el trabajo \cite{BERT}.
+Esta arquitectura utiliza un codificador Transformer bidireccional multipropósito que para el entrenamiento enmascara de forma aleatoria una serie de tokens (Masked Language Model o MLM) para la predicción del siguiente token según su contexto anterior y posterior, logrando así una bidireccionalidad profunda y logrando un mayor desempeño en tareas como reconocimiento de entidades.
+Para ajustar el modelo a una tarea específica se realiza un \gls{Fine-tuning} en el que se cargan los parámetros preentrenados y se vuelven a entrenar todos de forma conjunta (end-to-end) con datos etiquetados de la tarea que se busca.
+Esto difiere y mejora otros modelos de representación del lenguaje como ELMo, cuya estrategia de transferencia se basa en la extracción de características (Feature-Based), donde las representaciones contextuales preentrenadas se integran de forma estática como características adicionales dentro de arquitecturas secundarias.
 
-\section{Generación automática de \glspl{BT}}
+La idea del entrenamiento previo y posterior \gls{Fine-tuning} ya fue mencionada en el artículo \cite{GPT-1}, en donde además introducen el modelo GPT-1.
+Este modelo utiliza la arquitectura decodificadora de un Transformer multicapa, el cual en el entrenamiento aplica operaciones de autoatención enmascarada sobre los tokens de contexto para predecir la salida para posteriormente aplicarle \gls{Fine-tuning} para tareas específicas, consiguiendo una mejora respecto a modelos anteriores en tareas como razonamiento del sentido común o comprensión lectora.
 
-EJEMPLOS DE GENERACIONES ANTERIORES A LLMs
+Como evolución del modelo anterior podemos ver en el artículo \cite{GPT-3}, donde introducen el modelo GPT-3, cuya arquitectura está basada también un Transformer decoder de 175B de parámetros con la novedad de la introducción de patrones de atención localmente y densamente agrupada de forma alternada.
+Este artículo también nos presenta el aprendizaje en contexto (In-Context Learning), el cual se basa en conseguir que un modelo de lenguaje consiga realizar una tarea sin necesidad de cambiar los pesos del modelo mediante \gls{Fine-tuning}, consiguiendo superar la necesidad de grandes cantidades de datos etiquetados.
+Esto se puede realizar mediante la descripción de la tarea en lenguaje natural y unos pocos ejemplos (few-shot), un ejemplo (one-shot) o ningún ejemplo (zero-shot).
+Con solo este tipo de aprendizaje el modelo fue capaz de mejorar el rendimiento de varias tareas de NLP como traducción o completado de texto así como de conseguir capcaidades emergentes como la aritmética o la generación de noticias sintéticas.
 
-GENERACIÓN CON LLMs EN ROBÓTICA
+En el artículo \cite{InstructionTuning} presentan el concepto de Instruction Tuning, el cual mejoran las capacidades de aprendizaje en entornos zero-shot.
+Lo consiguen mediante el uso de \gls{Fine-tuning} sobre una colección de tareas descritas mediante instrucciones en lenguaje natural, presentando el modelo FLAN basado en un Transformer decoder de 137B parámetros.
+De esta forma mejoraron superar en gran medida al modelo GPT-3 en entornos zero-shot y en menor medida en entornos few-shot.
 
-GENERACIÓN CON LLMs EN VIDEOJUEGOS.
+Junto a estas arquitecturas empezaron a surgir aplicaciones que ofrecían el uso de \glspl{LLM} en formato chatbot, como OpenAI\footnote{Página oficial de OpenAI: \url{https://openai.com/es-ES/}} con ChatGPT o Anthropic\footnote{Página oficial de Anthropic: \url{https://www.anthropic.com/}} con Claude así como acceso a sus \glspl{api}, permitiendo a usuarios no expertos el uso de \glspl{LLM} para fines generalistas.
+También surgieron frameworks de orquestación de modelos como Langchain\footnote{Página oficial de Langchain: \url{https://www.langchain.com/}} o herramientas que permiten la ejecución de modelos en una máquina local, como es el caso de Ollama \footnote{Página oficial de Ollama: \url{https://ollama.com/}}
 
-% \section{Entornos virtuales}
-% Como se puede ver en el artículo \cite{NOVE}, se empezó a hablar en la década de los 90 de entornos virtuales y el \gls{metaverso} como nuevas formas de comunicarse con las personas.
-% Estos entornos virtuales al principio eran muy sencillos, con pocas actividades que realizar y el chat escrito como única forma de comunicarse. Algún ejemplo de estos entornos virtuales eran el Second Life o el Habbo Hotel.
+Gracias al surgimiento del In-Context Learning y del Instruction Tuning se empezaron a poder pedir tareas específicas a los \glspl{LLM} mediante los prompts, aunque se dan casos donde los modelos no consigan una buena precisión.
+Debido a esto se investigaron diferentes métodos de alinear el razonamiento de los modelos a través de refinar el prompt, dando lugar a un conjunto de técnicas que se conocen como \textit{prompt engineering}.
+Algunas de estas técnicas ya han sido mencionadas anteriormente, como el zero-shot para casos de Instruction Tuning o few-shot/one-shot para In-Context Learning.
+En el artículo \cite{CoT} nos presenta la técnica de Chain-of-Thought, la cual consiste en obligar al modelo a realizar pasos intermedios de razonamiento internamente para mejorar el rendimiento de las tareas complejas.
+Otra técnica útil para tareas complejas es Least-To-Most Prompting, presentada en el artículo \cite{LtM} y que consiste en descomponer la tarea general en subtareas sucesivos para ir resolviéndolos de manera incremental.
+En la revisión sistemática \cite{RevisionPE} se pueden encontrar 58 técnicas de \textit{prompt engineering}.
 
-% Para continuar hablando de los entornos virtuales es necesario introducir los conceptos de ``inmersión'' y ``presencia'': dos términos que, a menudo se usan como sinónimos, pero son ligeramente distintos aunque están muy relacionados.
-% Como lo define el artículo \cite{MRPI}, la presencia es la calidad experimental en entornos virtuales; mientras que la inmersión está asociado con los aspectos técnicos de un sistema virtual que ayudan al usuario a potenciar la sensación de presencia.
-% Estudios recientes como \cite{FPPS} demuestran como la presencia, tanto la nuestra propia como la social, son potenciadores del apoyo social percibido, lo que se asocia con el bienestar de los usuarios; mientras que el estudio \cite{GVR} muestra que, aunque no haya mejoras performáticas entre jugar en entornos inmersivos (\gls{vr}) y no inmersivos (un ordenador), los jugadores encontraron más emocionantes y con mayor presencia los entornos interactivos.
-% Es por esto último que con la aparición de la \gls{vr} se hicieron populares entornos virtuales focalizados en esta tecnología.
+Una vez estudiadas las capacidades de razonamiento de los \glspl{LLM} se abrió un camino para el estudio de agentes \glspl{LLM}, sistemas autónomos con modelos de lenguaje integrados que son capaces de percibir, planificar e interactuar con su entorno para completar tareas complejas.
+Los autores del artículo \cite{ReAct} presentan el paradigma ReAct, en el que un \gls{LLM} genera alternadamente trazas de razonamiento en lenguaje natural que ayuda al razonamiento para actuar y acciones específicas para la tarea, permitiendo interactuar con el entorno y actuar para razonar.
+Otro avance hacia los agentes \gls{LLM} nos lo encontramos en \cite{Toolformer}, donde se puede ver como un agente es capaz de interactuar con \glspl{api} de forma correcta que le permiten realizar mejor tareas como operaciones aritméticas, además de demostrar que se le puede dar una cierta autonomía de interacción con el entorno sin intervención humana a los \glspl{LLM}.
+La revisión sistemática de \cite{ToolCallingRev} habla sobre el uso de herramientas (tool calling) en trabajos recientes, organizandolo en cuatro etapas: planificación de la tarea, selección de la herramienta, llamada a la herramienta y respuesta final.
+En cuanto a la interacción y planificación de los agentes, el artículo \cite{InnerMonologue} estudia como un \gls{LLM} puede utilizar feedback del entorno para actualizar de forma interna sus planes; mientras que en \cite{LLM+P} argumentan que un \gls{LLM} tiene dificultades en temas de planificación a largo plazo, por lo que proponen usar un planificador clásico entre medias cuando el problema está correctamente formalizado para suplir esta carencia.
+Finalmente, en el artículo \cite{AgentesLLM} introduce un sistema multiagente basado en agentes \gls{LLM} sociales con una memoria y la capacidad de recuperar experiencias y de planificar, demostrando que el uso de este tipo de agentes consiguen unas interacciones sociales más creíbles que el uso de agentes clásicos.
+En el artículo \cite{AgentesRev} los autores hacen una revisión sistemática sobre agentes autónomos \gls{LLM}.
 
-% Con todo esto es natural que las empresas inviertan en tecnologías que aumenten la sensación de inmersión para lograr una mayor presencia.
-% Empresas como Apple o Meta están apostando en la tecnología \gls{vr}, sacando recientemente las gafas Apple Vision Pro (2024) y Meta Quest 3 (2023); mejorando aspectos como la calidad de las cámaras, el sonido, el reconocimiento de gestos y su comodidad que pueden amplificar la sensación de inmersión cuando se utilizan.
-% Además, Meta está centrada en la idea de \gls{metaverso} como un espacio digital en el que se puede socializar.
+Para que los agentes \gls{LLM} puedan interactuar con herramientas y recursos externos, en el artículo \cite{MCP} nos habla sobre el protocolo MCP (Model Context Procotol).
+Éste es un estándar abierto cuyo objetivo es estandarizar la comunicación bidireccional ente los modelos \gls{LLM} y las fuentes y herramientas externas mediante el desacople de la implementación de las herramientas de su uso.
+Para ello se hace el uso de la siguiente arquitectura:
+\begin{itemize}
+    \item \texttt{MCP Host}: La aplicación que proporciona el entorno de ejecución.
+    \item \texttt{MCP Client}: Componente dentro del Host que mantiene la relación con el servidor procesando solicitudes y resupuestas.
+    \item \texttt{MCP Server}: Proveedor que expone las herramientas, los recursos y una serie de prompts para plantillas de tareas y flujos de trabajo preconfigurados.
+\end{itemize}
 
-% Con la idea de mejorar la inmersión en entornos virtuales se ideó este proyecto en el que, mediante la captura de movimiento, se puede usar la comunicación no verbal para expresar ciertas acciones y el entorno sea capaz de reconocer lo que estamos haciendo. Todo esto pensado para que se pueda usar en entornos de \gls{vr} para llevar la inmersión al máximo
+En la figura \ref{fig:MCP} podemos ver un diagrama de la arquitectura MCP.
 
-% %Dejo esto por aquí a ver qué te parecen estos apartados para hablar de ellos
-% \section{Comunicación no verbal en entornos virtuales}
-% En los últimos años se han llevado a cabo distintos estudios sobre la comunicación no verbal en entornos virtuales. El estudio \cite{XGKD23} se centra en el concepto de presencia en entornos virtuales, enfatizando los roles de inmersión, contenido emocional y fidelidad de avatares en la mejora de la experiencia del usuario. El estudio resalta como el realismo de los avatares y sus comportamientos (movimiento y lenguaje corporal) ayudan a conseguir un mayor sentimiento de presencia social entre los usuarios. También se discute como estos elementos influyen en las dinámicas interpersonales  y la percepción del usuario en entornos virtuales.
-
-% Estos roles discutidos en el estudio pueden extrapolarse a la experiencia de jugar a videojuegos. En el contexto de los videojuegos tradicionales, las opciones de comunicación no verbal son las dadas por los desarrolladores en forma de gestos, acciones dentro del juego (agacharse, girar su avatar o mover la cabeza al mover la cámara por ejemplo). Dentro de cada videojuego la comunidad va a intentar usar las opciones que se les proporcione para comunicarse entre ellos mismos de la mejor manera posible.
-
-% Un ejemplo claro de evolución de la comunicación no verbal en videojuegos y su importancia para los jugadores es el caso de \textit{VR chat}. \textit{VR chat} es un videojuego \gls{mmorpg} de \gls{vr} donde los jugadores pueden unirse a distintos mundos e interactuar con otros usuarios. Este juego no solo permite el uso de gafas de \gls{vr}, sino que también permite (de manera experimental) usar distintas formas de captura de movimiento de cuerpo completo \footnote{Enlace a la documentación de \textit{VR Chat} para su \gls{sdk} de captura de movimiento de cuerpo completo \cite{VRCHATSDK}}.
-
-% Los usuarios de esta aplicación han buscado distintas formas de conseguir una mayor expresividad en sus avatares para así poder entablar mejor conversaciones entre ellos o para poder expresarse como les gustaría. Algunos de estos métodos se describen en el siguiente apartado junto a métodos de captura de movimiento no orientados a videojuegos.
-
-% \section{Captura de movimiento}
-
-% La captura de movimiento es una técnica que permite digitalizar el movimiento de una persona. Esta técnica se usa sobre todo en el ámbito de la animación, el cine y los videojuegos.
-% Para lograr esto se han desarrollado diferentes tipos de tecnologías: óptica, mecánica y magnética.
-
-% \subsection{Captura de movimiento óptica}
-% La captura de movimiento óptica consiste en el uso de cámaras para la captura.
-% Según el artículo \cite{OPTICAL} esta captura se puede dividir en monocular o multivista dependiendo del número de cámaras, y según si utilizan marcadores o no.
-% En el mismo artículo explica el funcionamiento de la captura óptica multivista con el uso de marcdores, el cual se utiliza en gran medida en la industria audiovisual.
-% Este tipo de captura óptica necesita al menos de un conjunto de cámaras sincronizadas (dos o más), un traje con marcadores en puntos significativos (articulaciones sobretodo) y un sistema de adquisición de varios vídeos simultáneos.
-% La reconstrucción del movimiento se basa en la sincronía de las cámaras y la capacidad de detección de los mismos marcadores desde diferentes puntos de vista, haciendo que se pueda reconstruir en 3D los marcadores mediante la triangulación de los distintos puntos de vista.
-
-% Un ejemplo de la captura de movimiento óptica monocular y sin marcadores son los sistemas basados en cámaras 3D que utilizan los \gls{IRs} para calcular la profundidad. Según el artículo \cite{KINECT} la Kinect (Microsoft, 2010) utilizaba esta tecnología para ello.
-% Consiste en un proyector de \gls{IRs} cuyos rayos atraviesan una rejilla de difracción, convirtiéndose en un conjunto de puntos que, como se sabe la geometría relativa entre este proyector y una cámara de \gls{IRs} que venía incorporada, se podía triangular la posición de un objeto haciendo coincidir un punto observado con uno de los puntos del proyector.
-
-% \subsection{Captura de movimiento mecánica}
-% La captura de movimiento mecánica se consigue mediante sensores inerciales.
-% Según se puede ver en \cite{XSENS}, el traje Xsens MVN es un ejemplo de ello.
-% No utiliza cámaras o marcadores si no la combinación de giroscopios, acelerómetros y magnetómetros.
-% Con los datos recibidos de estos sensores se puede estimar la rotación de los diferentes puntos, mientras que la posición se puede estimar mediante supuestos de una cadena cinemática.
-% En la figura \ref{fig:XSensTraje} se puede ver el traje visto desde la espalda.
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{Imagenes/Bitmap/XSens.png}
-%     \caption[Imágen del traje de captura de movimiento XSens]{Imágen del traje de captura de movimiento XSens \footnotemark }
-%     \label{fig:XSensTraje}
-% \end{figure}
-
-% \footnotetext{Fuente de la imagen: \url{https://www.researchgate.net/figure/The-Xsens-MVN-full-body-motion-capture-suit-Picture-source-htttp-wwwxsenscom_fig1_233926874}}
-
-% \subsection{Captura de movimiento magnética}
-% La captura magnética se consiste mediante sensores electromagnéticos.
-% El artículo \cite{EMS} explica que la generación de valores en un campo electromagnético tridimensional es suficiente para determinar la posición y rotación de un objeto emisor frente a un sensor.
-% Para ello se aplican transformaciones lineales a la excitación de la fuente y los vectores recibidos por el receptor para percibir pequeños cambios en los valores a determinar, los cuales se separan mediante combinaciones lineales de los vectores de salida del sensor y se utilizan para actualizar las coordenadas previas.
-
-% En esta última tecnología se basa el traje Perception Neuron 3.
-% Este traje fue creado por Noitom, empresa fundada en el 2012 enfocada en el desarrollo de tecnología de captación de movimiento.
-% El traje previamente mencionado se encuentra dentro de la serie de trajes ``Perception Neuron'', los cuales son bandas de velcro a las que se pueden acoplar sensores electromagnéticos.
-
-% \section{Motores de videojuegos}
-% Un motor de videojuegos es un software que proporciona herramientas para desarrollar y ejecutar un videojuego.
-% Estos motores están compuestos a su vez de otros motores más específicos que se encargan de funcionalidades básicas para un videojuego para que el desarrollador del juego no tenga que encargarse de ello. Algunos ejemplos de esto último son el motor de render, el de físicas o el de sonido.
-
-% Actualmente los motores de videojuegos más usados en el mercado son Unity, Unreal y Godot.
-% Aunque el artículo \cite{SGE} no se centre en un análisis del mercado en general, si contiene varias estadísticas sobre el uso de los principales motores de videojuegos en el mercado en 2023.
-% Este artículo menciona que, de los juegos publicados en Steam ese año, un 60.04\% fueron hechos en Unity, un 16.42\% fueron hechos en Unreal y el 23.54\% restante fue hecho en motores propios de empresas (Source o CryEngine, por ejemplo).
-
-% \subsection{Unity}
-% Unity es un motor de videojuegos creado por Unity Technologies en 2005. A continuación se listan las principales herramientas que usa el motor:
-
-% \begin{enumerate}
-%     \item Motor gráfico: Propio de Unity basado mayoritariamente en OpenGL (para depende de qué plataformas puede usar otro, como Direct3D para Windows).
-%     \item Motor físico: PhysX, creado por la empresa Nvidia Corporation.
-%     \item Motor de audio: Propio de Unity.
-%     \item Lenguaje de scripting: C\#.
-%     \item Lenguaje de scripting de shaders: ShaderLab.
-% \end{enumerate}
-
-% El modelo clásico de Unity se ha basado en la arquitectura Entidad-Componente (EC).
-% Esta arquitectura deja a todo lo que hay en el juego (las entidades, llamadas en Unity ``GameObjects'') como contenedores de componentes, que son los que le aportan funcionalidad a éstas.
-% Este modelo supuso una mejoría ante la programación de videojuegos con objetos, ya que conseguía independizar comportamientos.
-
-% Desde 2022 mediante el paquete Unity DOTS (Data-Oriented Technology Stack) \footnote{Enlace a la documentación del paquete DOTS: \url{https://docs.unity3d.com/Packages/com.unity.entities@1.3/manual/index.html}} se pueden crear videojuegos siguiendo la arquitectura Entidad-Componente-Sistema (ECS).
-% Esta arquitectura consiste en separar la lógica de los datos, ya que los datos se guardan en componentes mientras que la lógica la ejecutan los sistemas.
-% ECS supone una mejoría a EC gracias a la separación mencionada, ya que mejora la escabilidad del código y la modularidad.
-
-% \subsection{Unreal}
-% Unreal es un motor de videojuegos creado por Epic Games en 1998 con el lanzamiento de Unreal Engine 1.
-% La versión estable actual es Unreal Engine 5.5, lanzada en noviembre de 2024.
-% El código fuente de este motor está escrito en C++ y es accesible desde Github \footnote{Enlace a la página de Github de Epic: \url{https://github.com/epicgames}}.
-% Las principales herramientas del motor son:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Imagenes/Bitmap/MCP.jpg}
+    \caption[Arquitectura MCP]{Diagrama de la arquitectura MCP. Fuente: \url{https://newsletter.diamant-ai.com/p/model-context-protocol-mcp-explained} }
+    \label{fig:MCP}
+\end{figure}
 
 
-% \begin{enumerate}
-%     \item Motor gráfico: Propio de Unreal. Este cuenta con  tecnologías para optimizar geometría (Nanite), sistema de iluminación dinámica (Lumen), y una técnica de escalado de imágenes (TSR)
-%     \item Motor físico: Chaos Physics, desarrollado por Epic Games para mejorar la integración con las diferentes herramientas del motor.
-%     \item Motor de audio: Propio de Epic Games llamado MetaSounds.
-%     \item Lenguaje de scripting: C++ y Blueprints como scripting visual.
-%     \item Lenguaje de scripting de shaders: High-Level Shading Language (HLSL) y Material Editor como forma de abstracción, permitiendo crear materiales con nodos visuales.
-% \end{enumerate}
 
-% Unreal utiliza una arquitectura orientada a clases jerárquicas más cercana a la programación orientada a objetos con alguna integración con componentes.
-% Los objetos del mundo, llamados ``actores'', heredan de la clase AActor y son los componentes quienes le dan alguna de las funcionalidades (mallas, físicas o cámara por ejemplo).
-% Las clases controlables (tanto por el jugador como por \gls{ia}) son entidades de tipo ``Pawn'' (clase APawn), de la cual hereda los objetos de tipo ``Character'' (clase ACharacter), los cuales tienen un movimiento humanoide incorporado.
-% Para introducir movimiento a los objetos Pawn es necesario hacerlo mediante objetos de tipo controller (APlayerControler para entrada de input y AAIController para \gls{ia}).
+\section{Generación automática de comportamientos}
+\label{sec:GenCom}
 
-% \section{Modelos de \gls{ia}}
+El problema de la generación de comportamientos de forma automática ya existía antes del surgimiento de los \glspl{LLM}, en donde buscaban soluciones mediante algoritmos de \gls{ia} clásica, como podemos ver en \cite{CBR}, donde los autores proponen recuperar y reutilizar comportamientos mediante CBR (siglas de Case-Based Reasoning), construyendo dinámicamente el comportamiento del \gls{npc} a través de una HFSM.
+Esta sección se va a centrar en los casos de generaciones automáticas de \glspl{BT}.
 
-% La inteligencia artifical ha sido un tópico de desarrollo e investigación en los útlimos años. Aunque el desarrollo en los últimos años se ha centrado sobre todo en el ámbito de las \glspl{ia} generativas, este estudio se va a centrar sobre todo en el uso de redes neuronales e \glspl{ia} de clasificación más tradicionales.
+\subsection{Generación de \glspl{BT} previos a \glspl{LLM}}
+Desde el surgimiento de los \glspl{BT} se ha buscado una forma de automatizar el proceso de su creación.
 
-% \subsection{Tecnologías de \gls{ia}}
+En el trabajo \cite{IsmaBT} los autores utilizan diferentes técnicas de Machine Learning para generar de forma automática \glspl{BT}.
+Primero se utiliza el aprendizaje por demostración (LfD por las siglas en inglés de Learning from Demonstration) de forma que el diseñador realiza la tarea de la que se busca generar el \gls{BT}, registrando las trazas del estado del entorno y las tareas que el \gls{npc} va ejecutando.
+Una vez se terminan de recoger esas trazas se generan diferentes modelos de Machine Learning que imitan el comportamiento del agente.
+Si este modelo es un árbol de decisión (creado el algoritmo de aprendizaje supervisado C4.5), éste se aplana mediante una búsqueda en profundidad (DFS) para generar reglas lógicas y se unen mediante operadores AND y OR y, usando un algoritmo voraz, simplifica los nodos redundantes hasta construir el \gls{BT} componiéndolo en un nodo de tipo ``Parallel'' o ``Selector''.
 
-% En la actualidad, el mundo de la \gls{ia} está centrado en el desarrollo en python mediante el uso de librerías programadas en C++. Las librerías más comunes son Tensorflow, Pytorch y scikit-learn.
+En el campo de la programación genética también se han hecho avances en este aspecto.
+En el trabajo de \cite{DEFCON} usaron un videojuego comercial donde crean a mano un \gls{BT} inicial cuyas operativas específicas se toman de forma aleatoria.
+Es entonces cuando se aplican los algoritmos genéticos sobre esta base del árbol, donde el \textit{crossover} se realiza mediante el intercambio de subramas enteras con el mismo objetivo para dar origen a nuevos comportamientos y la mutación se realiza en parámetros de nodos específicos o insertando nuevas ramas de comportamientos generadas al azar.
+La función de \textit{fitness} se entrenó mediante métricas específicas del videojuego, como el potencial defensivo y atacante del \gls{npc}.
+Este sistema logró mejorar a la \gls{ia} del videojuego en un 55\% de las partidas, demostrando que los \glspl{BT} generados resultaron ser correctos.
+Otros ejemplos del uso de la programación genética para la generación de \glspl{BT} en el ámbito de la robótica la podemos encontrar en trabajos como \cite{BTGen1} o en \cite{BTGen2}, donde además los autores mezclan la programación genética con aprendizaje por demostración.
 
-% Tensorflow tiene un enfoque más orientado a la producción y despliegue de modelos de \gls{ia} a un nivel empresarial, pytorch es más usado en el ámbito académico y de investigación por su capacidad de rápido prototipado. Scikit-learn se usa más para enseñar los principios de la \gls{ia} y desarrollar modelos más ligeros y más tradicionales.
+Finalmente nos encontramos con algoritmos de planificación para la generación de \glspl{BT}, como podemos ver en el trabajo de \cite{BTPlan}.
+En este trabajo introducen una metodología para crear y modificar \glspl{BT} en tiempo de ejecución mediante el algoritmo de planificación de retroencadenamiento (Backchaining) en el que se toman un conjunto de acciones con sus precondiciones y postcondiciones y las convierte en \glspl{BT} atómicos bajo un nodo ``Selector''.
+Una vez se procesan todas las acciones, se parte de un \gls{BT} que contiene las condiciones finales deseadas y, cada vez que el árbol devuelva un estado ``Failure'' porque el objetivo no se cumple, se reemplaza esa condición por uno de los \glspl{BT} atómicos que sea capaz de resolverla, repitiendo iterativamente este proceso hasta que se de un \gls{BT} correcto.
+Si hay una violación de una precondición de otras partes ya predefinidas del árbol, el algoritmo detecta estas colisiones lógicas y las resuelve reordenando el \gls{BT} desplazando el subárbol conflictivo para incrementar su prioridad.
 
-% Estas librerías se usan en conjunto con Numpy(\cite{harris2020array}) y Pandas(\cite{reback2020pandas}, \cite{mckinney-proc-scipy-2010}) para conseguir unos cálculos más efectivos sobre la gran cantidad de datos que se necesitan en el ciclo de vida de un modelo de \gls{ia}.
+\section{Generación de \glspl{BT} mediante \glspl{LLM} en la robótica}
+Dado el gran avance en el campo de los \glspl{LLM} se pueden encontrar varios trabajos que se sirven de éstos para la creación automática de \glspl{BT}, especialmente en el campo de la robótica.
 
-% \subsection{Librerías de \gls{ia}}
+Uno de los primeros trabajos en este ámbito es \cite{llmbrain}, en el que los autores utilizan un modelo basado en Stanford Alpaca 7B al que realizan \gls{Fine-tuning} mediante LoRA (mmodifican únicamente un grupo reducido de pesos de atención) con demostraciones generadas a través de otros modelos más grandes (text-davinci-003), consiguiendo generar \glspl{BT} parecidos a los que pdoría crear un humano para comportamientos robóticos.
+Otros trabajos como \cite{BTRob2} siguen una metodología similar en la que utilizan modelos ligeros (de 7B de parámetros) en los que realizan \gls{Fine-tuning} con datasets sintéticos.
+En el artículo \cite{LLMBTPlanner} estudia diferentes técnicas de In-Context Learning para generar \glspl{BT} y, además, los compara con modelos de menor tamaño a los que se les ha aplicado \gls{Fine-tuning} y los evalúa en simulaciones, consiguiendo una mayor tasa de aciertos el uso del In-Context Learning.
 
-% En el apartado anterior ya se han nombrado distintas librerías de \gls{ia} que se usan en la actualidad. En este apartado se van a describir las más relevantes para el desarrollo de este trabajo.
+En el trabajo de \cite{BTRob1} los autores proponen el desarrollo y entrenamiento de un \gls{LLM} especializado únicamente en la generación de \glspl{BT}.
+Para ello proponen un pipeline que consta de los siguientes pasos:
 
-% \subsubsection{Tensorflow}
+\begin{enumerate}
+    \item Creación de un dataset mediante la generación de datos sintéticos usando búsquedas en árbol de Monte Carlo (MCTS) combinadas con un sistema \gls{RAG}.
+    \item Entrenamiento del modelo mediante aprendizaje auto-supervisado (MLM).
+    \item \gls{Fine-tuning} supervisado con datos de instrucciones de usuarios con su respectivo \gls{BT}
+    \item Creación de un framework (BTGen Agent) para la generación de los árboles que consta de un módulo de memoria (almacena contextos a corto y largo plazo), módulo de acción (ontología de acciones disponibles), módulo de planificación y módulo de perfil (configura al \gls{LLM} para que adapte roles específicos).
+    \item Creación de una metodología de verificación y validación (V\&V) de las capacidades y el rendimiento del \gls{LLM}.
+\end{enumerate}
 
-% Tensorflow(\cite{tensorflow2015-whitepaper}) es una libería de \gls{ia} desarrollada y mantenida por el equipo de Google Brain desde 2015. Esta librería permite el desarrollo de modelos de \gls{ia} usando \glspl{cpu}, \glspl{gpu} y \glspl{tpu}. Tensorflow es una plataforma de código abierto que tiene un ecosistema de herramientas y librerías que permite el desarrollo e investigación de modelos de \gls{ia}.
-% Tensorflow tiene un enfoque más orientado a la producción y despliegue de modelos de \gls{ia} a un nivel empresarial, por lo que es más común ver su uso en empresas que en el ámbito académico. Un ejemplo de este enfoque es la presencia de la herramienta Tensorflow Serving \cite{olston2017tensorflowservingflexiblehighperformanceml}, que permite el desplegado de modelos de Tensorflow (o compatibles con el ecosistema) de una forma sencilla.
+Finalmente los autores del estudio \cite{BTRob3} incorporan a su sistema de generación de \glspl{BT} mediante ChatGPT un ``intérprete de fallos'', el cual permite adaptar en tiempo de ejecución los árboles, consiguiendo una tasa de éxito del 89.6\%.
 
-% \subsubsection{PyTorch}
-% PyTorch(\cite{Ansel_PyTorch_2_Faster_2024}) fue desarrolladapor Facebook AI Research en 2026, se hizo de código abierto en 2017 y en 2022 se unió a la Linux Fundation. Esta librería se centra en la idea de que la búsqueda de usabilidad y velocidad son compatibles. Pytorch permite el desarrollo de modelos de \gls{ia} al igual que Tensorflow, pero su modelo de código y desarrollo ha hecho que se use más para prototipado rápido y desarrollo de proyectos dinámicos.
-% Pytorch permite la integración con otras librerías como NumPy, SciPy y Cython, lo que permite un desarrollo más rápido y sencillo de modelos de \gls{ia}.
+\section{Generación de \glspl{BT} mediante \glspl{LLM} en videojuegos}
 
-% \subsubsection{Scikit-learn}
-% Scikit-learn(\cite{scikit-learn}) es una librería de \gls{ia} desarrollada en Python que se centra en el aprendizaje automático. Esta librería se basa en NumPy, SciPy y matplotlib, lo que permite un desarrollo más sencillo de modelos de \gls{ia}. Scikit-learn es una librería más ligera y más tradicional que Tensorflow o Pytorch, por lo que es más común ver su uso en el ámbito académico y de investigación. Scikit-learn se centra más en el análisis de datos predictivo y también es de código abierto como las anteriores.
+A diferencia del campo de la robótica, la literatura sobre generación de \glspl{BT} para videojuegos es escasa.
 
-% \subsubsection{YDF}
-% YDF (\cite{GBBSP23}) es una librería para entrenar, evaluar, interpretar y desplegar \gls{randomforest}, \glspl{gradientboosteddecisiontree}, \gls{cart} y \gls{isolationforest}. Esta librería esta intregrada con Tensorflow y keras, centra su desarrollo en la optimización de árboles de decisión y en hacer una \gls{api} concisa y moderna.
+En el trabajo de \cite{BTJuegos1} los autores presentan un framework en el que,al igual que en trabajos previos del campo de la robótica, se pueden generar \glspl{BT} a través del lenguaje natural.
+Para ello realizan un \gls{Fine-tuning} al modelo ``llama3.1:8B Instruct'' mediante LoRA gracias a un corpus mixto de árboles generados manualmente sobre dos videojuegos comerciales y árboles generados mediante el modelo ``GPT-4o''.
+Para generar los árboles se introducen las acciones disponibles en un almacén de vectores \gls{FAISS} y se recuperan mediante etiquetado de roles semántico (SRL).
+Mediante pruebas con usuarios se vio que este agente generador alcanzó un 78\% de ejecución correcta en estructuras sencillas, y un 81\% de éxito en estructuras complejas gracias al post-procesamiento.
 
-% \subsection{Modelos de reconocimiento de gestos y poses}
+Para terminar, los autores de \cite{BTJuegos2} proponen un trabajo parecido mediante el modelo ``GPT-5.2'' siguiendo diferentes niveles de detallismo en el prompt del diseñador, donde va desde la descripción explícita de la estructura del \gls{BT} buscado (en donde se consiguió un 100\% de precisión) hasta la delegación completa del diseño, pidiendo una descripción muy vaga del comportamiento buscado.
 
-% Muchos modelos de \gls{ia} se han desarrollado para la detección de gestos y poses. Estos modelos pueden usar imágenes, videos, datos de sensores o esqueletos formados por puntos de referencia. En este apartado se van a destacar los más relevantes para el resto del trabajo.
-
-% \subsubsection{YoLoV11}
-% YoLoV11(\cite{Jocher_Ultralytics_YOLO_2023}) es un conjunto de modelos \gls{yolo}, entre los que se encuentra un modelo de detección de poses. Por defecto este modelo usa 17 puntos de referencia (presentados en la tabla \ref{tab:pose-yolo}) y usa imágenes de 640x640 píxeles como entrada. En la página del modelo de pose\footnote{Página de YOLOv11-pose: \url{https://docs.ultralytics.com/es/tasks/pose/}}, Ultralytics incluye los distintos modelos de pose y su rendimiento y requerimientos. Este modelo se ofrece preentrenado en distintos tamaños con la opción de re entrenarse usando un dataset con el formato especificado por Ultralytics\footnote{Página de especificación del formato del dataset: \url{https://docs.ultralytics.com/es/datasets/pose/}}
-
-% \newpage
-
-% \begin{table}[H]
-%     \centering
-%     \caption{Puntos de referencia del modelo YOLOv11-pose}
-%     \label{tab:pose-yolo}
-%     \rowcolors{1}{white}{gray9}
-%     \begin{tabular}{|l|}
-%         \hline
-%         Nariz             \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Ojo izquierdo     \\
-%         \hline
-%         Ojo derecho       \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Oreja izquierda   \\
-%         \hline
-%         Oreja derecha     \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Hombro izquierdo  \\
-%         \hline
-%         Hombro derecho    \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Codo izquierdo    \\
-%         \hline
-%         Codo derecho      \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Muñeca izquierda  \\
-%         \hline
-%         Muñeca derecha    \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Cadera izquierda  \\
-%         \hline
-%         Cadera derecha    \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Rodilla izquierda \\
-%         \hline
-%         Rodilla derecha   \\
-%         \hline
-%         % \rowcolor{gray9}
-%         Tobillo izquierdo \\
-%         \hline
-%         Tobillo derecho   \\
-%         \hline
-%     \end{tabular}
-% \end{table}
-
-% \subsubsection{Modelos para la detección del balance de personas andando}
-
-% En el artículo \cite{combining3dskeleton} se presenta una comparativa de modelos para la detección del balance de personas andando en distintos niveles de valance y con distintas restricciones con un traje usado. Este artículo presenta una generación de esqueletos en 3D a partir de una kinect y realiza una comparativa de distintos modelos tradicionales y neuronales para ver su efectividad. En las conclusiones podemos ver como, de los distintos modelos utilizados, el que mejor resultados da es un \gls{dcnn} que los investigadores proponen. Otros modelos de la comparativa incluyen el \gls{randomforest}, el \gls{svm}, \gls{lstm} y Naive Bayes en términos de modelos tradicionales. Otra comparativa se realiza con otros modelos basados en \glspl{cnn} como AlexNet, VGGNet y ResNet-18.
-
-% \subsubsection{Otros modelos de detección de gestos y poses}
-
-% En los últimos años se han desarrollado modelos generales de detección de gestos y poses. Estos modelos han tenido distintos enfoques, desde el uso de gafas de \gls{vr} para hacer detección de gestos simples con las manos para utilizarlos como método de entrada (Meta Quest 2 y 3 por ejemplo), a modelos de seguimiento de manos y distintos modelos de reconocimiento de Google con Gemini.
+Esta escasez de trabajos en el ámbito de los videojuegos frente al campo de la robótica hace ver que es conveniente la investigación de esta línea.

@@ -1,0 +1,45 @@
+\chapter{Resultados}
+\label{cap:Resultados}
+
+Este trabajo ha consistido en la creación de una herramienta para la generación automática de Behavior Trees (BTs) para personajes no jugador (NPCs) en videojuegos con el fin de disminuir la carga de trabajo de los diseñadores de videojuegos.
+Para ello se escogió el motor de videojuegos Unreal Engine 5.7 como base donde poder implementar nodos necesarios para la generación de comportamientos (tanto como tareas como condicionales) y donde desarrollar una serie de escenarios para probar los BTs generados.
+Una vez se tenía todo lo necesario para poder crear y ejecutar BTs se ha procedido con el diseño de la herramienta que los genera. 
+Esta herramienta consta de de dos LLMs: el primero, de un tamaño elevado (Mistral Large 3, con 675B de parámetros), traduce la petición en lenguaje natural a pseudocódigo, mientras que un segundo LLM de menor tamaño (ollama3:8B, con 8B de parámtros) se encarga de asignar las variables de la Blackboard a los nodos necesarios.
+Para evaluar los BTs se han diseñado dos sistemas de validación: un validador de dependencias entre nodos mediante un autómata finito no determinista y un validador de objetivos cumplidos.
+Finalmente se han realizado pruebas de usuario para verificar si se cumplen los objetivos planteados.
+
+Los resultados obtenidos de las implementaciones de cada parte del trabajo se detallan a continuación.
+
+\section{Resultados de los escenarios}
+Las acciones y condicionales implementados en Unreal Engine 5, así como los diferentes escenarios, han conseguido cumplir su función como marco en el que ejecutar los BTs generados, consiguiendo el objetivo de cumplir con una opacidad del modelo frente a los usuarios.
+
+\section{Resultados de la herramienta generadora de árboles de comportamiento}
+Con el modelo LLM usado para la generación de pseudocódigo se ha conseguido una generación de BTs generalmente correcta en cuanto a calidad de ejecución, tiempo de generación y el formato resultante, consiguiendo una baja latencia debido al uso de un modelo en la nube.
+Al ser un modelo que se accede mediante API, se ha tenido que recurrir debido a sus limitaciones de acceso al uso de un modelo más pequeño para la asignación de variables de la Blackboard. 
+Esto ha resultado en algunos fallos a la hora de fijar las variables, siendo un motivo por el que los usuarios tuviesen que revisar y cambiar los JSONs resultantes, aunque estos fallos no han sido habituales durante el transcurso de todo este trabajo.
+
+Para el sistema RAG montado se han buscado datasets de BTs con el fin de usarlos como ejemplos de generaciones.
+Al no encontrar específicamente de videojuegos se ha optado por el uso de un dataset de robótica\footnote{Acceso al dataset LLM-BRAIn (\cite{llmbrain}: \url{https://huggingface.co/datasets/ArtemLykov/LLM_BRAIn_dataset})}.
+Aunque sea un dataset de un campo distinto ha cumplido la función de reducir las alucinaciones, generando de esta forma BTs son un menor número de nodos adicionales o una selección de tipo de nodo de composición más certera.
+Un aspecto negativo de este sistema es el aumento del tiempo de ejecución de la herramienta en las ocasiones en las que el almacén vectorial no estaba guardado en memoria, retrasando de este modo el tiempo de generación unos cuantos segundos.
+
+También para disminuir las alucinaciones se ha hecho uso de varias técnicas de \textit{prompt engineering} tales como ``Few-shot prompting'' o ``Chain-of-Thought'' con lo que se ha conseguido unos BTs capaces de lograr los comportamientos pedidos.
+Una téncica fundamental ha sido ``Self-Critique Prompting'', ya que ha conseguido corregir algunos errores alucinaciones de invención de nombres de tareas, decoradores o fallos en la sintáxis del pseudocódigo.
+
+Todos estos aspectos han conseguido lograr unos BTs que, aún no ser completamente perfectos, sirven como una buena base para generar comportamientos sobre los que el diseñador pueda trabajar de manera sencilla, reduciendo así su carga de trabajo.
+
+\section{Resultados del sistema de validación automática}
+La validación automática ha servido para comprobar dos aspectos: el cumplimiento de las dependencias entre tareas y del objetivo de cada comportamiento.
+Esos métodos de verificación han resultado cumplir su función de forma adecuada, consiguiendo en los casos en los que los BTs resultaban fallidos, la herramienta fuese capaz de comprender mejor la acción buscada y reestructurar el BT para conseguir uno más adecuado.
+Esto se ha podido comprobar en tres escenarios que se han desarrollado y en los que se han conseguido generaciones completamente válidas.
+
+\section{Resultados de las pruebas de usuarios}
+Como bien se ha comentado en la sección \ref{sec:Usuarios} se han realizado unas pruebas con un número de usuarios reducido (N=3), por lo que las conclusiones no se deben tomar como definitivas sino como una aproximación.
+Teniendo en cuenta esto se han conseguido los siguientes resultados:
+
+\begin{itemize}
+    \item Según la observación experimental los usuarios tardaban más en realizar los BTs que en generarlos a mano.
+    \item La herramienta generaba BTs que conseguían una generación similar a los realizados a mano.
+    \item Los BTs generados colocaban nodos extra o no lograban asignar correctamente todas las variables de la Blackboard a las tareas, haciendo que los BTs generados fuesen de una calidad inferior a los humanos, aunque formando una base para que la intervención de los diseñadores fuese mínima.
+    \item La encuesta SUS realizada para medir la usabilidad dio un resultado de media de 90.83 y desviación típica de 15.88, superando el umbral de lo aceptable establecido por la literatura de 68.
+\end{itemize}
