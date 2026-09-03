@@ -1,0 +1,67 @@
+\chapter{Discusión y limitaciones}
+\label{cap:Discusion}
+
+En este apartado se analizan e interpretan los datos expuestos en la sección de Resultados, evaluando el desempeño de la tecnología empleada, la efectividad del RAG y las implicaciones de las pruebas con usuarios con respecto a los objetivos originales del proyecto, así como las limitaciones que se han presentado durante el desarrollo del proyecto.
+
+\subsection{Discusión sobre la herramienta generadora de árboles de comportamiento}
+Se ha probado con distintos métodos de generación de los BTs.
+
+Se empezó probando con un sistema que generase los árboles de forma directa en los que se probaron diferentes modelos locales mediante guidance, donde los más peqieños (4B y 7B de parámetros) generaban árboles incorrectos y los más grandes (8B de parámetros) tardaban minutos o incluso horas en generarlos.
+Esto se puede explicar debido a la complejidad recursiva del JSON Schema, teniendo que descartar este método.
+
+El segundo intento consistió en fragmentar el comportamiento en subtareas, pero esto ocasionó unos árboles demasiado planos, convirtiéndolos en ilegibles y dificilmente modificables y escalables.
+Además, la selección de subtaréas resultó ser imprecisa. 
+
+Finalmente la decisión de emplear un pipeline híbrido con Mistral Large 3 (675B de parámetros totales, 41B de parámetros activos) en la nube y llama3:8B localmente demuestra un balance aceptable entre coste, latencia y precisión.
+El modelo en la nube proporcionó tiempos de procesamiento de pseudocódigo altamente eficientes con una baja latencia en las peticiones.
+No obstante, la delegación de la asignación de variables de la Blackboard al modelo local de menor tamaño (8B) causó errores esporádicos en los que ciertas tareas quedaban sin variables asignadas (como se evidenció de forma controlada en el entorno 3 de validación).
+Este comportamiento indica que, si bien se evita la sobrecarga y saturación de la API de terceros, los modelos locales de 8B aún carecen de la robustez necesaria para manejar de manera completamente precisa la lógica recursiva de las variables del árbol de comportamiento.
+
+En cuanto al sistema RAG creado, a pesar de utilizar un dataset enfocado en robótica debido a la ausencia de datasets de videojuegos disponibles, el sistema cumplió con creces el objetivo de mitigar las alucinaciones del modelo.
+Al proveer al modelo de un contexto estructurado en el formato de pseudocódigo adecuado, este generó árboles con una cantidad de nodos extra reducida y mayor acierto en el uso de los tipos de nodos de composición.
+Su principal inconveniente fue de carácter temporal: en instancias donde el almacén vectorial FAISS no se encontraba precargado en memoria, el tiempo de inicialización de la herramienta se prolongó algunos segundos, afectando negativamente la experiencia inmediata del usuario.
+
+Por otro lado, la sinergia de las técnicas de prompt engineering demostró ser esencial para la viabilidad de la generación de pseudocódigo.
+En particular, el Self-Critique Prompting actuó como un filtro crítico que previno la invención de identificadores de tareas y corrigió de forma autónoma defectos en la sintaxis antes de pasar el texto al traductor a JSON.
+Esto redujo de forma significativa los errores de formato.
+
+\subsection{Discusión sobre la validación }
+La inclusión del NFA para validar el orden secuencial de dependencias y de los validadores de objetivos representó una estrategia exitosa de control de calidad autónomo.
+Aunque su uso no es mandatorio para el funcionamiento básico de la herramienta, permite cerrar el ciclo de retroalimentación de la IA.
+Al ocurrir un fallo, la captura del contexto preciso (el pseudocódigo problemático y el historial de acciones ejecutadas) posibilita que el LLM reestructure de manera reactiva la lógica y logre corregir el comportamiento incorrecto sin necesidad de que el diseñador intervenga.
+Esto se demostró en los tres entornos, donde las tareas complejas de patrulla y recolección se validaron con éxito en un único ciclo automatizado, resolviendo problemas de dependencias de forma transparente al usuario.
+Sin embargo, la falta de introducir un JSON creado a mano con las dependencias, choca con la idea de la automatización del proceso (lo cual es el principal motivo por el que no es obligatorio su uso).
+
+\subsection{Discusión de las hipótesis de las pruebas de usuario}
+La cantidad de usuarios (N = 3) hace que las respuestas no sean estadísticamente significativas, por lo que los resultados no son definitivos sino aproximaciones.
+Para las hipótesis observamos lo siguiente:
+
+\begin{itemize}
+    \item \texttt{H1 (Reducción de tiempos)}: Confirmada.
+    Los resultados de la comparativa de tiempos de generación demuestran un ahorro de tiempo sustancial para casi todas las tareas y usuarios.
+    El promedio para completar el segundo BT se redujo de 221.7 s a solo 71.3 s con la herramienta. 
+    No obstante, la excepción del Usuario 2 en el primer BT (donde tardó 486 s con la herramienta frente a 315 s de forma manual) evidencia que cuando el modelo genera nodos extra o asigna erróneamente variables, el esfuerzo de depuración manual del JSON resultante puede dilatar los tiempos en usuarios que ya son sumamente rápidos de forma manual.
+    \item \texttt{H2 (Similitud de ejecución)}: Confirmada.
+    Aunque la calidad formal de los árboles se catalogó como inferior (80\% de media de conformidad), el comportamiento observable del NPC cumplió rigurosamente con las expectativas de los usuarios (80\% de conformidad).
+    La inferioridad cualitativa radica en un estilo de programación menos limpio por parte del LLM (inserción de nodos redundantes), pero el resultado final fue funcional y similar al humano.
+    \item \texttt{H3 (Buen punto de partida y disminución de carga)} : Confirmada.
+    Las altas valoraciones en la utilidad como punto de partida (93.4\%) y la extrema facilidad para modificar la estructura del JSON generado (86.6\%) se traducen en una percepción unánime de que la herramienta efectivamente alivia la carga de trabajo del diseñador (93.4\%).
+    El diseñador puede realizar ajustes superficiales sobre una estructura funcional previa.
+    \item \texttt{H4 (Usabilidad y accesibilidad)}: Confirmada.
+    El sobresaliente SUS promedio de 90.83 sobre 100 valida que la integración interna del agente dentro de Unreal Engine 5 a través del componente ``BTGenerator'' resulta sumamente intuitiva y accesible.
+\end{itemize}
+
+\section{Limitaciones}
+\label{sec:Limitaciones}
+
+Este trabajo ha sufrido una serie de limitaciones en cuanto a limitaciones técnicas y a la escasez de usuarios disponibles para las pruebas.
+
+Las limitaciones técnicas se han podido comprobar a la hora de la selección de modelos para generar los BTs.
+Como bien se ha mencionado anteriormente de los dos modelos, a pesar de cumplir de forma correcta su objetivo, presentan una serie de limitaciones debido a las capacidades computacionales disponibles.
+El modelo generador de pseudocódigo es un LLM en la nube, teniendo que depender de una API de terceros, lo que no permite un control total del modelo.
+Adicionalmente, el modelo que asigna las variables de la Blackboard es uno bastante pequeño que puede cometer errores.
+Además, el sistema RAG se ha construido con BTs de robótica y no de videojuegos y que puede tardar varios segundos en construirse.
+Otra limitación es la falta de automatización en ciertos aspectos, como en la suscripción de las tareas a la Abstract Factory así como la asignación de su descripción o la generación de las métricas de validación.
+Aunque los usuarios encuestados encontrasen sencilla la modificación de los BTs generados, es posible que en el futuro busquen cambios adicionales en el comportamiento o necesiten reestructurarlo de forma sencilla, lo cual en el estado actual supondría pedirle otra generación distinta a la herramienta en vez de partir con el BT ya existente.
+
+Finalmente la limitación más grande ha sido la falta de usuarios para poder realizar las pruebas de usuarios, haciendo imposible concluir de forma definitiva las hipótesis planteadas siguiendo los objetivos.
