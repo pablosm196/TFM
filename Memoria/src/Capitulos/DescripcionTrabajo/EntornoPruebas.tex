@@ -1,16 +1,16 @@
 \section{Descripción del entorno}
 \label{sec:DescripcionEntorno}
 
-Lo primero que se ha necesitado en un entorno en el que se puedan implementar una serie de acciones y condicionales con el fin de tener la posibilidad de diseñar una serie de comportamientos para poder crear y ejecutar los BTs.
+Lo primero que se ha necesitado es un entorno en el que se puedan implementar una serie de acciones y condicionales (controladores de flujos de ejecución) con el fin de tener la posibilidad de diseñar una serie de comportamientos para poder crear y ejecutar los árboles de comportamientos.
 Para ello y por el enfoque de este proyecto en el desarrollo de videojuegos, se han desarrollado una serie de escenarios en el motor de videojuegos Unreal Engine 5.7 debido también a su amplio uso en la industria y su robusto sistema de BTs\footnote{Enlace a la documentación oficial de Unreal sobre los BTs: \url{https://dev.epicgames.com/documentation/unreal-engine/behavior-trees-in-unreal-engine}}.
 Son estos entornos los que se van a comunicar con el agente LLM de Python para, posteriormente, probar los BTs generados y comprobar su validez.
 
-Estos entornos, de los que se pueden ver un ejemplo en la figura \ref{fig:entorno}, constan de un agente (el NPC que va a seguir el comportamiento buscado) cuyo controlador es una clase que hereda de la clase de Unreal Engine ``AIController'', el cual contiene el componente de BT necesario para la futura ejecución de un BT.
-Además contiene un componente de Blackboard, el cual es esencial porque constituye la memoria del NPC.
+Estos entornos, de los que se pueden ver un ejemplo en la figura \ref{fig:entorno}, constan de un agente (el NPC que va a seguir el comportamiento buscado) que contiene el componente de Behavior Tree necesario para la futura ejecución de un BT.
+Además, contiene un componente de Blackboard, el cual es esencial porque constituye la memoria del NPC.
 Este consiste en una serie de variables entrada/salida en las que las tareas y condicionales pueden leer y/o escribir, siendo esta la manera que tienen para interactuar con el entorno.
-En la misma figura se puede apreciar la interfaz en la que el usuario debe introducir la información necesaria para la generación del BT: la descripción del comportamiento buscado, el nombre del archivo con el que se va a guardar el BT generado, las entradas de la BB, el agente que va a ejecutar el BT generado y, opcionalmente, el nombre del archivo de validación del BT generado.
+En la misma figura se puede apreciar la interfaz en la que el usuario debe introducir la información necesaria para la generación del BT: la descripción del comportamiento buscado, el nombre del archivo con el que se va a guardar el BT generado, las entradas de la Blackboard, el agente que va a ejecutar el BT generado y, opcionalmente, el nombre del archivo de validación del BT generado.
 Esta información la debe contener un Actor (los objetos del mundo de Unreal), llamado en la captura ``BTGeneratorManager'', que tenga un componente llamado ``BTGenerator''.
-Este componente de Actor es el encargado de lanzar el proceso de Python con la información que el usuario haya puesto, y el que comienza la ejecución de las pruebas del BT generado.
+Este componente de Actor es el encargado de lanzar el proceso de Python con la información que el usuario haya puesto, y el que comienza la ejecución de las pruebas del BT generado, siendo la clase principal de la herramienta en Unreal.
 Para comenzar la ejecución se debe pulsar el botón ``GenerateBT'' que se aprecia en la captura.
 
 \begin{figure}[H]
@@ -25,9 +25,7 @@ Para comenzar la ejecución se debe pulsar el botón ``GenerateBT'' que se aprec
 Junto con el agente mencionado anteriormente se han preparado una serie de tareas (los cuales servirán como nodos terminales de los árboles) y condicionales que sirven como base para poder crear unos comportamientos de prueba.
 Estas tareas y condicionales son introducidos en una clase implementada mediante el patrón \gls{Abstract Factory} con el fin de simplificar la futura construcción de instancias de cada nodo.
 Para la construcción de los nodos mediante estas clases se precisa de la ID que identifiquen a la tarea o al condicional y una descripción de lo que hace, la cual será fundamental para el contexto del LLM.
-En esta descripción y para las clases que requieran una variable de la Blackboard es recomendable introducir qué tipo de variable se requiere para que el modelo LLM sea más preciso.
-
-Para registrar una nueva clase en esta factoría se debe llamar a las funciones ``RegisterTask'', ``RegisterBlackboardTask'' o ``RegisterDecorator'', las cuales son funciones template en las que se les debe poner la clase que se desea ser introducida y pasar como argumentos el ID que se desee poner y la descripción de lo que realiza la tarea o lo que revisa el condicional.
+En esta descripción, para las clases que requieran una variable de la Blackboard, es recomendable introducir qué tipo de variable se requiere para que el modelo LLM sea más preciso.
 
 Las tareas, junto con sus descripciones en español (en el trabajo realizado las descripciones han sido escritas en inglés para respetar el idioma del prompt) que se han creado para estas pruebas son las siguientes:
 
@@ -56,7 +54,7 @@ Los condicionales implementados, junto con sus descripciones en español (al igu
   \item \texttt{IsItNear?}: Cierto si la distancia entre el ejecutor y el jugador es menor o igual que un umbral prefijado, falso en caso contrario. El objetivo tiene que ser de tipo ``Objeto''.
 \end{itemize}
 
-Aunque el número de acciones y decoradores disponibles en esta implementación es reducido, pero sirve como sistema de prueba para la generación y la propuesta de evaluación.
+Aunque el número de acciones y decoradores disponibles en esta implementación es reducido sirve como sistema de pruebas para la generación y la propuesta de evaluación.
 
 \subsection{Formato del árbol de comportamiento generado}
 
