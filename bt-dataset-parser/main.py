@@ -94,9 +94,7 @@ def preprocess_xml(s: str) -> str:
     lines = s.splitlines()
     cleaned = []
     for line in lines:
-        # Elimina espacios invisibles
         line = line.replace("\xa0", " ")
-        # Elimina tabs invisibles
         line = line.replace("\t", "    ")
         cleaned.append(line)
     s =  "\n".join(cleaned)
@@ -109,10 +107,9 @@ def preprocess_xml(s: str) -> str:
     return s
 
 def clean_xml(s: str) -> str:
-    # Elimina BOM, zero-width spaces y caracteres no imprimibles
-    s = s.replace("\ufeff", "")  # BOM
-    s = s.replace("\x00", "")    # Null byte
-    s = s.replace("\u200b", "")  # Zero-width space
+    s = s.replace("\ufeff", "")
+    s = s.replace("\x00", "")
+    s = s.replace("\u200b", "")
     s = s.replace("\u200c", "")
     s = s.replace("\u200d", "")
     s = s.replace("\u202c", "")

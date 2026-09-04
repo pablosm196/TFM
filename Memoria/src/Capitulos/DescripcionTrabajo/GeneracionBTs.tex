@@ -1,9 +1,9 @@
-\section{Generación de los \glspl{BT}}
+\section{Generación de los árboles de comportamiento}
 \label{sec:GeneracionBTs}
 
 \subsection{Generación de forma directa}
-En un principio se planteó la generación de los BTs de forma directa, en la que se le pasaba el prompt del usuario a un modelo local y éste generaba un BT en el formato JSON especificado en el apéndice \ref{appendix:Schema}.
-Este planteamiento se realizaba mediante el módulo de Python ``guidance'', el cual permite forzar un formato de salida a un modelo de \gls{Ollama}\footnote{documentación oficial de Ollama: \url{https://ollama.com/}}, el cual es un gestor y motor de ejecución de LLMs.
+Se planteó la generación de los árboles de comportamiento de forma directa, en la que se le pasaba el prompt del usuario a un modelo local y éste generaba un BT en el formato JSON especificado en el apéndice \ref{appendix:Schema}.
+Este planteamiento se realizaba mediante el módulo de Python ``guidance'', el cual permite forzar un formato de salida a un modelo de Ollama\footnote{documentación oficial de Ollama: \url{https://ollama.com/}}, el cual es un gestor y motor de ejecución de LLMs.
 Para este caso se probaron diferentes modelos, todos probados bajo el mismo escenario y con la temperatura en 0.0:
 \begin{itemize}
     \item \texttt{Prompt}: NPC that, constantly, select a random point from the map, goes to the point and waits a time.
@@ -33,16 +33,16 @@ cells   = {font=\footnotesize\linespread{0.84}\selectfont},
     deepsek-r1:8b & 8B  & >2 horas \\ \hline
 \end{longtblr}
 
-Los modelos de menor tamaño no generaban buenos BTs para una tarea tan sencilla (como tareas que faltaban o variables de la Blackboard mal asignadas).
-Sin embargo, los modelos grandes si conseguían generar BTs que cumplían con la función que se les pedía, aunque añadiendo más tareas de las necesarias.
-Pero, como se puede observar en la tabla, para conseguir esos BTs la ejecución podía tardar horas, por lo que también debían ser descartados.
+Los modelos de menor tamaño no generaban buenos árboles para una tarea tan sencilla (como tareas que faltaban o variables de la Blackboard mal asignadas).
+Sin embargo, los modelos grandes si conseguían generar árboles que cumplían con la función que se les pedía, aunque añadiendo más tareas de las necesarias.
+Pero, como se puede observar en la tabla, para conseguirlos la ejecución podía tardar horas, por lo que también debían ser descartados.
 Tanto la malfuncionalidad de los modelos pequeños como la tardanza de los modelos grandes se puede explicar por el funcionamiento de guidance y la complejidad recursiva del JSON Schema empleado, por lo que esta primera generación debería ser descartada.
 
 \subsection{Generación mediante fragmentación por subtareas}
-En base a otros trabajos relacionados como \cite{ZKTP} o \cite{ReAcTree} se replanteó la generación para dividirlo en subtareas con el fin de simplificar la tarea al LLM.
+En base a otros trabajos relacionados se replanteó la generación para dividirlo en subtareas con el fin de simplificar la tarea al LLM (\cite{ZKTP} y \cite{ReAcTree}).
 Para ello se encargaban cuatro agentes LLM, cada uno con un rol distinto.
 El primero se encargaba de dividir la acción mandada por el usuario mediante el prompt en subtareas.
-En el ejemplo de un NPC que tiene que buscar al jugador para perseguirlo y atacarlo cuando esté cerca, este primer agente deberís dividir la tarea principal en:
+En el ejemplo de un NPC que tiene que buscar al jugador para perseguirlo y atacarlo cuando esté cerca, este primer agente debería dividir la tarea principal en:
 
 \begin{enumerate}
     \item Buscar al jugador
@@ -65,10 +65,10 @@ Se puede ver un diagrama de flujo de esta generación en la figura \ref{fig:gene
 \end{figure}
 
 Finalmente se descartó esta opción debido a que los árboles resultantes quedaban muy planos (con menos niveles de profundidad de lo que se cabía esperar), hacieéndolos difícilmente legibles y modificables.
-Además los agentes tendían a equivocarse (mala división en subtareas, confusión entre el tipo que debería ser un nodo padre) o a alucinar (inventarse tareas o decoradores que no existen), no consiguiendo de este modo un \gls{BT} válido con ninguno de los modelos probados.
+Además los agentes tendían a equivocarse (mala división en subtareas, confusión entre el tipo que debería ser un nodo padre) o a alucinar (inventarse tareas o decoradores que no existen), no consiguiendo de este modo un árbol de comportamiento válido con ninguno de los modelos probados.
 
 \subsection{Generación mediante pseudocódigo}
-Trabajos como \cite{SayCan} o \cite{LLMPlanner} muestran que, dado un conjunto de acciones posibles a realizar, los LLMs son capaces de seleccionar de éstas un órden para realizar una tarea de alto nivel.
+Algunas investigaciones de los LLMs muestran que, dado un conjunto de acciones posibles a realizar, los LLMs son capaces de seleccionar de éstas un órden para realizar una tarea de alto nivel (\cite{SayCan} y \cite{LLMPlanner}).
 Es por ésto que se decidió que el LLM generase esta secuencia en un formato de pseudocódigo que fuese fácilmente convertible al formato JSON deseado.
 Este pseudocódigo se especifica de la siguiente manera:
 \begin{itemize}
@@ -101,28 +101,28 @@ END
   \label{fig:examplePseudocode}
 \end{figure}
 
-Como se ha podido ver en trabajos relacionados, la generación de BTs mediante LLMs mejora considerablemente en modelos a los que se le ha aplicado \gls{Fine-tuning} o se les proporciona ejemplos.
-Debido a la falta de capacidad computacional no se ha podido hacer un Fine-tuning de un LLM, por lo que se ha optado a recopilar una pila de ejemplos de BTs para poder hacer un sistema \gls{RAG}.
-El RAG es una técnica de inteligencia artificial que consiste en conectar un LLM con una base de datos externa a sus conocimientos disponibles que puede consultar para ampliar su contexto mediante búsquedas de conceptos próximos en el espacio vectorial (generalmente utilizando la distancia coseno de dos vectores como métrica) al prompt dado, posibilitando así las alucinaciones.
+Como se ha podido ver en trabajos relacionados, la generación de árboles de comportamiento mediante LLMs mejora considerablemente en modelos a los que se le ha aplicado fine-tunning o se les proporciona ejemplos (\cite{llmbrain}).
+Debido a la falta de capacidad computacional no se ha podido hacer un Fine-tuning de un LLM, por lo que se ha optado a recopilar una pila de ejemplos de BTs para poder hacer un sistema RAG.
+Este es una técnica de inteligencia artificial que consiste en conectar un LLM con una base de datos externa a sus conocimientos disponibles que puede consultar para ampliar su contexto mediante búsquedas de conceptos próximos en el espacio vectorial (generalmente utilizando la distancia coseno de dos vectores como métrica) al prompt dado, posibilitando así las alucinaciones.
 
-Para ello se ha escogido el dataset publicado por \cite{llmbrain}\footnote{Enlace a la página de Hugging Face: \url{https://huggingface.co/datasets/ArtemLykov/LLM_BRAIn_dataset}}, el cual contiene 8366 ejemplos de BTs.
-Debido a que estos BTs están en formato XML no se pueden utilizar de forma predeterminada para el sistema RAG, por lo que se ha procedido a hacer un preprocesamiento de los datos.
+Para ello se ha escogido el dataset publicado por \cite{llmbrain}\footnote{Enlace a la página de Hugging Face: \url{https://huggingface.co/datasets/ArtemLykov/LLM_BRAIn_dataset}}, el cual contiene 8366 ejemplos de árboles de comportamiento generados de forma sintética.
+Debido a que estos árboles están en formato XML no se pueden utilizar de forma predeterminada para el sistema RAG, por lo que se ha procedido a hacer un preprocesamiento de los datos.
 
 Este proprocesado carga el dataset desde Hugging Face (plataforma de código abierto donde los usuarios pueden subir modelos o datasets, similar a otras como Kaggle), los limpia y los traduce al formato necesario.
 La limpieza consiste en el uso de expresiones regulares para poder subsanar los fallos de formato más comunes que tenían estos datos, como diferencias entre nombres por mayúsculas y minúsculas, etiquetas sin la apertura o la clausura, faltas de comillas, etc.
 Si hay algún ejemplo que, aun con la limpieza, no se ha conseguido parsear por otro fallo, se descarta.
-Finalmente, de los 8366 ejemplos se quedaron 8290 BTs válidos.
+Finalmente, de los 8366 ejemplos se quedaron 8290 árboles válidos.
 
 Una vez los datos están limpios, se procede a la traducción del formato XML gracias al módulo ``xml.etree.ElementTree'', el cual es un módulo de Python que sirve para trabajar con datos que estén en formato XML.
-Cuando el árbol ha sido construído se guarda en formato JSON siguiendo el JSON Schema especificado para este trabajo, y finalmente se traduce al pseudocódigo especificado previamente gracias a otra función recursiva, quedando así 8366 archivos JSON con el prompt de la acción de alto nivel a realizar, el BT resultante y el pseudocódigo.
+Cuando el árbol ha sido construído se guarda en formato JSON siguiendo el JSON Schema especificado para este trabajo, y finalmente se traduce al pseudocódigo especificado previamente gracias a otra función recursiva, quedando así 8366 archivos JSON con el prompt de la acción de alto nivel a realizar, el árbol de comportamiento resultante en formato JSON y el pseudocódigo.
 
-Con los ejemplos de BTs preparados se ha procedido a la aplicación del sistema RAG.
-Al iniciar la herramienta de generación se crea el \gls{Almacén vectorial} cargando los documentos mencionados anteriormente en estructuras llamadas ``Document'', provenientes del módulo ``langchain\_core.documents''.
-Una vez están todos los documentos cargados se procede a hacer el \gls{Embedding} de éstos de manera local gracias al modelo de Hugging Face ``all-MiniLM-L6-v2'' mediante el módulo ``langchain\_huggingface''.
-Estos \glspl{Embedding} se crean y se almacenan en una estructura de tipo \gls{FAISS} gracias al módulo ``langchain\_community.vectorstores''.
-Una vez creado el almacén vectorial se rescatan las 5 búsquedas más similares al comportamiento pedido por el usuario y se incluyen en el prompt del sistema del LLM.
+Con los ejemplos de los árboles de comportamiento preparados se ha procedido a la aplicación del sistema RAG.
+Al iniciar la herramienta de generación se crea el almacén vectorial cargando enteros los documentos mencionados anteriormente en estructuras llamadas ``Document'', provenientes del módulo ``langchain\_core.documents''.
+Una vez están todos los documentos cargados se procede a hacer el embedding de éstos de manera local gracias al modelo de Hugging Face ``all-MiniLM-L6-v2'' mediante el módulo ``langchain\_huggingface''.
+Estos embeddings se crean y se almacenan en una estructura de tipo FAISS gracias al módulo ``langchain\_community.vectorstores''.
+Una vez creado el almacén vectorial se rescatan las 5 búsquedas más similares al comportamiento pedido por el usuario y se incluyen estos ejemplos (prompt con la descripción del comportamiento bsucado y pseudocódigo del árbol) en el prompt del sistema del LLM.
 
-Para la generación de pseudocódigo a partir del comportamiento buscado se ha requerido un modelo de mayor tamaño que los previamente usados, por lo que se ha usado el LLM ``Mistral Large 3'', el cual cuenta con un total de 675B de parámetros (41B de ellos son parámetros activos, los que actúan por cada token), mediante el módulo ``langchain\_mistralai'', el cual realiza llamadas de \gls{api} al modelo.
+Para la generación de pseudocódigo a partir del comportamiento buscado se ha requerido un modelo de mayor tamaño que los previamente usados debido a la complejidad del problema, por lo que se ha usado el LLM ``Mistral Large 3'', el cual cuenta con un total de 675B de parámetros (41B de ellos son parámetros activos, los que actúan por cada token), mediante el módulo ``langchain\_mistralai'', el cual realiza llamadas de API al modelo.
 Para el prompt de sistema del modelo se han realizado varias técnicas de \textit{prompt engineering} con el fin de reducir las alucinaciones en la generación del pseudocódigo:
 
 \begin{itemize}
@@ -144,8 +144,8 @@ El prompt de sistema completo se puede ver en el apéndice \ref{appendix:spCode}
 
 Una vez se ha generado el pseudocódigo se procede a la traducción de éste al formato JSON.
 Esto se hace mediante la clase ``BehaviorTreeParser'' y mediante dos clases auxiliares: Composite y Action, las cuales ambas heredan de la clase Node.
-La clase Composite contiene el tipo (un string), una lista de nodos hijos (lista de tipo ``Node''), un decorador (opcional de tipo string), las variables de la \gls{BB} del decorador (una lista de strings) y un identificador (un entero).
-La clase Action tiene el nombre de la tarea (un string), las variables de la \gls{BB} que puede usar la tarea (una lista de strings), un decorador (opcional de tipo string), las variables de la \gls{BB} del decorador (una lista de strings) y un identificador (un entero).
+La clase Composite contiene el tipo (un string), una lista de nodos hijos (lista de tipo ``Node''), un decorador (opcional de tipo string), las variables de la Blackboard del decorador (una lista de strings) y un identificador (un entero).
+La clase Action tiene el nombre de la tarea (un string), las variables de la Blackboard que puede usar la tarea (una lista de strings), un decorador (opcional de tipo string), las variables de la Blackboard del decorador (una lista de strings) y un identificador (un entero).
 Para la traducción del pseudocódigo primero se preprocesa guardando cada línea en una lista de strings.
 Seguido de esto se procesa cada línea dividiendo cada palabra de ésta y actuando dependiendo de cuál es su primera palabra:
 \begin{itemize}
@@ -158,7 +158,7 @@ Una vez se acaba este procesamiento de cada línea se verifica si sigue habiendo
 Los posibles ``ParserError'' lanzados durante este proceso se recogen fuera de esta función para poder volver llamar al LLM indicando el error de la excepción con el fin de que devuelva un pseudocódigo arreglado.
 
 Cuando ya ha sido procesado todo el pseudocódigo se crea una clase auxiliar llamada ``BlackboardAssignmentAgent'' que se encarga de asignar las variables de la Blackboard a las tareas o los decoradores.
-Para ello reconstruye el pseudocódigo asignándole el identificador a cada nodo (este identificador es el órden de aparición de cada acción o decorador, ya que en los BT es normal que se repitan) y se le pide a un segundo LLM que a cada decorador y acción que necesite una variable de la Blackboard se le asigne.
+Para ello reconstruye el pseudocódigo asignándole el identificador a cada nodo (este identificador es el órden de aparición de cada acción o decorador, ya que en los árboles de comportamiento es normal que se repitan) y se le pide a un segundo LLM que a cada decorador y acción que necesite una variable de la Blackboard se le asigne.
 Por problemas con sobrecarga de peticiones de la API, para este caso se usa un modelo local más pequeño, el modelo ``llama3:8b''.
 Para el prompt de sistema de este LLM se le pasa el árbol en el formato del pseudocódigo reconstruido mencionado anteriormente, la lista de las acciones que necesitan una variable de la Blackboard con sus descripciones y la lista de variables de ésta.
 Para disminuir las alucinaciones de este LLM se han usado las siguientes técnicas de \textit{prompt engineering}:
@@ -206,4 +206,4 @@ Una vez genera la respuesta se valida el resultado comprobando si todos los nomb
 Si hay algún nombre que no existe porque el modelo ha alucinado se le pide al modelo que lo reintente.
 Cuando el resultado es válido se guardan las variables asignadas en los nodos correspondientes y, finalmente, se construye el JSON mediante una función recursiva desde la raiz del árbol y se guarda en un archivo con el nombre especificado por el usuario.
 
-Trabajos como \cite{PlanBench} han demostrado que la planificación generada por LLMs como se ha hecho en este trabajo no resultan ser fiables de forma exacta, por lo que se ha diseñado un sistema de validación y corrección de errores automático.
+Algunos trabajos han demostrado que la planificación generada por LLMs como se ha hecho en este trabajo no resultan ser fiables de forma exacta, por lo que se ha diseñado un sistema de validación y corrección de errores automático (\cite{PlanBench}).

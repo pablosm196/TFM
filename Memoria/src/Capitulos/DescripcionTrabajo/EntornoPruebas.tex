@@ -1,16 +1,17 @@
-\section{Descripción del entorno}
+\section{Descripción del entorno en un motor de videojuegos}
 \label{sec:DescripcionEntorno}
 
 Lo primero que se ha necesitado es un entorno en el que se puedan implementar una serie de acciones y condicionales (controladores de flujos de ejecución) con el fin de tener la posibilidad de diseñar una serie de comportamientos para poder crear y ejecutar los árboles de comportamientos.
-Para ello y por el enfoque de este proyecto en el desarrollo de videojuegos, se han desarrollado una serie de escenarios en el motor de videojuegos Unreal Engine 5.7 debido también a su amplio uso en la industria y su robusto sistema de BTs\footnote{Enlace a la documentación oficial de Unreal sobre los BTs: \url{https://dev.epicgames.com/documentation/unreal-engine/behavior-trees-in-unreal-engine}}.
-Son estos entornos los que se van a comunicar con el agente LLM de Python para, posteriormente, probar los BTs generados y comprobar su validez.
+Para ello, y por el enfoque de este proyecto en el desarrollo de videojuegos, se han desarrollado una serie de escenarios en el motor de videojuegos Unreal Engine 5.7 debido también a su amplio uso en la industria y su robusto sistema de árboles de comportamiento\footnote{Enlace a la documentación oficial de Unreal sobre los árboles de comportamiento: \url{https://dev.epicgames.com/documentation/unreal-engine/behavior-trees-in-unreal-engine}}.
+Son estos entornos los que se van a comunicar con el agente LLM de Python para, posteriormente, probar los árboles generados y comprobar su validez.
 
-Estos entornos, de los que se pueden ver un ejemplo en la figura \ref{fig:entorno}, constan de un agente (el NPC que va a seguir el comportamiento buscado) que contiene el componente de Behavior Tree necesario para la futura ejecución de un BT.
+Estos entornos, de los que se pueden ver un ejemplo en la figura \ref{fig:entorno}, constan de un agente (el NPC que va a seguir el comportamiento buscado) que contiene el componente de Behavior Tree necesario para la futura ejecución de un árbol de comportamiento.
 Además, contiene un componente de Blackboard, el cual es esencial porque constituye la memoria del NPC.
-Este consiste en una serie de variables entrada/salida en las que las tareas y condicionales pueden leer y/o escribir, siendo esta la manera que tienen para interactuar con el entorno.
-En la misma figura se puede apreciar la interfaz en la que el usuario debe introducir la información necesaria para la generación del BT: la descripción del comportamiento buscado, el nombre del archivo con el que se va a guardar el BT generado, las entradas de la Blackboard, el agente que va a ejecutar el BT generado y, opcionalmente, el nombre del archivo de validación del BT generado.
+Este consiste en una serie de variables entrada/salida de las que las tareas y condicionales pueden leer y/o escribir, siendo esta la manera que tienen los NPCs de interactuar con el entorno.
+
+En la misma figura se puede apreciar la interfaz en la que el usuario debe introducir la información necesaria para la generación del árbol: la descripción del comportamiento buscado, el nombre del archivo con el que se va a guardar el árbol de comportamiento generado, las entradas de la Blackboard, el agente que va a ejecutar el árbol generado y, opcionalmente, el nombre del archivo de validación de la generación.
 Esta información la debe contener un Actor (los objetos del mundo de Unreal), llamado en la captura ``BTGeneratorManager'', que tenga un componente llamado ``BTGenerator''.
-Este componente de Actor es el encargado de lanzar el proceso de Python con la información que el usuario haya puesto, y el que comienza la ejecución de las pruebas del BT generado, siendo la clase principal de la herramienta en Unreal.
+Este componente de Actor es el encargado de lanzar el proceso de Python con la información que el usuario haya puesto y el que comienza la ejecución de las pruebas, siendo la clase principal de la herramienta en Unreal.
 Para comenzar la ejecución se debe pulsar el botón ``GenerateBT'' que se aprecia en la captura.
 
 \begin{figure}[H]
@@ -22,9 +23,9 @@ Para comenzar la ejecución se debe pulsar el botón ``GenerateBT'' que se aprec
 
 \subsection{Tareas y condicionales}
 
-Junto con el agente mencionado anteriormente se han preparado una serie de tareas (los cuales servirán como nodos terminales de los árboles) y condicionales que sirven como base para poder crear unos comportamientos de prueba.
-Estas tareas y condicionales son introducidos en una clase implementada mediante el patrón \gls{Abstract Factory} con el fin de simplificar la futura construcción de instancias de cada nodo.
-Para la construcción de los nodos mediante estas clases se precisa de la ID que identifiquen a la tarea o al condicional y una descripción de lo que hace, la cual será fundamental para el contexto del LLM.
+Junto con el agente mencionado anteriormente se han preparado una serie de tareas (los cuales servirán como nodos terminales de los árboles) y condicionales que sirven como base para poder crear ciertos comportamientos.
+Estas tareas y condicionales son introducidos en una clase implementada mediante el patrón Abstract Factory con el fin de simplificar la futura construcción de instancias de cada nodo.
+Para la construcción de los nodos mediante estas clases se precisa de una ID que identifique a la tarea o al condicional y una descripción de lo que hace o verifica, la cual será fundamental para el contexto del LLM.
 En esta descripción, para las clases que requieran una variable de la Blackboard, es recomendable introducir qué tipo de variable se requiere para que el modelo LLM sea más preciso.
 
 Las tareas, junto con sus descripciones en español (en el trabajo realizado las descripciones han sido escritas en inglés para respetar el idioma del prompt) que se han creado para estas pruebas son las siguientes:
@@ -58,24 +59,24 @@ Aunque el número de acciones y decoradores disponibles en esta implementación 
 
 \subsection{Formato del árbol de comportamiento generado}
 
-Para la generación del BT se ha decidido que el formato que debe devolver la herramienta generada sea un archivo JSON debido a su facilidad para leerlo, tanto por un humano como por un programa.
-Para la futura traducción del JSON a un BT de Unreal ha sido necesaria la estandiración del formato del JSON.
+Para la generación del árbol de comportamiento se ha decidido que el formato que debe devolver la herramienta generada sea un archivo JSON debido a su facilidad para leerlo, tanto por un humano como por un programa.
+Para la futura traducción del JSON a un árbol de Unreal ha sido necesaria la estandarización del formato del JSON.
 Para ello se ha hecho uso del JSON Schema Draft 2020-12\footnote{documentación del JSON Schema Draft 2020-12: \url{https://json-schema.org/draft/2020-12}}, el cual es un lenguaje declarativo que sirve para definir una estructura de datos en formato JSON para que pueda ser considerada válida.
 
-Este JSON Schema consta de dos partes: la Blackboard y el BT.
-La Blackboard es una lista de objetos JSON que contienen solo un par clave-valor, donde la clave es el nombre de la variable y el valor es el tipo de la variable (Bool, Int, Float, Vector, Object o String).
-El BT consta de un nodo (la raíz) que debe contener el tipo de nodo (Task, Sequence, Selector o Parallel), una lista de decoradores (en el caso de no tener se debe quedar vacía), la cual consiste en objetos JSON que debe contener como clave el nombre del decorador y como valor la varaible de la Blackboard que va a usar, y una lista de nodos hijos.
+Este JSON Schema consta de dos partes: la Blackboard y el árbol de comportamiento.
+La Blackboard es una lista de objetos JSON que contienen un par clave-valor, donde la clave es el nombre de la variable y el valor es el tipo de la variable (Bool, Int, Float, Vector, Object o String).
+El árbol consta de un nodo (la raíz) que debe contener el tipo de nodo (Task, Sequence, Selector o Parallel), una lista de decoradores (en el caso de no tener se debe quedar vacía), la cual consiste en objetos JSON que debe contener como clave el nombre del decorador y como valor la variable de la Blackboard que va a usar, y una lista de nodos hijos.
 Estos nodos hijos siguen la misma estructura que la raíz.
 Como propiedades adicionales, puede contener una lista de nombres de variables de la Blackboard que vaya a necesitar, y, en el caso de ser una tarea, debe tener el ID de ésta.
 Este esquema se puede encontrar en el apéndice \ref{appendix:Schema}
 
-Para cuando el modelo haya generado el JSON con el \gls{BT}, la clase ``BTGeneratorComponent'' entra en el modo de juego.
+Para cuando el modelo haya generado el JSON con el árbol de comportamiento, el escenario entra en el modo de juego de forma automática.
 Es en este momento donde el NPC, desde su función ``BeginPlay'' (función de Unreal que es llamada cuando se inicia el juego), coge el nombre del archivo JSON generado para traducirlo a la lógica de Unreal.
-Esta traducción la hace la clase ``BTConstructor'', la cual es una clase que sigue el patrón \gls{Singleton} con el fin de que pueda ser accedida desde cualquier clase del juego.
-Esta clase crea un BT (clase ``BehaviorTree'') y una Blackboard (clase ``BlackboardData'') que serán rellenados con la información del JSON.
+Esta traducción la hace la clase ``BTConstructor'', la cual es una clase que sigue el patrón Singleton con el fin de que pueda ser accedida desde cualquier clase del juego.
+Esta clase crea un árbol de comportamiento de Unreal (clase ``BehaviorTree'') y una Blackboard (clase ``BlackboardData'') que serán rellenados con la información del JSON.
 Para ello, la clase rellena primero la Blackboard creando las variables disponibles en el JSON.
-Finalmente se crea el BT mediante un método recursivo que recorre y genera el árbol en profundidad, creando primero todos los nodos hijos de una rama antes de pasar a sus hermanas.
+Finalmente se crea el árbol mediante un método recursivo que recorre y genera el árbol en profundidad, creando primero todos los nodos hijos de una rama antes de pasar a sus hermanas.
 
-Una vez se ha especificado todo lo necesario para la generación de los BTs se ha procedido a la conexión con la herramienta que los genera.
+Una vez se ha especificado todo lo necesario para la generación de los árboles se ha procedido a la conexión con la herramienta que los genera.
 Como se ha mencionado en la sección \ref{sec:ModeloBT}, por comodidad del usuario es el propio entorno quien lanza el proceso de Python, haciendo de la generación un modelo de caja negra para el usuario.
-Para ello se lanza el proceso Python con el archivo principal de la herramienta y se le pasan como argumentos la ruta del script de la herramienta, las listas de tareas (la lista de tareas que requieren de una variable de la Blackboard y la lista de las que no), la lista de decoradores, el comportamiento buscado y la lista de entradas de la Blackboard. 
+Para ello se lanza el proceso Python con el archivo principal de la herramienta y se le pasan como argumentos la ruta del script de la herramienta, las listas de tareas (la lista de tareas que requieren de una variable de la Blackboard y la lista de las que no por separado), la lista de decoradores, el comportamiento buscado y la lista de entradas de la Blackboard. 

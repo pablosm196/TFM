@@ -50,6 +50,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	APawn* _pawn;
 
+	UPROPERTY(EditAnywhere)
+	FString _scriptPath;
+
 	UFUNCTION(CallInEditor)
 	void GenerateBT();
 

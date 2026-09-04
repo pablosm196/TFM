@@ -1,12 +1,19 @@
-\chapter{Discusión y limitaciones}
+\chapter{Discusión}
 \label{cap:Discusion}
 
-En este apartado se analizan e interpretan los datos expuestos en la sección de Resultados, evaluando el desempeño de la tecnología empleada, la efectividad del RAG y las implicaciones de las pruebas con usuarios con respecto a los objetivos originales del proyecto, así como las limitaciones que se han presentado durante el desarrollo del proyecto.
+Este trabajo ha consistido en la creación de una herramienta para la generación automática de Behavior Trees (BTs) para personajes no jugador (NPCs) en videojuegos con el fin de disminuir la carga de trabajo de los diseñadores de videojuegos.
+Para ello se escogió el motor de videojuegos Unreal Engine 5.7 como base donde poder implementar nodos necesarios para la generación de comportamientos (tanto como tareas como condicionales) y donde desarrollar una serie de escenarios para probar los árboles de comportamiento generados.
+Una vez se tenía todo lo necesario para poder crear y ejecutar árboles de comportamiento se ha procedido con el diseño de la herramienta que los genera. 
+Esta herramienta consta de de dos LLMs: el primero, de un tamaño elevado (Mistral Large 3, con 675B de parámetros totales y 41B de parámetros activos), traduce la petición en lenguaje natural a pseudocódigo, mientras que un segundo LLM de menor tamaño (ollama3:8B, con 8B de parámtros) se encarga de asignar las variables de la Blackboard a los nodos necesarios.
+Para evaluar los árboles se han diseñado dos sistemas de validación: un validador de dependencias entre nodos mediante un autómata finito no determinista y un validador de objetivos cumplidos.
+Finalmente se han realizado pruebas de usuario para verificar si se cumplen los objetivos planteados.
 
-\subsection{Discusión sobre la herramienta generadora de árboles de comportamiento}
-Se ha probado con distintos métodos de generación de los BTs.
+A continuación se analizan e interpretan los datos expuestos en la sección \ref{sec:Resultados}, evaluando el desempeño de la tecnología empleada, la efectividad del RAG y las implicaciones de las pruebas con usuarios con respecto a los objetivos originales del proyecto, así como las limitaciones que se han presentado durante el desarrollo del proyecto.
 
-Se empezó probando con un sistema que generase los árboles de forma directa en los que se probaron diferentes modelos locales mediante guidance, donde los más peqieños (4B y 7B de parámetros) generaban árboles incorrectos y los más grandes (8B de parámetros) tardaban minutos o incluso horas en generarlos.
+\section{Discusión sobre la herramienta generadora de árboles de comportamiento}
+Se ha probado con distintos métodos de generación de los árboles de comportamiento.
+
+Se empezó probando con un sistema que generase los árboles de forma directa en los que se probaron diferentes modelos locales mediante guidance, donde los más pequeños (4B y 7B de parámetros) generaban árboles incorrectos y los más grandes (8B de parámetros) tardaban minutos o incluso horas en generarlos.
 Esto se puede explicar debido a la complejidad recursiva del JSON Schema, teniendo que descartar este método.
 
 El segundo intento consistió en fragmentar el comportamiento en subtareas, pero esto ocasionó unos árboles demasiado planos, convirtiéndolos en ilegibles y dificilmente modificables y escalables.
@@ -25,22 +32,22 @@ Por otro lado, la sinergia de las técnicas de prompt engineering demostró ser 
 En particular, el Self-Critique Prompting actuó como un filtro crítico que previno la invención de identificadores de tareas y corrigió de forma autónoma defectos en la sintaxis antes de pasar el texto al traductor a JSON.
 Esto redujo de forma significativa los errores de formato.
 
-\subsection{Discusión sobre la validación }
+\section{Discusión sobre la validación }
 La inclusión del NFA para validar el orden secuencial de dependencias y de los validadores de objetivos representó una estrategia exitosa de control de calidad autónomo.
-Aunque su uso no es mandatorio para el funcionamiento básico de la herramienta, permite cerrar el ciclo de retroalimentación de la IA.
+Aunque su uso no es obligatorio para el funcionamiento básico de la herramienta, permite cerrar el ciclo de retroalimentación de la IA.
 Al ocurrir un fallo, la captura del contexto preciso (el pseudocódigo problemático y el historial de acciones ejecutadas) posibilita que el LLM reestructure de manera reactiva la lógica y logre corregir el comportamiento incorrecto sin necesidad de que el diseñador intervenga.
 Esto se demostró en los tres entornos, donde las tareas complejas de patrulla y recolección se validaron con éxito en un único ciclo automatizado, resolviendo problemas de dependencias de forma transparente al usuario.
 Sin embargo, la falta de introducir un JSON creado a mano con las dependencias, choca con la idea de la automatización del proceso (lo cual es el principal motivo por el que no es obligatorio su uso).
 
-\subsection{Discusión de las hipótesis de las pruebas de usuario}
-La cantidad de usuarios (N = 3) hace que las respuestas no sean estadísticamente significativas, por lo que los resultados no son definitivos sino aproximaciones.
+\section{Discusión de las hipótesis de las pruebas de usuario}
+La cantidad de usuarios (N = 3) hace que las respuestas no tengan poder de muestra, por lo que es necesario un análisis cualitativo de los datos para poder concluir definitivamente los resultados.
 Para las hipótesis observamos lo siguiente:
 
 \begin{itemize}
     \item \texttt{H1 (Reducción de tiempos)}: Confirmada.
     Los resultados de la comparativa de tiempos de generación demuestran un ahorro de tiempo sustancial para casi todas las tareas y usuarios.
-    El promedio para completar el segundo BT se redujo de 221.7 s a solo 71.3 s con la herramienta. 
-    No obstante, la excepción del Usuario 2 en el primer BT (donde tardó 486 s con la herramienta frente a 315 s de forma manual) evidencia que cuando el modelo genera nodos extra o asigna erróneamente variables, el esfuerzo de depuración manual del JSON resultante puede dilatar los tiempos en usuarios que ya son sumamente rápidos de forma manual.
+    El promedio para completar el segundo árbol de comportamiento se redujo de 221.7 s a solo 71.3 s con la herramienta. 
+    No obstante, la excepción del Usuario 2 en el primer árbol (donde tardó 486 s con la herramienta frente a 315 s de forma manual) evidencia que cuando el modelo genera nodos extra o asigna erróneamente variables, el esfuerzo de depuración manual del JSON resultante puede dilatar los tiempos en usuarios que ya son sumamente rápidos de forma manual.
     \item \texttt{H2 (Similitud de ejecución)}: Confirmada.
     Aunque la calidad formal de los árboles se catalogó como inferior (80\% de media de conformidad), el comportamiento observable del NPC cumplió rigurosamente con las expectativas de los usuarios (80\% de conformidad).
     La inferioridad cualitativa radica en un estilo de programación menos limpio por parte del LLM (inserción de nodos redundantes), pero el resultado final fue funcional y similar al humano.
@@ -56,12 +63,12 @@ Para las hipótesis observamos lo siguiente:
 
 Este trabajo ha sufrido una serie de limitaciones en cuanto a limitaciones técnicas y a la escasez de usuarios disponibles para las pruebas.
 
-Las limitaciones técnicas se han podido comprobar a la hora de la selección de modelos para generar los BTs.
+Las limitaciones técnicas se han podido comprobar a la hora de la selección de modelos para generar los árboles de comportamiento.
 Como bien se ha mencionado anteriormente de los dos modelos, a pesar de cumplir de forma correcta su objetivo, presentan una serie de limitaciones debido a las capacidades computacionales disponibles.
 El modelo generador de pseudocódigo es un LLM en la nube, teniendo que depender de una API de terceros, lo que no permite un control total del modelo.
 Adicionalmente, el modelo que asigna las variables de la Blackboard es uno bastante pequeño que puede cometer errores.
-Además, el sistema RAG se ha construido con BTs de robótica y no de videojuegos y que puede tardar varios segundos en construirse.
+Además, el sistema RAG se ha construido con árboles de comportamiento de robótica y no de videojuegos y que puede tardar varios segundos en construirse.
 Otra limitación es la falta de automatización en ciertos aspectos, como en la suscripción de las tareas a la Abstract Factory así como la asignación de su descripción o la generación de las métricas de validación.
-Aunque los usuarios encuestados encontrasen sencilla la modificación de los BTs generados, es posible que en el futuro busquen cambios adicionales en el comportamiento o necesiten reestructurarlo de forma sencilla, lo cual en el estado actual supondría pedirle otra generación distinta a la herramienta en vez de partir con el BT ya existente.
+Aunque los usuarios encuestados encontrasen sencilla la modificación de los árboles generados, es posible que en el futuro busquen grandes cambios en el comportamiento o necesiten reestructurarlo de forma sencilla, lo cual en el estado actual supondría pedirle otra generación distinta a la herramienta en vez de partir con el árbol ya existente.
 
 Finalmente la limitación más grande ha sido la falta de usuarios para poder realizar las pruebas de usuarios, haciendo imposible concluir de forma definitiva las hipótesis planteadas siguiendo los objetivos.

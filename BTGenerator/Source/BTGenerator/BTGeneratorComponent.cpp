@@ -128,9 +128,9 @@ void UBTGeneratorComponent::CallGenerator(FString prompt)
 	UE_LOG(LogTemp, Warning, TEXT("Salida: %s"), *entries);
 
 	FString UVExe = TEXT("python");
-	//FString UVExe = TEXT("uv");
 
-	FString ScriptPath = TEXT("C:/Users/pablo/Desktop/Uni/Master/TFM/llm-bt-generator/main.py");
+
+	FString ScriptPath = _scriptPath + "/main.py";
 	FString Args = FString::Printf(
 		TEXT("%s \"%s\" \"%s\" \"%s\" \"%s\" %s \"%s\""),
 		*ScriptPath,

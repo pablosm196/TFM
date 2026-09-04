@@ -2,61 +2,133 @@
 \label{cap:introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-In recent yars, the advancement of immersive technologies such as \gls{vr} has brought about a significant change in how users interact in digital environments.
-Major companies like Meta and Apple have invested in the development of hardware for these technologies, launching devices like the Meta Quest 3 and Apple Vision Pro, and creating social interaction platforms in the \gls{metaverse} with the development of Meta Horizon Worlds.
-This technology has opened new opportunities to explore more natural modes of communication in virtual spaces through non-verbal communication.
+Video games are composed of multiple elements that interact with one another to build a coherent and immersive experience for the player, including the player's avatar, environments, interactive objects, and, commonly, non-player characters.
+These non-player characters (NPCs) play a significant role in the construction of virtual worlds, as they are responsible for providing interactions, responding to player actions, and developing behaviors that are coherent with the context of the game.
 
-Non-verbal communication refers to the transmission of messages without the use of words, relying instead on images and gestures.
-In our daily lives, it plays a crucial role in human interactions, yet its representation in virtual environments is often limited and dependent on predefined actions such as animations or "emotes" already integrated into the game.
-Therefore, the development of tools that can capture and interpret these gestures in real-time represents a significant step towards creating more expressive and realistic virtual environments.
+The development of these behaviors is a task that involves both design and implementation aspects.
+Typically, designers determine the actions, routines, and interactions that an NPC must perform, while programmers are responsible for translating these specifications into an executable implementation.
+For this purpose, different artificial intelligence techniques can be employed, most notably finite state machines (FSMs) and behavior trees (BTs), the latter being the primary object of study of this work.
+
+Furthermore, developing NPC behaviors is an inherently iterative process.
+During implementation, it is necessary to verify the resulting behavior, detect unforeseen situations, and modify the logic to adapt it to the game's requirements.
+Consequently, designers and programmers may find themselves forced to successively repeat the phases of behavior design, implementation, evaluation, and modification.
+In the case of behavior trees, these changes frequently involve creating, reorganizing, or modifying nodes, conditions, and execution relationships, which can increase the effort required as behavior complexity grows.
+
+In addition to this development cost, there is a requirement for specific technical knowledge to correctly build and modify these structures.
+Using a system based on behavior trees requires understanding both their execution logic and the elements that compose them and their relationships, which can hinder their use by developers with less experience in artificial intelligence or by profiles not specialized in programming.
+
+In this context, the automatic generation of behavior trees from natural language descriptions constitutes a possible avenue to reduce the effort associated with their creation and modification.
+Allowing a user to describe the desired behavior through a natural language specification and automatically obtain an executable structure could reduce part of the manual work required during development, facilitate iteration over behaviors, and lower the technical barriers associated with their implementation.
+
+The emergence of Large Language Models (LLMs), which are capable of interpreting natural language instructions and generating complex structures from them, opens up a new possibility to automate this process.
+For this reason, this work studies the use of language models for the automatic generation of behavior trees aimed at controlling non-player characters, analyzing the possibilities and limitations of this approach in the context of video game development.
+
 \section{Motivation}
+The growing complexity of video games has also increased the complexity of the behaviors that their non-player characters must implement.
+As a greater number of actions, situations, and interaction possibilities are incorporated, the structures responsible for controlling these behaviors require a larger number of elements and relationships between them.
+In this context, behavior trees present characteristics such as modularity and scalability that are especially suitable for representing complex behaviors (\cite{DEFCON}).
 
+However, these characteristics do not eliminate the cost associated with the creation and maintenance of the trees.
+The manual construction of behaviors can be laborious and require specialized knowledge, especially when behaviors must be modified or expanded iteratively.
+The literature precisely points out the effort involved for designers in developing NPC behaviors and proposes mechanisms aimed at automating their expansion (\cite{CBR}).
+Likewise, there are articles that highlight the need to facilitate the interaction between the design aspects and the technical aspects of behavior implementation (\cite{BTValRef}).
 
-As mentioned in the introduction, the use of non-verbal communication in virtual environments is limited and predefined by their design, restricting a fundamental part of everyday human expression.
-Due to this, and as seen in articles like \cite{Neverova} or \cite{VRHANDS}, gesture detection is a field of study currently being explored to address this issue.
-For these reasons, it is interesting to investigate ways to expand this representation of non-verbal communication so that interaction between users and \glspl{npc} becomes more natural.
+The difficulty of authoring behavior trees has also motivated research into tools designed to facilitate their creation.
+Some authors propose an authoring tool based on a visual interface that seeks to simplify the construction of these trees and bring their editing closer to the design process (\cite{AIPaint}).
+These works show that reducing the effort required to specify and modify behaviors is a problem that predates the emergence of LLMs.
 
-This work is therefore part of the research line focused on developing tools that can recognize gestures performed by a user using a motion capture suit, with the aim of creating more immersive and natural virtual environments for users.
-On the other hand, a large amount of data is required to create \gls{ai} models that enable the development of the mentioned tools.
-In the case of this project, the necessary data consists of a sequence of 3D coordinates representing the positions and rotations of the skeleton's bones throughout the animations, resulting in relatively large data sizes.
-This necessitates the creation of complex models capable of processing a significant amount of input data. However, as we will discuss throughout the work, it has not been possible to find datasets containing this type of data.
-As a result, a significant contribution of this work to the field has been the creation of a dataset through the extraction of animations from a specialized bank and the motion capture of users.
+Consequently, different approaches have been developed to fully or partially automate the construction of behavior trees.
+Among them are methods based on the reuse of behaviors, automatic evolution techniques, and synthesis methods from formal specifications, demonstrating that the generation of behavior trees is a consolidated line of research.
+These approaches allow reducing part of the manual work, although they generally require structured representations of the problem, evaluation functions, demonstrations, or domain-specific knowledge.
 
-Given these reasons, it can be concluded that the lack of natural methods to leverage non-verbal communication in virtual environments and the scarcity of animation datasets have motivated the objectives mentioned, which we will expand upon below.
+The appearance of LLMs introduces a new possibility to address this problem, as these models can process instructions expressed in natural language and generate structures from them.
+Instead of requiring the user to directly define the internal structure of the behavior tree, it can be proposed that they describe the desired behavior using natural language, and the system handles the translation to a structured representation.
+This approach allows exploring an interaction closer to the design process and can reduce the technical barriers associated with authoring behaviors.
+In this context, this work is situated at the intersection between research on the automatic generation of behavior trees and recent advances in LLMs.
 
 \section{Objectives}
 
-The general objective of this project is to implement an \gls{ai} model that, with low latency, allows real-time identification of gestures performed with a motion capture suit, aiming to enhance non-verbal communication in virtual environments.
-To achieve this objective, the following goals have been proposed during the development of the work:
-\begin{enumerate}
-	%\renewcommand{\theenumi}{\alph{enumi}}
-	\item Search for animation datasets that are considered relevant for communicating with an \gls{npc} in a video game. These animations include dancing, greeting, pointing, sitting, fighting, and running.
-	\item Automatic extraction of the aforementioned animations from animation banks and subsequent processing.
-	\item Extraction of animations through motion capture from a heterogeneous group of users.
-	\item Implementation, training, and comparison of different \gls{ai} models, including neural networks (LSTM, CNN, and RNN) as well as classical classification models (Random Forest).
-	\item Development of a final application as a demonstration to showcase the results in \gls{vr} to enhance immersion.
-\end{enumerate}
+The general objective of this project is the implementation of a tool that can be used in a simple and intuitive manner by designers, both experts and those without a technical background, to generate behavior trees more efficiently than they could manually, and with a quality similar to that of human-created trees, in order to alleviate their workload.
+The aim is not to replace the designer's work, but rather to provide them with a useful foundation that yields easily modifiable structures to refine certain aspects or easily alter the generated behaviors.
 
-As a significant secondary objective, due to the lack of animation datasets, it has been proposed to publish the resulting datasets, both from artificial animations and user captures.
+To meet these objectives, the following goals have been proposed during this work:
+
+\begin{itemize}
+	\item Implementation of a library of tasks and conditionals necessary to generate different behaviors.
+	\item Design and implementation of various scenarios in which the sought behaviors can be tested in real-time and visually.
+	\item Comparison of different implementation methods and language models (execution times and generation quality) to choose the ideal one to fulfill the general objective.
+	\item Implementation of the generating tool using different AI techniques that achieve optimal generation.
+	\item Implementation of a validation system for the generated trees to verify that they are valid in terms of respecting node dependencies and fulfilling objectives.
+	\item Execution of a testing plan to validate the fulfillment of the general objectives.
+\end{itemize}
 
 \section{Work Plan}
-
-
 The work plan consists of several steps:
 
 \begin{enumerate}
-	%\renewcommand{\theenumi}{\alph{enumi}}
-	\item Search for a dataset: generate a sufficiently large dataset with multiple examples of gestures to adequately train different models. This dataset should primarily consist of data from real users to identify the most natural gestures possible.
-	\item Implementation of \gls{ai} models: implement various \gls{ai} models to compare them and determine which one is most suitable based on prediction speed and accuracy. The implementation of these models should include: training, a way to extract final model statistics, hyperparameter search, confusion matrix generator, and compatibility with a common user interface for all trainings.
-	\item Development of a user interface for training and monitoring different models: develop a web interface so that users with less programming and \gls{ai} experience can train models capable of predicting the gestures they need without modifying the code or needing to understand the internal workings of the codebase.
-	\item Development of a final application: create an application for Oculus Quest as a demo that connects to the chosen model and allows real-time usage demonstration.
+	\item \texttt{November - February}: Development and implementation of several scenarios in a game engine containing what is necessary for generation: a library of tasks and conditionals, the ability to execute the generated BTs, and a way to communicate with the generation tool.
+	\item \texttt{February - April}: Implementation of a tool that, through large language models, is capable of generating BTs from natural language that can satisfy a desired behavior.
+	\item \texttt{April - June}: Development of an automatic validation system for the generated BTs.
+	\item \texttt{July - August}: Design and subsequent execution of tests with target users to measure the correct fulfillment of the objectives.
 \end{enumerate}
 
-The development of tasks and their planning can be seen in Figure \ref{fig:diagrama-gantt-eng}.
+\section{Methodology and Technology}
+To develop this project, various tools commonly used in video game development have been used, keeping the target audience in mind.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.91\textwidth]{Imagenes/Vectorial/Diagrama-gannt.pdf}
-	\caption{Gantt chart of the project}
-	\label{fig:diagrama-gantt-eng}
-\end{figure}
+\begin{itemize}
+	\item \texttt{Unreal Engine 5.7}: Unreal Engine is one of the industry's leading engines, characterized by its technical robustness.
+	It also features a native event-driven behavior tree system and a Blackboard component, which is necessary for the non-player character's interaction with the environment.
+	This engine was selected due to its widespread use in the industry, making it easier for the designers at whom the tool is aimed to work in a familiar environment.
+	Within this engine, a library of tasks and conditionals necessary for behavior creation was established, along with several scenarios to test the behavior tree generations.
+	\item \texttt{Python 3}: This is a high-level programming language that is widely adopted due to its versatility and its standard position in artificial intelligence development.
+	Since it constitutes the backend of the project, and in line with the ease-of-use objectives of this tool, the section developed in this language is completely opaque to the user.
+	The tool developed in Python is responsible for the entire generation of the trees, leveraging available LLM orchestration modules, with LangChain being the one used in this work.
+	\item \texttt{Hugging Face}: This is an open-source ecosystem for the distribution of machine learning models, libraries, and natural language processing datasets.
+	In this work, it was used to build a RAG system, serving as the source repository from which the data was retrieved, and providing the embedding model.
+	\item \texttt{Mistal AI}: This is a generative artificial intelligence company that offers large language models.
+	One of the models used throughout this work was Mistral Large 3 via the company's API.
+	This model has 675B total parameters and 41B active parameters, and is designed as a 'Mixture of Experts' system, making it a robust model that can fulfill the tool's purpose.
+	\item \texttt{Ollama}: This is an open-source tool designed to manage and run language models locally, ensuring low latency and eliminating API call costs.
+	This environment hosts and runs locally another model used in this work, the llama3:8B model, which features 8B parameters.
+	Although it is a lighter model and is not as precise as the previously mentioned one, its use proved to be effective in this work
+\end{itemize}
+
+\section{Document Structure}
+This document is structured in accordance with the previously mentioned work plan:
+
+\begin{enumerate}
+	\item \texttt{Chapter 2: State of Art}. This chapter presents the theoretical and technological framework surrounding this work.
+	It reviews different behavior generation methods used in video games, detailing their definitions and evolution in both industry and academia, with a special emphasis on behavior trees.
+	It also recounts the evolution and current context of language models to ultimately contextualize the project's research line of automatic behavior generation.
+	\item \texttt{Chapter 3: Behavior Tree generation tool}. This chapter describes the development of the tool implemented in this work.
+	It is divided into four sections:
+	\begin{enumerate}
+		\item \texttt{Pipeline design of the proposed behavior tree generation model}: Describes the workflow design of the tool conceived to satisfy the proposed objectives.
+		\item \texttt{Description of the environment in a game engine}: Details the environment created in a game engine to implement various tasks and conditionals necessary to generate different types of behaviors, as well as the development of several scenarios where the behavior trees can be tested.
+		\item \texttt{Behavior tree generation tool}: Explains the implementation of the tool that generates a JSON file with a behavior tree from the description of the desired behavior in natural language.
+		\item \texttt{Automatic validation of behavior trees}: Describes the methods designed to validate behavior trees, specifically the validation of task dependency fulfillment and goal fulfillment.
+		It also describes several tests conducted to verify the system's validity.
+	\end{enumerate}
+	\item \texttt{Chapter 4: Evaluation and results}. This chapter recounts the user evaluation tests designed and executed to validate a series of hypotheses, and reviews the obtained results.
+	\item \texttt{Chapter 5: Discussion}. This chapter discusses the implementation and results of all sections of the project, and comments on the different limitations encountered during its development.
+	\item \texttt{Chapter 6: Conclusions}. This chapter details the conclusions drawn from the project's results and proposes future work in light of the limitations.
+\end{enumerate}
+
+\section{Link to Repository}
+The source code of this work is available in a public GitHub repository.
+The repository is structured as follows:
+
+\begin{itemize}
+	\item \texttt{Análisis}: Contains the CSV of user test responses and the Jupyter Notebook with the code to generate the charts (see \ref{sec:Resultados}).
+	\item \texttt{bt-dataset-parser}: Python project in which the dataset needed to demonstrate the RAG system is downloaded and processed (see \ref{sec:GeneracionBTs}).
+	\item \texttt{BTGenerator}: An Unreal project that served as the base for the environments (see \ref{sec:DescripcionEntorno}).
+	\item \texttt{llm-bt-generator}: A Python project containing the BT generator tool (see \ref{sec:GeneracionBTs}).
+	\item \texttt{Memoria}: The LaTeX source code of this document.
+\end{itemize}
+
+The link to the repository is: \url{https://github.com/pablosm196/TFM}.
+
+\section{Use of Artificial Intelligence}
+This document has been written with the selective support of generative Artificial Intelligence tools for drafting tasks.
+Their sole use consisted of consolidating the ideas originally established in the document by reformulating certain paragraphs, which were subsequently reviewed and edited.
+In any case, the structure of the document, as well as the ideas it transmits and the final responsibility for the content, lies with the author.
